@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { questions } from '../../data/questions';
+import { questions } from '../data/questions';
 
 const FeedbackPage = () => {
   const navigate = useNavigate();
