@@ -34,7 +34,7 @@ const HomePage = () => {
           constructive insights.
         </p>
         <div className="home-hero__actions">
-          <Link to="/feedback" className="btn btn-primary">
+          <Link to="/feedback" className="btn btn-primary btn-small">
             Give Feedback
           </Link>
         </div>

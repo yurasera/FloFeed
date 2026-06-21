@@ -343,7 +343,47 @@
 }
 
 .home-page .btn {
-  margin-top: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.85rem 1.25rem;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.home-page .btn:hover {
+  transform: translateY(-1px);
+}
+
+.home-page .btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+  box-shadow: 0 10px 24px -14px rgba(0, 102, 255, 0.55);
+}
+
+.home-page .btn-primary:hover {
+  background: color-mix(in srgb, var(--accent) 88%, black);
+  border-color: color-mix(in srgb, var(--accent) 88%, black);
+}
+
+.home-page .btn-small {
+  min-height: 36px;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.home-page .btn:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 30%, white);
+  outline-offset: 3px;
 }
 
 @media (max-width: 768px) {
