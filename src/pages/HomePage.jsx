@@ -1,98 +1,73 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const HomePage = () => (
-  <main className="home-page">
-    {/* Hero Section */}
-    <section className="hero">
-      <h1>Welcome to FloFeed</h1>
-      <p>Anonymous feedback platform.</p>
-      <Link
-        to="/feedback"
-        className="cta-button"
-        aria-label="Give feedback"
-      >
-        Give Feedback
-      </Link>
-    </section>
+const features = [
+  {
+    title: 'Anonymous',
+    description:
+      'Feedback is submitted without revealing personal information.',
+  },
+  {
+    title: 'Simple',
+    description: 'A focused flow that keeps the experience quick and clear.',
+  },
+  {
+    title: 'Fast',
+    description: 'Send thoughtful feedback in just a few minutes.',
+  },
+];
 
-    {/* Features Section */}
-    <section className="features">
-      <h2>Features</h2>
-      <ul className="features-list">
-        <li className="feature-item">
-          <strong>Anonymous Feedback</strong>
-          <p>All responses are posted without personal data.</p>
-        </li>
-        <li className="feature-item">
-          <strong>Easy to Use</strong>
-          <p>A simple, clean interface for quick submissions.</p>
-        </li>
-        <li className="feature-item">
-          <strong>Honest Insights</strong>
-          <p>Get candid opinions to improve yourself.</p>
-        </li>
-        <li className="feature-item">
-          <strong>Quick Submission</strong>
-          <p>Submit feedback in just a few clicks.</p>
-        </li>
-      </ul>
-    </section>
-    {/* Hero Section */}
-    <section className="hero" style={{ textAlign: 'center', marginBottom: '2rem' }}>
-      <h1>Welcome to FloFeed</h1>
-      <p>Anonymous feedback platform.</p>
-      <Link
-        to="/feedback"
-        className="cta-button"
-        style={{
-          display: 'inline-block',
-          marginTop: '1rem',
-          padding: '0.75rem 1.5rem',
-          background: '#0066ff',
-          color: '#fff',
-          textDecoration: 'none',
-          borderRadius: '4px',
-        }}
-        aria-label="Give feedback"
-      >
-        Give Feedback
-      </Link>
-    </section>
+const steps = [
+  'Open the feedback form.',
+  'Answer the questions honestly.',
+  'Submit your feedback.',
+];
 
-    {/* Features Section */}
-    <section className="features" style={{ marginBottom: '2rem' }}>
-      <h2>Features</h2>
-      <ul style={{ listStyle: 'none', padding: 0, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
-        <li style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px' }}>
-          <strong>Anonymous Feedback</strong>
-          <p>All responses are posted without personal data.</p>
-        </li>
-        <li style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px' }}>
-          <strong>Easy to Use</strong>
-          <p>A simple, clean interface for quick submissions.</p>
-        </li>
-        <li style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px' }}>
-          <strong>Honest Insights</strong>
-          <p>Get candid opinions to improve yourself.</p>
-        </li>
-        <li style={{ background: '#f5f5f5', padding: '1rem', borderRadius: '4px' }}>
-          <strong>Quick Submission</strong>
-          <p>Submit feedback in just a few clicks.</p>
-        </li>
-      </ul>
-    </section>
+const HomePage = () => {
+  return (
+    <main className="home-page">
+      <section className="card home-hero" aria-labelledby="home-title">
+        <p className="home-hero__eyebrow">Anonymous feedback, made simple</p>
+        <h1 id="home-title">FloFeed</h1>
+        <p>
+          Collect anonymous feedback to help people grow through honest and
+          constructive insights.
+        </p>
+        <div className="home-hero__actions">
+          <Link to="/feedback" className="btn btn-primary">
+            Give Feedback
+          </Link>
+        </div>
+      </section>
 
-    {/* How It Works Section */}
-    <section className="how-it-works" style={{ marginBottom: '2rem' }}>
-      <h2>How It Works</h2>
-      <ol style={{ paddingLeft: '1.5rem' }}>
-        <li>Open the feedback form.</li>
-        <li>Answer the questions honestly.</li>
-        <li>Submit and see a success confirmation.</li>
-      </ol>
-    </section>
-  </main>
-);
+      <section className="home-section" aria-labelledby="features-title">
+        <div className="home-section__header">
+          <p className="home-section__eyebrow">Why it works</p>
+          <h2 id="features-title">Built around clarity</h2>
+        </div>
+        <div className="features-grid">
+          {features.map((feature) => (
+            <article className="card feature-card" key={feature.title}>
+              <h3>{feature.title}</h3>
+              <p>{feature.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="card how-it-works-card" aria-labelledby="how-it-works-title">
+        <div className="home-section__header">
+          <p className="home-section__eyebrow">The flow</p>
+          <h2 id="how-it-works-title">How it works</h2>
+        </div>
+        <ol className="steps-list">
+          {steps.map((step) => (
+            <li key={step}>{step}</li>
+          ))}
+        </ol>
+      </section>
+    </main>
+  );
+};
 
 export default HomePage;
