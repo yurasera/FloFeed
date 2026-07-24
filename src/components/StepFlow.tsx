@@ -1,0 +1,51 @@
+import type { FeedbackStep } from '../data/feedbackSteps'
+import { Card } from './Card'
+import { PageContainer } from './PageContainer'
+import { ProgressBar } from './ProgressBar'
+import { SectionTitle } from './SectionTitle'
+import { StepNavigator } from './StepNavigator'
+import { StepPanel } from './StepPanel'
+
+type StepFlowProps = {
+    steps: FeedbackStep[]
+    currentStepIndex: number
+    onPrevious: () => void
+    onNext: () => void
+}
+
+export function StepFlow({ steps, currentStepIndex, onPrevious, onNext }: StepFlowProps) {
+    const activeStep = steps[currentStepIndex]
+    const totalSteps = steps.length
+    const progressValue = totalSteps > 1 ? (currentStepIndex / (totalSteps - 1)) * 100 : 100
+
+    return (
+        <PageContainer className="py-8 sm:py-10">
+            <Card className="space-y-8 bg-white">
+                <section className="space-y-4">
+                    <SectionTitle
+                        eyebrow="FloFeed"
+                        title="Reusable multi-step feedback flow"
+                        description="A scalable step architecture driven by a single array, with placeholder screens for each step."
+                    />
+                    <div className="flex items-center justify-between gap-4 text-sm text-slate-600">
+                        <span>{activeStep.title}</span>
+                        <span>
+                            {currentStepIndex + 1}/{totalSteps}
+                        </span>
+                    </div>
+                    <ProgressBar value={progressValue} />
+                </section>
+
+                <section className="space-y-4">
+                    <StepPanel stepTitle={activeStep.title} />
+                    <StepNavigator
+                        isFirstStep={currentStepIndex === 0}
+                        isLastStep={currentStepIndex === totalSteps - 1}
+                        onPrevious={onPrevious}
+                        onNext={onNext}
+                    />
+                </section>
+            </Card>
+        </PageContainer>
+    )
+}
