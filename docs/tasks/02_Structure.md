@@ -1,22 +1,34 @@
-Create the following folder structure for Flofeed MVP:
+Create the initial structure for Flofeed using React + TypeScript + Tailwind CSS.
+
+Requirements:
+- Use functional components.
+- Use React Hooks.
+- Mobile-first responsive layout.
+- Modern SaaS design.
+- White background.
+- Blue primary color.
+- Rounded cards.
+- Soft shadow.
+
+Create the following structure:
 
 src/
-├── app/
-│   ├── page.tsx
-│   ├── feedback/
-│   │   └── page.tsx
-│   └── dashboard/
-│       └── page.tsx
-│
-├── components/
-│   ├── FeedbackForm.tsx
-│   ├── InsightCard.tsx
-│   ├── StatCard.tsx
-│   └── SectionHeader.tsx
-│
-├── data/
-│   └── mockInsights.ts
+ ├── components/
+ ├── pages/
+ ├── types/
+ ├── hooks/
+ ├── data/
+ ├── App.tsx
+ └── main.tsx
 
-Create empty components with proper TypeScript structure.
+Create reusable components:
 
-Use reusable React components.
+- PrimaryButton
+- SecondaryButton
+- ProgressBar
+- Card
+- PageContainer
+- SectionTitle
+
+Do not create business logic yet.
+Only prepare the project structure.
