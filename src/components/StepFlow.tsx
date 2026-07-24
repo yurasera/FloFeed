@@ -32,8 +32,8 @@ export function StepFlow({ steps, currentStepIndex, onPrevious, onNext, onComple
                 <section className="space-y-4">
                     <SectionTitle
                         eyebrow="FloFeed"
-                        title="Bagikan feedback Anda"
-                        description="Bantu mentor meningkatkan kualitas pembelajaran melalui feedback anonim."
+                        title="Suara learner untuk pembelajaran yang lebih baik"
+                        description="Kumpulkan feedback anonim, pahami pengalaman belajar, dan bantu mentor meningkatkan kualitas kelas."
                     />
                     <div className="flex items-center justify-between gap-4 text-sm text-slate-600">
                         <span>{activeStep.title}</span>
