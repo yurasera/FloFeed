@@ -1,206 +1,364 @@
 # Product Requirements Document (PRD)
 
-# FloFeed (MVP)
+# Flofeed MVP
 
-## 1. Ringkasan Produk
+## 1. Product Overview
 
-FloFeed adalah aplikasi web sederhana yang memungkinkan pengguna memberikan feedback anonim melalui serangkaian pertanyaan.
+### Product Name
+Flofeed
 
-Tujuan utama FloFeed adalah membantu seseorang mendapatkan masukan yang jujur dan konstruktif tanpa mengharuskan pemberi feedback mengungkapkan identitasnya.
+### Product Vision
 
-Pada versi MVP, aplikasi hanya berfokus pada tampilan dan alur pengisian feedback. Data feedback belum disimpan dan hanya digunakan untuk mensimulasikan pengalaman pengguna.
+Flofeed helps mentors create better learning experiences by collecting honest learner feedback and transforming it into actionable insights using AI.
 
----
+### Product Summary
 
-## 2. Tujuan Produk
+Flofeed is an AI-powered anonymous feedback platform designed for programming bootcamps and learning communities.
 
-### Tujuan Utama
+The product addresses a common problem experienced by mentors: learners often stay silent when they are confused or struggling. As a result, mentors improve their teaching based on assumptions rather than real feedback.
 
-Memvalidasi konsep aplikasi feedback anonim berbasis pertanyaan.
-
-### Tujuan Pembelajaran
-
-* Mempelajari pengembangan Single Page Application (SPA).
-* Mempelajari pengelolaan form dan validasi input.
-* Membangun fondasi aplikasi sebelum integrasi backend.
+Flofeed creates a safe environment where learners can share honest feedback anonymously and helps mentors understand learning problems through AI-generated insights.
 
 ---
 
-## 3. Scope MVP
+# 2. Problem Statement
 
-### In Scope
+## Background
 
-* Landing Page
-* Feedback Form Page
-* Success Page
-* Navigasi antar halaman
-* Form validation
+Programming bootcamp mentors usually teach classes with 10–30 participants.
 
-### Out of Scope
+After each session:
 
-* Login dan Register
-* Dashboard
-* Penyimpanan feedback
-* Database
-* Profil pengguna
-* Link feedback personal
-* Statistik feedback
-* Integrasi backend
+- Only around 2–5 participants actively provide feedback.
+- Most participants remain silent.
+- When mentors ask:
+  - "Does everyone understand?"
+  - "Any questions?"
 
----
+The common responses are:
 
-## 4. User Flow
+- Silence
+- "Yes, I understand"
 
-Pengunjung membuka landing page.
+However, many participants may still be confused or struggling.
 
-↓
+Mentors often discover these problems later through:
+- Assignment results
+- Private conversations
+- Individual discussions
 
-Pengunjung memilih untuk memberikan feedback.
-
-↓
-
-Pengunjung mengisi seluruh pertanyaan.
-
-↓
-
-Pengunjung mengirim feedback.
-
-↓
-
-Sistem menampilkan halaman sukses.
+This creates a situation where mentors must improve their teaching based on assumptions instead of real learner insights.
 
 ---
 
-## 5. Halaman
+# 3. Target Customer
 
-### 5.1 Landing Page
+## Primary Customer
 
-Halaman utama yang menjelaskan tujuan FloFeed.
+Programming bootcamp mentors.
 
-#### Hero Section
+### Characteristics
 
-Headline:
-
-> Receive Honest Anonymous Feedback
-
-Deskripsi singkat mengenai manfaat feedback anonim.
-
-Call To Action:
-
-* Give Feedback
-
-#### Features Section
-
-Menampilkan manfaat utama FloFeed:
-
-* Anonymous Feedback
-* Easy to Use
-* Honest Insights
-* Quick Submission
-
-#### How It Works
-
-Menjelaskan alur penggunaan:
-
-1. Open the form
-2. Answer the questions
-3. Submit feedback
+- Teach programming classes.
+- Handle 10–30 learners per class.
+- Need continuous improvement of teaching quality.
+- Currently rely on verbal questions or manual feedback forms.
 
 ---
 
-### 5.2 Feedback Form Page
+# 4. User Personas
 
-Halaman untuk mengisi feedback anonim.
+## Mentor Persona
 
-#### Pertanyaan
+### Name
+Alex (Example)
 
-##### Communication
+### Role
+Programming Bootcamp Mentor
 
-How would you rate my communication?
+### Situation
 
-Jawaban:
+Alex teaches frontend programming to 25 participants.
 
-* Rating 1–5
+After each class:
+- Only 3 participants give feedback.
+- Most participants say everything is clear.
+- Some participants fail assignments because they actually don't understand the concept.
 
-##### Collaboration
+### Pain Points
 
-How would you rate my collaboration?
+- Cannot identify learning difficulties early.
+- Doesn't know whether teaching speed is appropriate.
+- Cannot measure learner understanding.
+- Spends time guessing what needs improvement.
 
-Jawaban:
+### Goal
 
-* Rating 1–5
-
-##### Strength
-
-What is my biggest strength?
-
-Jawaban:
-
-* Text Area
-
-##### Improvement
-
-What should I improve?
-
-Jawaban:
-
-* Text Area
-
-##### Suggestion
-
-Any additional suggestions?
-
-Jawaban:
-
-* Text Area
-
-#### Tombol
-
-* Submit Feedback
-
-#### Validasi
-
-* Semua pertanyaan wajib diisi.
-* Feedback tidak dapat dikirim jika terdapat jawaban kosong.
+Understand learner problems quickly and improve teaching quality based on real feedback.
 
 ---
 
-### 5.3 Success Page
+## Learner Persona
 
-Ditampilkan setelah feedback berhasil dikirim.
+### Name
+Sarah (Example)
 
-Pesan:
+### Role
+Bootcamp Participant
 
-> Thank you for your feedback.
+### Situation
 
-Tombol:
+Sarah struggles with a programming concept but hesitates to ask questions.
 
-* Back to Home
+Reasons:
+- Afraid of looking less capable.
+- Afraid of slowing down the class.
+- Afraid of being judged.
+
+### Pain Points
+
+- Difficult to express confusion openly.
+- Does not have a safe channel to provide feedback.
+
+### Goal
+
+Share honest opinions without feeling judged.
 
 ---
 
-## 6. Future Version (V2)
+# 5. MVP Hypothesis
 
-Fitur yang direncanakan untuk versi berikutnya:
+## Core Hypothesis
 
-* Login dan Register
-* Profil pengguna
-* Link feedback personal
-* Penyimpanan feedback
-* Dashboard feedback
-* Statistik feedback
-* Integrasi backend dan database
+We believe learners avoid giving honest feedback because they fear being judged.
+
+If we provide an anonymous and simple feedback experience supported by AI analysis,
+
+then learners will provide more honest feedback and mentors will gain actionable insights to improve teaching.
+
+## Success Criteria
+
+The hypothesis is validated when:
+
+- More learners submit feedback compared to traditional methods.
+- Feedback contains more specific problems.
+- Mentors can identify improvement areas faster.
 
 ---
 
-## 7. Kriteria Selesai
+# 6. MVP Goals
 
-Aplikasi dianggap selesai apabila:
+## Primary Goal
 
-* Landing page dapat ditampilkan dengan baik.
-* Pengguna dapat membuka halaman feedback.
-* Pengguna dapat mengisi seluruh pertanyaan.
-* Validasi form berjalan dengan baik.
-* Pengguna dapat mengirim feedback.
-* Halaman sukses ditampilkan setelah submit.
-* Tampilan responsif pada desktop dan mobile.
+Validate whether anonymity increases honest learner feedback.
+
+## Secondary Goal
+
+Validate whether AI-generated insights help mentors understand teaching problems faster.
+
+---
+
+# 7. MVP Scope
+
+## Included Features
+
+## 1. Anonymous Feedback Submission
+
+Learners can submit feedback without revealing identity.
+
+Input:
+
+- Learning experience rating
+- Understanding level
+- Difficulty level
+- Written feedback
+
+Example:
+
+"Which part was difficult today?"
+
+"The explanation was too fast."
+
+"I need more examples."
+
+---
+
+## 2. AI Feedback Analysis
+
+AI processes collected feedback.
+
+Output:
+
+### Summary
+
+Example:
+
+"Most learners understand the basic concept but struggle with implementation."
+
+### Common Issues
+
+Example:
+
+- Material pace too fast
+- Need more coding examples
+- Need additional practice
+
+### Sentiment
+
+Example:
+
+Positive:
+70%
+
+Neutral:
+20%
+
+Negative:
+10%
+
+---
+
+## 3. Mentor Insight Dashboard
+
+Mentor can view:
+
+- Total feedback received
+- Learning satisfaction
+- Main difficulties
+- AI recommendations
+
+Example:
+
+Recommendation:
+
+"Consider adding a practical exercise after explaining React Hooks because many learners mentioned difficulty applying the concept."
+
+---
+
+# 8. User Flow
+Learner
+
+Open Feedback Link
+|
+|
+Submit Anonymous Feedback
+|
+|
+AI Processes Feedback
+|
+|
+Mentor Receives Insights
+
+Mentor
+
+Open Dashboard
+|
+|
+Review AI Summary
+|
+|
+Improve Teaching Approach
+
+
+---
+
+# 9. AI Usage
+
+AI is used to:
+
+## Feedback Classification
+
+Automatically categorize feedback:
+
+Examples:
+
+- Material difficulty
+- Teaching speed
+- Explanation clarity
+- Practice needs
+
+## Sentiment Analysis
+
+Understand learner emotions:
+
+- Positive
+- Neutral
+- Negative
+
+## Insight Generation
+
+Convert multiple feedback responses into actionable recommendations.
+
+Example:
+
+Input:
+
+"Too fast"
+"Need more examples"
+"Confused about state management"
+
+AI Output:
+
+"Several learners need slower explanations and more practical examples for state management topics."
+
+---
+
+# 10. Non Goals (Not Included in MVP)
+
+The MVP will not include:
+
+- User authentication
+- Payment system
+- Complete LMS features
+- Course management
+- Video learning
+- Social community
+
+The focus is only validating feedback collection and AI insight generation.
+
+---
+
+# 11. Success Metrics
+
+## Learner Metrics
+
+- Feedback submission rate
+- Average feedback completion time
+- Feedback detail quality
+
+## Mentor Metrics
+
+- Time needed to understand class problems
+- Number of actionable insights generated
+- Mentor satisfaction with insights
+
+---
+
+# 12. Future Development
+
+After MVP validation:
+
+## Phase 2
+
+- QR code feedback access
+- Multiple class management
+- Feedback history
+- Learning progress tracking
+
+## Phase 3
+
+- AI teaching assistant
+- Personalized mentor recommendations
+- Learning analytics
+
+---
+
+# 13. Current MVP Status
+
+Status:
+
+Prototype / Validation Stage
+
+The MVP focuses on testing the assumption:
+
+"Will learners provide more honest feedback when they feel safe and anonymous?"
