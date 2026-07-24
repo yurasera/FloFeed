@@ -17,7 +17,10 @@ export function StepFlow({ steps, currentStepIndex, onPrevious, onNext }: StepFl
     const activeStep = steps[currentStepIndex]
     const totalSteps = steps.length
     const progressValue = totalSteps > 1 ? (currentStepIndex / (totalSteps - 1)) * 100 : 100
-    const stepContent = activeStep.render?.(onNext)
+    const stepContent = activeStep.render?.({
+        onNext,
+        onPrevious,
+    })
 
     return (
         <PageContainer className="py-8 sm:py-10">

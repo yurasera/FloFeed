@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { FeedbackFlowStateProvider } from './context/feedbackFlowState'
 import { StepFlow } from './components/StepFlow'
 import { feedbackSteps } from './data/feedbackSteps'
 
@@ -14,13 +15,15 @@ export default function App() {
     }
 
     return (
-        <main className="min-h-screen bg-slate-50 text-slate-900">
-            <StepFlow
-                steps={feedbackSteps}
-                currentStepIndex={currentStepIndex}
-                onPrevious={handlePrevious}
-                onNext={handleNext}
-            />
-        </main>
+        <FeedbackFlowStateProvider>
+            <main className="min-h-screen bg-slate-50 text-slate-900">
+                <StepFlow
+                    steps={feedbackSteps}
+                    currentStepIndex={currentStepIndex}
+                    onPrevious={handlePrevious}
+                    onNext={handleNext}
+                />
+            </main>
+        </FeedbackFlowStateProvider>
     )
 }

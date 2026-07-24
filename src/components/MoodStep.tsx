@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { PrimaryButton } from './PrimaryButton'
+import { useFeedbackFlowState } from '../context/feedbackFlowState'
 
 type MoodOption = {
     value: string
@@ -46,6 +47,7 @@ function MoodCard({ option, checked, onSelect }: { option: MoodOption; checked: 
 
 export function MoodStep({ onNext }: MoodStepProps) {
     const [selectedMood, setSelectedMood] = useState('')
+    const { setSelectedMood: setSharedSelectedMood } = useFeedbackFlowState()
 
     return (
         <article className="step-panel rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.08)] sm:p-8">
@@ -65,7 +67,10 @@ export function MoodStep({ onNext }: MoodStepProps) {
                                 key={option.value}
                                 option={option}
                                 checked={selectedMood === option.value}
-                                onSelect={setSelectedMood}
+                                onSelect={(value) => {
+                                    setSelectedMood(value)
+                                    setSharedSelectedMood(value)
+                                }}
                             />
                         ))}
                     </div>
