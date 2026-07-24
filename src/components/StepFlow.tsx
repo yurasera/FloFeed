@@ -17,7 +17,10 @@ export function StepFlow({ steps, currentStepIndex, onPrevious, onNext }: StepFl
     const activeStep = steps[currentStepIndex]
     const totalSteps = steps.length
     const progressValue = totalSteps > 1 ? (currentStepIndex / (totalSteps - 1)) * 100 : 100
+    const stepContent = activeStep.render?.(onNext)
 
+    console.log('activeStep:', activeStep)
+    console.log('stepContent:', stepContent)
     return (
         <PageContainer className="py-8 sm:py-10">
             <Card className="space-y-8 bg-white">
@@ -37,7 +40,9 @@ export function StepFlow({ steps, currentStepIndex, onPrevious, onNext }: StepFl
                 </section>
 
                 <section className="space-y-4">
-                    <StepPanel stepTitle={activeStep.title} />
+                    <StepPanel stepTitle={activeStep.title}>
+                        {stepContent}
+                    </StepPanel>
                     <StepNavigator
                         isFirstStep={currentStepIndex === 0}
                         isLastStep={currentStepIndex === totalSteps - 1}
