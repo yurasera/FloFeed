@@ -1,21 +1,73 @@
-# Feedback Form Page Task Breakdown
+Create anonymous feedback page.
 
-## Overview
-Implement the Feedback Form Page as described in the PRD and Architecture documents.
+Route:
 
-## Subtasks
-- [ ] Create `FeedbackPage.jsx` component.
-- [ ] Render all questions dynamically from the configuration file.
-- [ ] Manage local state for each answer.
-- [ ] Implement form validation (required fields, rating range, non‑empty text).
-- [ ] Add Submit button with navigation to `/success` upon successful validation.
-- [ ] Style the page for mobile‑first responsiveness.
-- [ ] Ensure accessibility (ARIA labels, focus management).
-- [ ] Write unit tests for rendering, state handling, and validation logic.
+/feedback
 
-## Acceptance Criteria
-- All questions are displayed correctly.
-- Validation prevents submission of incomplete or invalid answers.
-- Successful submission redirects to the Success Page.
-- No console errors or warnings.
-- Page is responsive and passes accessibility checks.
+Goal:
+
+Allow learners to submit honest feedback without identity.
+
+Create component:
+
+components/FeedbackForm.tsx
+
+
+Form fields:
+
+1. Understanding Level
+
+Options:
+
+😊 I understand
+
+😐 I need more explanation
+
+😕 I am confused
+
+
+2. Learning Experience Rating
+
+Rating:
+1-5
+
+
+3. What was difficult today?
+
+Textarea.
+
+
+Placeholder:
+
+"Example: React Hooks are still confusing."
+
+
+4. What should the mentor improve?
+
+Textarea.
+
+
+Placeholder:
+
+"Example: Need more practical examples."
+
+
+Show information:
+
+"Your feedback is anonymous. Your identity will not be shared."
+
+
+Submit button:
+
+"Send Feedback"
+
+
+After submit:
+
+Show success state:
+
+"Thank you. Your feedback helps improve the learning experience."
+
+
+No backend.
+Store only temporary state.

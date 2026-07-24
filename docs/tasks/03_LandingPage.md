@@ -1,20 +1,59 @@
-# Landing Page Task Breakdown
+Build the Flofeed landing page.
 
-## Overview
-Implement the Landing Page as described in the PRD and Architecture documents.
+Route:
+/
 
-## Subtasks
-- [ ] Create `HomePage.jsx` component.
-- [ ] Add hero section with headline and description.
-- [ ] Implement features section with listed benefits.
-- [ ] Add "How It Works" section.
-- [ ] Create CTA button linking to `/feedback`.
-- [ ] Apply responsive styles (mobile-first). 
-- [ ] Ensure accessibility (ARIA labels, semantic HTML).
-- [ ] Write unit tests for component rendering.
+Purpose:
+Explain the problem and solution clearly.
 
-## Acceptance Criteria
-- The page matches the design spec.
-- All sections are visible on desktop and mobile.
-- CTA navigates correctly.
-- No console errors.
+Product:
+
+Flofeed
+
+Description:
+
+"Anonymous AI-powered feedback for better learning experiences."
+
+Content:
+
+Hero section:
+
+Title:
+"Turn Silent Learners Into Honest Feedback"
+
+Subtitle:
+"Help mentors understand what learners really think through anonymous feedback and AI insights."
+
+Add sections:
+
+1. Problem
+
+Explain:
+- Learners often stay silent.
+- Mentors don't know real struggles.
+- Teaching improvements are based on assumptions.
+
+2. How Flofeed Works
+
+Step 1:
+Learners submit anonymous feedback.
+
+Step 2:
+AI analyzes feedback.
+
+Step 3:
+Mentors receive actionable insights.
+
+3. CTA button:
+
+"Give Feedback"
+
+Link to:
+/feedback
+
+Design:
+- Modern SaaS style
+- White background
+- Blue primary color
+- Responsive mobile-first
+- Rounded cards
