@@ -1,4 +1,5 @@
 import { PrimaryButton } from './PrimaryButton'
+import { SecondaryButton } from './SecondaryButton'
 import { useFeedbackFlowState } from '../context/feedbackFlowState'
 import { StepSectionHeader } from './StepSectionHeader'
 import { StepShell } from './StepShell'
@@ -6,6 +7,7 @@ import type { MoodOption } from '../types/feedback'
 
 type MoodStepProps = {
     onNext: () => void
+    onPrevious: () => void
 }
 
 const moodOptions: MoodOption[] = [
@@ -19,11 +21,10 @@ const moodOptions: MoodOption[] = [
 function MoodCard({ option, checked, onSelect }: { option: MoodOption; checked: boolean; onSelect: (value: string) => void }) {
     return (
         <label
-            className={`flex cursor-pointer items-center gap-4 rounded-2xl border p-4 text-left transition duration-200 ease-out focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 ${
-                checked
+            className={`flex cursor-pointer items-center gap-4 rounded-2xl border p-4 text-left transition duration-200 ease-out focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 ${checked
                     ? 'border-blue-500 bg-blue-50 shadow-sm shadow-blue-600/10'
                     : 'border-slate-200 bg-white hover:border-blue-200 hover:bg-slate-50 hover:shadow-sm hover:shadow-slate-900/5'
-            }`}
+                }`}
         >
             <input
                 type="radio"
@@ -41,7 +42,7 @@ function MoodCard({ option, checked, onSelect }: { option: MoodOption; checked: 
     )
 }
 
-export function MoodStep({ onNext }: MoodStepProps) {
+export function MoodStep({ onNext, onPrevious }: MoodStepProps) {
     const { selectedMood, setSelectedMood } = useFeedbackFlowState()
 
     return (
@@ -63,7 +64,11 @@ export function MoodStep({ onNext }: MoodStepProps) {
                     </div>
                 </fieldset>
 
-                <div className="flex justify-end">
+                <div className="flex justify-between gap-4">
+                    <SecondaryButton onClick={onPrevious} className="min-w-36">
+                        Kembali
+                    </SecondaryButton>
+
                     <PrimaryButton onClick={onNext} disabled={!selectedMood} className="min-w-36">
                         Lanjut
                     </PrimaryButton>

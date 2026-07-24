@@ -14,7 +14,7 @@ export const feedbackSteps: FeedbackStepDefinition[] = [
     {
         id: 'mood',
         title: 'Mood',
-        render: (actions) => <MoodStep onNext={actions.onNext} />,
+        render: (actions) => <MoodStep onPrevious={actions.onPrevious} onNext={actions.onNext} />,
     },
     {
         id: 'reflection',
