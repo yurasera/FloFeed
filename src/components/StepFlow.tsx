@@ -32,8 +32,8 @@ export function StepFlow({ steps, currentStepIndex, onPrevious, onNext, onComple
                 <section className="space-y-4">
                     <SectionTitle
                         eyebrow="FloFeed"
-                        title="Reusable multi-step feedback flow"
-                        description="A scalable step architecture driven by a single array, with placeholder screens for each step."
+                        title="Bagikan feedback Anda"
+                        description="Bantu mentor meningkatkan kualitas pembelajaran melalui feedback anonim."
                     />
                     <div className="flex items-center justify-between gap-4 text-sm text-slate-600">
                         <span>{activeStep.title}</span>
