@@ -3,6 +3,8 @@ import { createContext, useContext, useState, type ReactNode } from 'react'
 type FeedbackFlowStateValue = {
     selectedMood: string
     setSelectedMood: (mood: string) => void
+    reflectionAnswers: Record<string, string>
+    setReflectionAnswer: (questionId: string, value: string) => void
 }
 
 const FeedbackFlowStateContext = createContext<FeedbackFlowStateValue | null>(null)
@@ -13,8 +15,22 @@ type FeedbackFlowStateProviderProps = {
 
 export function FeedbackFlowStateProvider({ children }: FeedbackFlowStateProviderProps) {
     const [selectedMood, setSelectedMood] = useState('')
+    const [reflectionAnswers, setReflectionAnswers] = useState<Record<string, string>>({})
 
-    return <FeedbackFlowStateContext.Provider value={{ selectedMood, setSelectedMood }}>{children}</FeedbackFlowStateContext.Provider>
+    const setReflectionAnswer = (questionId: string, value: string) => {
+        setReflectionAnswers((currentAnswers) => ({
+            ...currentAnswers,
+            [questionId]: value,
+        }))
+    }
+
+    return (
+        <FeedbackFlowStateContext.Provider
+            value={{ selectedMood, setSelectedMood, reflectionAnswers, setReflectionAnswer }}
+        >
+            {children}
+        </FeedbackFlowStateContext.Provider>
+    )
 }
 
 export function useFeedbackFlowState() {

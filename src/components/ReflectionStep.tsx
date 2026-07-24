@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { PrimaryButton } from './PrimaryButton'
+import { SecondaryButton } from './SecondaryButton'
 import { FeedbackTextareaField } from './FeedbackTextareaField'
 import { getReflectionQuestions } from '../data/reflectionQuestions'
 import { useFeedbackFlowState } from '../context/feedbackFlowState'
@@ -10,11 +11,10 @@ type ReflectionStepProps = {
 }
 
 export function ReflectionStep({ onPrevious, onNext }: ReflectionStepProps) {
-    const { selectedMood } = useFeedbackFlowState()
+    const { selectedMood, reflectionAnswers, setReflectionAnswer } = useFeedbackFlowState()
     const questions = useMemo(() => getReflectionQuestions(selectedMood), [selectedMood])
-    const [answers, setAnswers] = useState<Record<string, string>>({})
 
-    const isValid = questions.length > 0 && questions.every((question) => (answers[question.id] ?? '').trim().length > 0)
+    const isValid = questions.length > 0 && questions.every((question) => (reflectionAnswers[question.id] ?? '').trim().length > 0)
 
     return (
         <article className="step-panel rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.08)] sm:p-8">
@@ -30,25 +30,16 @@ export function ReflectionStep({ onPrevious, onNext }: ReflectionStepProps) {
                             key={question.id}
                             id={question.id}
                             label={question.label}
-                            value={answers[question.id] ?? ''}
-                            onChange={(value) =>
-                                setAnswers((currentAnswers) => ({
-                                    ...currentAnswers,
-                                    [question.id]: value,
-                                }))
-                            }
+                            value={reflectionAnswers[question.id] ?? ''}
+                            onChange={(value) => setReflectionAnswer(question.id, value)}
                         />
                     ))}
                 </div>
 
                 <div className="flex justify-between gap-4">
-                    <button
-                        type="button"
-                        onClick={onPrevious}
-                        className="rounded-xl border border-slate-200 px-6 py-3 font-medium text-slate-700 transition hover:bg-slate-50"
-                    >
+                    <SecondaryButton onClick={onPrevious} className="min-w-36">
                         Kembali
-                    </button>
+                    </SecondaryButton>
 
                     <PrimaryButton onClick={onNext} disabled={!isValid} className="min-w-36">
                         Lanjut

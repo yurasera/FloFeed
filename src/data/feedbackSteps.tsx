@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { MoodStep } from '../components/MoodStep'
 import { ReflectionStep } from '../components/ReflectionStep'
+import { ReviewStep } from '../components/ReviewStep'
 import { WelcomeStep } from '../components/WelcomeStep'
 
 export type FeedbackStep = {
@@ -28,6 +29,10 @@ export const feedbackSteps: FeedbackStep[] = [
         title: 'Reflection',
         render: (actions) => <ReflectionStep onPrevious={actions.onPrevious} onNext={actions.onNext} />,
     },
-    { id: 'review', title: 'Review' },
+    {
+        id: 'review',
+        title: 'Review',
+        render: (actions) => <ReviewStep onPrevious={actions.onPrevious} onNext={actions.onNext} />,
+    },
     { id: 'success', title: 'Success' },
 ]
