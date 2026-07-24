@@ -1,11 +1,16 @@
 export function IllustrationPlaceholder() {
     return (
-        <div className="flex min-h-56 items-center justify-center overflow-hidden rounded-3xl border border-dashed border-blue-200 bg-gradient-to-br from-blue-50 via-white to-slate-50 p-6 shadow-sm shadow-blue-600/5">
-            <div className="text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600/10 text-sm font-semibold text-blue-700">
-                    Art
+        <div className="relative flex min-h-56 items-center justify-center overflow-hidden rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-slate-50 p-6">
+            <div className="absolute h-32 w-32 animate-pulse rounded-full bg-blue-200/30" />
+
+            <div className="relative space-y-4 text-center">
+                <div className="relative">
+                    <div className="absolute inset-0 animate-ping rounded-full bg-blue-100 opacity-20" />
+
+                    <div className="relative flex h-24 w-24 items-center justify-center rounded-full bg-blue-600 text-5xl shadow-lg">
+                        🛡️
+                    </div>
                 </div>
-                <p className="mt-4 text-sm font-medium text-slate-600">Illustration placeholder</p>
             </div>
         </div>
     )
