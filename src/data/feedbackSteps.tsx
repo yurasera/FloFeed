@@ -3,6 +3,7 @@ import { MoodStep } from '../components/MoodStep'
 import { ReflectionStep } from '../components/ReflectionStep'
 import { ReviewStep } from '../components/ReviewStep'
 import { WelcomeStep } from '../components/WelcomeStep'
+import { SuccessStep } from '../components/SuccessStep'
 
 export type FeedbackStep = {
     id: string
@@ -10,6 +11,7 @@ export type FeedbackStep = {
     render?: (actions: {
         onNext: () => void
         onPrevious: () => void
+        onComplete: () => void
     }) => ReactNode
 }
 
@@ -34,5 +36,5 @@ export const feedbackSteps: FeedbackStep[] = [
         title: 'Review',
         render: (actions) => <ReviewStep onPrevious={actions.onPrevious} onNext={actions.onNext} />,
     },
-    { id: 'success', title: 'Success' },
+    { id: 'success', title: 'Success', render: (actions) => <SuccessStep onComplete={actions.onComplete} /> },
 ]

@@ -40,6 +40,43 @@ select {
   animation: step-fade-in 220ms ease-out;
 }
 
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 18px;
+  border-radius: 999px;
+  opacity: 0.85;
+  animation: confetti-fall 3.2s ease-in-out infinite;
+}
+
+.confetti-piece--one {
+  top: -8px;
+  left: 14%;
+  background: #60a5fa;
+  animation-delay: 0s;
+}
+
+.confetti-piece--two {
+  top: 8px;
+  right: 20%;
+  background: #34d399;
+  animation-delay: 0.4s;
+}
+
+.confetti-piece--three {
+  top: 28%;
+  left: 40%;
+  background: #fbbf24;
+  animation-delay: 0.8s;
+}
+
+.confetti-piece--four {
+  top: 16%;
+  right: 40%;
+  background: #f472b6;
+  animation-delay: 1.1s;
+}
+
 @keyframes step-fade-in {
   from {
     opacity: 0;
@@ -49,5 +86,16 @@ select {
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes confetti-fall {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(16px) rotate(12deg);
   }
 }

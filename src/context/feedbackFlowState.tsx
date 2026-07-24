@@ -5,6 +5,7 @@ type FeedbackFlowStateValue = {
     setSelectedMood: (mood: string) => void
     reflectionAnswers: Record<string, string>
     setReflectionAnswer: (questionId: string, value: string) => void
+    resetFeedbackFlowState: () => void
 }
 
 const FeedbackFlowStateContext = createContext<FeedbackFlowStateValue | null>(null)
@@ -24,9 +25,14 @@ export function FeedbackFlowStateProvider({ children }: FeedbackFlowStateProvide
         }))
     }
 
+    const resetFeedbackFlowState = () => {
+        setSelectedMood('')
+        setReflectionAnswers({})
+    }
+
     return (
         <FeedbackFlowStateContext.Provider
-            value={{ selectedMood, setSelectedMood, reflectionAnswers, setReflectionAnswer }}
+            value={{ selectedMood, setSelectedMood, reflectionAnswers, setReflectionAnswer, resetFeedbackFlowState }}
         >
             {children}
         </FeedbackFlowStateContext.Provider>

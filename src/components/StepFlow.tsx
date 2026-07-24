@@ -5,21 +5,24 @@ import { ProgressBar } from './ProgressBar'
 import { SectionTitle } from './SectionTitle'
 import { StepNavigator } from './StepNavigator'
 import { StepPanel } from './StepPanel'
+import { SuccessStep } from '../components/SuccessStep'
 
 type StepFlowProps = {
     steps: FeedbackStep[]
     currentStepIndex: number
     onPrevious: () => void
     onNext: () => void
+    onComplete: () => void
 }
 
-export function StepFlow({ steps, currentStepIndex, onPrevious, onNext }: StepFlowProps) {
+export function StepFlow({ steps, currentStepIndex, onPrevious, onNext, onComplete }: StepFlowProps) {
     const activeStep = steps[currentStepIndex]
     const totalSteps = steps.length
     const progressValue = totalSteps > 1 ? (currentStepIndex / (totalSteps - 1)) * 100 : 100
     const stepContent = activeStep.render?.({
         onNext,
         onPrevious,
+        onComplete,
     })
 
     return (
