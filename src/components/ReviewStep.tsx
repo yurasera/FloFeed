@@ -3,13 +3,17 @@ import { PrimaryButton } from './PrimaryButton'
 import { SecondaryButton } from './SecondaryButton'
 import { getReflectionQuestions } from '../data/reflectionQuestions'
 import { useFeedbackFlowState } from '../context/feedbackFlowState'
+import { StepSectionHeader } from './StepSectionHeader'
+import { StepShell } from './StepShell'
+import type { MoodSummary } from '../types/feedback'
+import { InlineStateMessage } from './InlineStateMessage'
 
 type ReviewStepProps = {
     onPrevious: () => void
     onNext: () => void
 }
 
-const moodLabels: Record<string, { emoji: string; label: string }> = {
+const moodLabels: Record<string, MoodSummary> = {
     'very-happy': { emoji: '😍', label: 'Sangat Puas' },
     happy: { emoji: '😊', label: 'Puas' },
     neutral: { emoji: '😐', label: 'Biasa Saja' },
@@ -23,12 +27,9 @@ export function ReviewStep({ onPrevious, onNext }: ReviewStepProps) {
     const questions = getReflectionQuestions(selectedMood)
 
     return (
-        <article className="step-panel rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.08)] sm:p-8">
+        <StepShell>
             <div className="space-y-6 text-left">
-                <header className="space-y-3">
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">Review</p>
-                    <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Tinjau feedback Anda</h2>
-                </header>
+                <StepSectionHeader eyebrow="Review" title="Tinjau feedback Anda" />
 
                 <div className="grid gap-4 lg:grid-cols-2">
                     <Card className="space-y-3 p-5 shadow-none">
@@ -46,16 +47,21 @@ export function ReviewStep({ onPrevious, onNext }: ReviewStepProps) {
 
                     <Card className="space-y-3 p-5 shadow-none">
                         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Reflection</p>
-                        <div className="space-y-3">
-                            {questions.map((question) => (
-                                <div key={question.id} className="rounded-2xl bg-slate-50 p-4 ring-1 ring-inset ring-slate-200">
-                                    <p className="text-sm font-medium text-slate-700">{question.label}</p>
-                                    <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-600">
-                                        {reflectionAnswers[question.id] || 'Belum diisi'}
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
+                        {questions.length > 0 ? (
+                            <div className="space-y-3">
+                                {questions.map((question) => (
+                                    <div key={question.id} className="rounded-2xl bg-slate-50 p-4 ring-1 ring-inset ring-slate-200">
+                                        <p className="text-sm font-medium text-slate-700">{question.label}</p>
+                                        <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-600">{reflectionAnswers[question.id] || 'Belum diisi'}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <InlineStateMessage
+                                title="Belum ada jawaban"
+                                description="Kembali ke langkah sebelumnya untuk mengisi refleksi Anda."
+                            />
+                        )}
                     </Card>
                 </div>
 
@@ -68,6 +74,6 @@ export function ReviewStep({ onPrevious, onNext }: ReviewStepProps) {
                     </PrimaryButton>
                 </div>
             </div>
-        </article>
+        </StepShell>
     )
 }

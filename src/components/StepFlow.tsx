@@ -1,14 +1,13 @@
-import type { FeedbackStep } from '../data/feedbackSteps'
 import { Card } from './Card'
 import { PageContainer } from './PageContainer'
 import { ProgressBar } from './ProgressBar'
 import { SectionTitle } from './SectionTitle'
 import { StepNavigator } from './StepNavigator'
 import { StepPanel } from './StepPanel'
-import { SuccessStep } from '../components/SuccessStep'
+import type { FeedbackFlowActions, FeedbackStepDefinition } from '../types/feedback'
 
 type StepFlowProps = {
-    steps: FeedbackStep[]
+    steps: FeedbackStepDefinition[]
     currentStepIndex: number
     onPrevious: () => void
     onNext: () => void
@@ -19,11 +18,13 @@ export function StepFlow({ steps, currentStepIndex, onPrevious, onNext, onComple
     const activeStep = steps[currentStepIndex]
     const totalSteps = steps.length
     const progressValue = totalSteps > 1 ? (currentStepIndex / (totalSteps - 1)) * 100 : 100
-    const stepContent = activeStep.render?.({
+    const flowActions: FeedbackFlowActions = {
         onNext,
         onPrevious,
         onComplete,
-    })
+    }
+
+    const stepContent = activeStep.render?.(flowActions)
 
     return (
         <PageContainer className="py-8 sm:py-10">

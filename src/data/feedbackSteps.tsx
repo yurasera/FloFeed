@@ -1,21 +1,11 @@
-import type { ReactNode } from 'react'
 import { MoodStep } from '../components/MoodStep'
 import { ReflectionStep } from '../components/ReflectionStep'
 import { ReviewStep } from '../components/ReviewStep'
 import { WelcomeStep } from '../components/WelcomeStep'
 import { SuccessStep } from '../components/SuccessStep'
+import type { FeedbackStepDefinition } from '../types/feedback'
 
-export type FeedbackStep = {
-    id: string
-    title: string
-    render?: (actions: {
-        onNext: () => void
-        onPrevious: () => void
-        onComplete: () => void
-    }) => ReactNode
-}
-
-export const feedbackSteps: FeedbackStep[] = [
+export const feedbackSteps: FeedbackStepDefinition[] = [
     {
         id: 'welcome',
         title: 'Welcome',

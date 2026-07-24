@@ -1,11 +1,8 @@
 import { PrimaryButton } from './PrimaryButton'
 import { useFeedbackFlowState } from '../context/feedbackFlowState'
-
-type MoodOption = {
-    value: string
-    label: string
-    emoji: string
-}
+import { StepSectionHeader } from './StepSectionHeader'
+import { StepShell } from './StepShell'
+import type { MoodOption } from '../types/feedback'
 
 type MoodStepProps = {
     onNext: () => void
@@ -48,14 +45,9 @@ export function MoodStep({ onNext }: MoodStepProps) {
     const { selectedMood, setSelectedMood } = useFeedbackFlowState()
 
     return (
-        <article className="step-panel rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.08)] sm:p-8">
+        <StepShell>
             <div className="space-y-6 text-left">
-                <header className="space-y-3">
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">Mood Check</p>
-                    <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
-                        Bagaimana perasaan Anda setelah mengikuti kelas hari ini?
-                    </h2>
-                </header>
+                <StepSectionHeader eyebrow="Mood Check" title="Bagaimana perasaan Anda setelah mengikuti kelas hari ini?" />
 
                 <fieldset>
                     <legend className="sr-only">Pilih satu mood</legend>
@@ -77,6 +69,6 @@ export function MoodStep({ onNext }: MoodStepProps) {
                     </PrimaryButton>
                 </div>
             </div>
-        </article>
+        </StepShell>
     )
 }

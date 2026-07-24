@@ -1,9 +1,11 @@
-import { useMemo } from 'react'
 import { PrimaryButton } from './PrimaryButton'
 import { SecondaryButton } from './SecondaryButton'
 import { FeedbackTextareaField } from './FeedbackTextareaField'
-import { getReflectionQuestions } from '../data/reflectionQuestions'
 import { useFeedbackFlowState } from '../context/feedbackFlowState'
+import { StepSectionHeader } from './StepSectionHeader'
+import { StepShell } from './StepShell'
+import { useReflectionQuestions } from '../hooks/useReflectionQuestions'
+import { InlineStateMessage } from './InlineStateMessage'
 
 type ReflectionStepProps = {
     onPrevious: () => void
@@ -12,29 +14,33 @@ type ReflectionStepProps = {
 
 export function ReflectionStep({ onPrevious, onNext }: ReflectionStepProps) {
     const { selectedMood, reflectionAnswers, setReflectionAnswer } = useFeedbackFlowState()
-    const questions = useMemo(() => getReflectionQuestions(selectedMood), [selectedMood])
+    const questions = useReflectionQuestions(selectedMood)
 
     const isValid = questions.length > 0 && questions.every((question) => (reflectionAnswers[question.id] ?? '').trim().length > 0)
 
     return (
-        <article className="step-panel rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.08)] sm:p-8">
+        <StepShell>
             <div className="space-y-6 text-left">
-                <header className="space-y-3">
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">Reflection</p>
-                    <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Bagikan refleksi Anda</h2>
-                </header>
+                <StepSectionHeader eyebrow="Reflection" title="Bagikan refleksi Anda" />
 
-                <div className="space-y-5">
-                    {questions.map((question) => (
-                        <FeedbackTextareaField
-                            key={question.id}
-                            id={question.id}
-                            label={question.label}
-                            value={reflectionAnswers[question.id] ?? ''}
-                            onChange={(value) => setReflectionAnswer(question.id, value)}
-                        />
-                    ))}
-                </div>
+                {questions.length > 0 ? (
+                    <div className="space-y-5">
+                        {questions.map((question) => (
+                            <FeedbackTextareaField
+                                key={question.id}
+                                id={question.id}
+                                label={question.label}
+                                value={reflectionAnswers[question.id] ?? ''}
+                                onChange={(value) => setReflectionAnswer(question.id, value)}
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <InlineStateMessage
+                        title="Belum ada pertanyaan"
+                        description="Pilih mood terlebih dahulu agar pertanyaan refleksi dapat ditampilkan."
+                    />
+                )}
 
                 <div className="flex justify-between gap-4">
                     <SecondaryButton onClick={onPrevious} className="min-w-36">
@@ -46,6 +52,6 @@ export function ReflectionStep({ onPrevious, onNext }: ReflectionStepProps) {
                     </PrimaryButton>
                 </div>
             </div>
-        </article>
+        </StepShell>
     )
 }

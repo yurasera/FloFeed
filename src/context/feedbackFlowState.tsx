@@ -1,9 +1,10 @@
 import { createContext, useContext, useState, type ReactNode } from 'react'
+import type { FeedbackAnswerMap } from '../types/feedback'
 
 type FeedbackFlowStateValue = {
     selectedMood: string
     setSelectedMood: (mood: string) => void
-    reflectionAnswers: Record<string, string>
+    reflectionAnswers: FeedbackAnswerMap
     setReflectionAnswer: (questionId: string, value: string) => void
     resetFeedbackFlowState: () => void
 }
@@ -16,7 +17,7 @@ type FeedbackFlowStateProviderProps = {
 
 export function FeedbackFlowStateProvider({ children }: FeedbackFlowStateProviderProps) {
     const [selectedMood, setSelectedMood] = useState('')
-    const [reflectionAnswers, setReflectionAnswers] = useState<Record<string, string>>({})
+    const [reflectionAnswers, setReflectionAnswers] = useState<FeedbackAnswerMap>({})
 
     const setReflectionAnswer = (questionId: string, value: string) => {
         setReflectionAnswers((currentAnswers) => ({
