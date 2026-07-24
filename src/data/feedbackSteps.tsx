@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { MoodStep } from '../components/MoodStep'
 import { WelcomeStep } from '../components/WelcomeStep'
 
 export type FeedbackStep = {
@@ -13,7 +14,11 @@ export const feedbackSteps: FeedbackStep[] = [
         title: 'Welcome',
         render: (onNext) => <WelcomeStep onStart={onNext} />,
     },
-    { id: 'mood', title: 'Mood' },
+    {
+        id: 'mood',
+        title: 'Mood',
+        render: (onNext) => <MoodStep onNext={onNext} />,
+    },
     { id: 'reflection', title: 'Reflection' },
     { id: 'review', title: 'Review' },
     { id: 'success', title: 'Success' },
