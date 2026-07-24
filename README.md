@@ -1,206 +1,131 @@
-# Product Requirements Document (PRD)
+# Flofeed MVP
 
-# FloFeed (MVP)
+> Anonymous AI-powered feedback for programming bootcamps and learning communities.
 
-## 1. Ringkasan Produk
+## Overview
 
-FloFeed adalah aplikasi web sederhana yang memungkinkan pengguna memberikan feedback anonim melalui serangkaian pertanyaan.
+Flofeed is an MVP built to validate one simple hypothesis:
 
-Tujuan utama FloFeed adalah membantu seseorang mendapatkan masukan yang jujur dan konstruktif tanpa mengharuskan pemberi feedback mengungkapkan identitasnya.
+> **Learners are more willing to give honest feedback when the process is anonymous, fast, and easy.**
 
-Pada versi MVP, aplikasi hanya berfokus pada tampilan dan alur pengisian feedback. Data feedback belum disimpan dan hanya digunakan untuk mensimulasikan pengalaman pengguna.
+As a programming mentor, I've experienced this problem for years. After teaching a class, most participants stay silent. When asked if they understand the material, they usually answer, "Yes," even though many are still confused. I often only discover the real problems after reviewing assignments or through private conversations.
 
----
-
-## 2. Tujuan Produk
-
-### Tujuan Utama
-
-Memvalidasi konsep aplikasi feedback anonim berbasis pertanyaan.
-
-### Tujuan Pembelajaran
-
-* Mempelajari pengembangan Single Page Application (SPA).
-* Mempelajari pengelolaan form dan validasi input.
-* Membangun fondasi aplikasi sebelum integrasi backend.
+Flofeed is designed to help mentors receive more honest feedback and use AI to quickly understand what learners actually experience.
 
 ---
 
-## 3. Scope MVP
+## MVP Hypothesis
 
-### In Scope
+We believe that learners hesitate to give honest feedback because they are afraid of being judged.
 
-* Landing Page
-* Feedback Form Page
-* Success Page
-* Navigasi antar halaman
-* Form validation
+If we provide an anonymous feedback flow that takes less than one minute and AI automatically summarizes the responses,
 
-### Out of Scope
+then mentors will receive more honest and actionable feedback after every learning session.
 
-* Login dan Register
-* Dashboard
-* Penyimpanan feedback
-* Database
-* Profil pengguna
-* Link feedback personal
-* Statistik feedback
-* Integrasi backend
+We will consider this validated if:
+
+* More participants submit feedback after class.
+* Feedback becomes more detailed and honest.
+* Mentors can identify teaching improvements from AI-generated insights.
 
 ---
 
-## 4. User Flow
+## Problem
 
-Pengunjung membuka landing page.
+Programming bootcamp mentors often teach classes with **10–30 participants**, but only **2–5 participants** typically provide feedback.
 
-↓
+Without honest feedback, mentors don't know:
 
-Pengunjung memilih untuk memberikan feedback.
+* Whether learners really understand the material.
+* Whether the teaching pace is too fast.
+* Which topics are still confusing.
+* How to improve the next session.
 
-↓
-
-Pengunjung mengisi seluruh pertanyaan.
-
-↓
-
-Pengunjung mengirim feedback.
-
-↓
-
-Sistem menampilkan halaman sukses.
+Most teaching improvements are based on assumptions instead of real learner insights.
 
 ---
 
-## 5. Halaman
+## Solution
 
-### 5.1 Landing Page
+Flofeed makes feedback:
 
-Halaman utama yang menjelaskan tujuan FloFeed.
+* Anonymous
+* Simple
+* Fast
+* Actionable
 
-#### Hero Section
+Participants can submit feedback in less than one minute.
 
-Headline:
+AI then:
 
-> Receive Honest Anonymous Feedback
-
-Deskripsi singkat mengenai manfaat feedback anonim.
-
-Call To Action:
-
-* Give Feedback
-
-#### Features Section
-
-Menampilkan manfaat utama FloFeed:
-
-* Anonymous Feedback
-* Easy to Use
-* Honest Insights
-* Quick Submission
-
-#### How It Works
-
-Menjelaskan alur penggunaan:
-
-1. Open the form
-2. Answer the questions
-3. Submit feedback
+* Summarizes all feedback
+* Detects common themes
+* Identifies sentiment
+* Generates recommendations for mentors
 
 ---
 
-### 5.2 Feedback Form Page
+## MVP Features
 
-Halaman untuk mengisi feedback anonim.
+### Learner
 
-#### Pertanyaan
+* Anonymous feedback
+* Rating & emoji reaction
+* Written feedback
+* Less than one minute submission
 
-##### Communication
+### Mentor
 
-How would you rate my communication?
-
-Jawaban:
-
-* Rating 1–5
-
-##### Collaboration
-
-How would you rate my collaboration?
-
-Jawaban:
-
-* Rating 1–5
-
-##### Strength
-
-What is my biggest strength?
-
-Jawaban:
-
-* Text Area
-
-##### Improvement
-
-What should I improve?
-
-Jawaban:
-
-* Text Area
-
-##### Suggestion
-
-Any additional suggestions?
-
-Jawaban:
-
-* Text Area
-
-#### Tombol
-
-* Submit Feedback
-
-#### Validasi
-
-* Semua pertanyaan wajib diisi.
-* Feedback tidak dapat dikirim jika terdapat jawaban kosong.
+* Feedback dashboard
+* AI summary
+* Sentiment analysis
+* Key insights
+* Teaching recommendations
 
 ---
 
-### 5.3 Success Page
+## User Flow
 
-Ditampilkan setelah feedback berhasil dikirim.
-
-Pesan:
-
-> Thank you for your feedback.
-
-Tombol:
-
-* Back to Home
-
----
-
-## 6. Future Version (V2)
-
-Fitur yang direncanakan untuk versi berikutnya:
-
-* Login dan Register
-* Profil pengguna
-* Link feedback personal
-* Penyimpanan feedback
-* Dashboard feedback
-* Statistik feedback
-* Integrasi backend dan database
+```
+Landing Page
+      ↓
+Join Feedback
+      ↓
+Anonymous Feedback Form
+      ↓
+AI Analysis
+      ↓
+Mentor Dashboard
+```
 
 ---
 
-## 7. Kriteria Selesai
+## Built With
 
-Aplikasi dianggap selesai apabila:
+* HTML
+* CSS
+* JavaScript
+* AI-assisted development using ChatGPT
 
-* Landing page dapat ditampilkan dengan baik.
-* Pengguna dapat membuka halaman feedback.
-* Pengguna dapat mengisi seluruh pertanyaan.
-* Validasi form berjalan dengan baik.
-* Pengguna dapat mengirim feedback.
-* Halaman sukses ditampilkan setelah submit.
-* Tampilan responsif pada desktop dan mobile.
+---
+
+## Current Status
+
+🚧 MVP Prototype
+
+The current version focuses on validating the core assumption before building a complete product.
+
+Future versions will include:
+
+* QR Code class sessions
+* Authentication
+* Bootcamp management
+* Analytics
+* AI conversation with mentors
+* Learning trend reports
+
+---
+
+## Goal
+
+Help mentors improve teaching through honest learner feedback instead of assumptions.
