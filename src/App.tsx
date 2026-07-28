@@ -1,5 +1,7 @@
 import { FeedbackFlowStateProvider } from './context/feedbackFlowState'
+import { FeedbackDataProvider } from './context/feedbackDataContext'
 import { useFeedbackFlowState } from './context/feedbackFlowState'
+import { useFeedbackData } from './context/feedbackDataContext'
 import { StepFlow } from './components/StepFlow'
 import { feedbackSteps } from './data/feedbackSteps'
 import { useFeedbackFlow } from './hooks/useFeedbackFlow'
@@ -9,6 +11,7 @@ import { feedbackService } from './services/feedbackService'
 
 function FeedbackFlowScreen() {
     const { resetFeedbackFlowState, selectedMood, reflectionAnswers, selectedClass } = useFeedbackFlowState()
+    const { refreshFeedback } = useFeedbackData()
 
     const handleComplete = async () => {
         if (!selectedClass) {
@@ -22,6 +25,7 @@ function FeedbackFlowScreen() {
             reflectionAnswers,
         })
 
+        await refreshFeedback()
         resetFeedbackFlowState()
     }
 
@@ -46,11 +50,13 @@ function FeedbackFlowScreen() {
 export default function App() {
     return (
         <FeedbackFlowStateProvider>
-            <div className="min-h-screen bg-slate-50 text-slate-900">
-                <FeedbackFlowScreen />
-                <MentorClassManagementPage />
-                <MentorInsightDashboardPage />
-            </div>
+            <FeedbackDataProvider>
+                <div className="min-h-screen bg-slate-50 text-slate-900">
+                    <FeedbackFlowScreen />
+                    <MentorClassManagementPage />
+                    <MentorInsightDashboardPage />
+                </div>
+            </FeedbackDataProvider>
         </FeedbackFlowStateProvider>
     )
 }

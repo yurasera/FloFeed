@@ -3,6 +3,7 @@ import type { FeedbackResponse, FeedbackSummary } from '../types/feedback'
 export interface FeedbackService {
     createFeedback: (payload: Omit<FeedbackResponse, 'id' | 'createdAt'>) => Promise<FeedbackResponse>
     getFeedbackByClass: (classId: string) => Promise<FeedbackResponse[]>
+    getAllFeedback: () => Promise<FeedbackResponse[]>
     getFeedbackSummary: (classId: string) => Promise<FeedbackSummary>
 }
 
@@ -22,6 +23,10 @@ export class MockFeedbackService implements FeedbackService {
 
     async getFeedbackByClass(classId: string): Promise<FeedbackResponse[]> {
         return this.storage.filter((item) => item.classId === classId)
+    }
+
+    async getAllFeedback(): Promise<FeedbackResponse[]> {
+        return [...this.storage]
     }
 
     async getFeedbackSummary(classId: string): Promise<FeedbackSummary> {

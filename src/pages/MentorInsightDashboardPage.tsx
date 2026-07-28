@@ -8,9 +8,11 @@ import { PageContainer } from '../components/PageContainer'
 import { SectionTitle } from '../components/SectionTitle'
 import { mockClasses, mockMentors } from '../data/mockClasses'
 import { getFeedbackInsight } from '../services/insightService'
+import { useFeedbackData } from '../context/feedbackDataContext'
 import type { FeedbackInsight } from '../types/insights'
 
 export function MentorInsightDashboardPage() {
+    const { feedbackResponses, refreshFeedback } = useFeedbackData()
     const [selectedClassId, setSelectedClassId] = useState(mockClasses[0]?.id ?? '')
     const [insight, setInsight] = useState<FeedbackInsight | null>(null)
 
@@ -20,7 +22,11 @@ export function MentorInsightDashboardPage() {
         }
 
         void getFeedbackInsight(selectedClassId).then(setInsight)
-    }, [selectedClassId])
+    }, [selectedClassId, feedbackResponses])
+
+    useEffect(() => {
+        void refreshFeedback()
+    }, [refreshFeedback])
 
     const selectedClass = useMemo(() => mockClasses.find((classItem) => classItem.id === selectedClassId) ?? null, [selectedClassId])
 
