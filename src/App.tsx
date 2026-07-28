@@ -3,6 +3,7 @@ import { useFeedbackFlowState } from './context/feedbackFlowState'
 import { StepFlow } from './components/StepFlow'
 import { feedbackSteps } from './data/feedbackSteps'
 import { useFeedbackFlow } from './hooks/useFeedbackFlow'
+import { MentorClassManagementPage } from './pages/MentorClassManagementPage'
 
 function FeedbackFlowScreen() {
     const { resetFeedbackFlowState } = useFeedbackFlowState()
@@ -27,7 +28,10 @@ function FeedbackFlowScreen() {
 export default function App() {
     return (
         <FeedbackFlowStateProvider>
-            <FeedbackFlowScreen />
+            <div className="min-h-screen bg-slate-50 text-slate-900">
+                <FeedbackFlowScreen />
+                <MentorClassManagementPage />
+            </div>
         </FeedbackFlowStateProvider>
     )
 }

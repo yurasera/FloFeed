@@ -43,6 +43,13 @@ export interface Class {
     code: string
     name: string
     mentorId: string
+    createdAt: string
+    isActive: boolean
+}
+
+export interface ClassCreationForm {
+    name: string
+    mentorId: string
 }
 
 export interface FeedbackSession {
