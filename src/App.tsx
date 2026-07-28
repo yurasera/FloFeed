@@ -4,6 +4,7 @@ import { StepFlow } from './components/StepFlow'
 import { feedbackSteps } from './data/feedbackSteps'
 import { useFeedbackFlow } from './hooks/useFeedbackFlow'
 import { MentorClassManagementPage } from './pages/MentorClassManagementPage'
+import { MentorInsightDashboardPage } from './pages/MentorInsightDashboardPage'
 import { feedbackService } from './services/feedbackService'
 
 function FeedbackFlowScreen() {
@@ -48,6 +49,7 @@ export default function App() {
             <div className="min-h-screen bg-slate-50 text-slate-900">
                 <FeedbackFlowScreen />
                 <MentorClassManagementPage />
+                <MentorInsightDashboardPage />
             </div>
         </FeedbackFlowStateProvider>
     )
