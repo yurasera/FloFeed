@@ -22,7 +22,7 @@ const moodLabels: Record<string, MoodSummary> = {
 }
 
 export function ReviewStep({ onPrevious, onNext }: ReviewStepProps) {
-    const { selectedMood, reflectionAnswers } = useFeedbackFlowState()
+    const { selectedMood, reflectionAnswers, selectedClass } = useFeedbackFlowState()
     const mood = moodLabels[selectedMood]
     const questions = getReflectionQuestions(selectedMood)
 
@@ -32,18 +32,30 @@ export function ReviewStep({ onPrevious, onNext }: ReviewStepProps) {
                 <StepSectionHeader eyebrow="Review" title="Tinjau feedback Anda" />
 
                 <div className="grid gap-4 lg:grid-cols-2">
-                    <Card className="space-y-3 p-5 shadow-none">
-                        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Mood</p>
-                        <div className="flex items-center gap-3">
-                            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-2xl ring-1 ring-inset ring-blue-100">
-                                {mood?.emoji ?? '•'}
-                            </span>
-                            <div>
-                                <p className="font-semibold text-slate-900">{mood?.label ?? 'Belum dipilih'}</p>
-                                <p className="text-sm text-slate-600">Ringkasan suasana belajar hari ini</p>
+                    <div className="space-y-4">
+                        <Card className="space-y-3 p-5 shadow-none">
+                            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Class</p>
+                            <div className="rounded-2xl bg-blue-50 p-4 ring-1 ring-inset ring-blue-100">
+                                <p className="font-semibold text-slate-900">{selectedClass?.name ?? 'Belum terhubung'}</p>
+                                <p className="mt-1 text-sm text-slate-600">
+                                    {selectedClass ? `Kode kelas: ${selectedClass.code}` : 'Masukkan kode kelas untuk mengaitkan feedback.'}
+                                </p>
                             </div>
-                        </div>
-                    </Card>
+                        </Card>
+
+                        <Card className="space-y-3 p-5 shadow-none">
+                            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Mood</p>
+                            <div className="flex items-center gap-3">
+                                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-2xl ring-1 ring-inset ring-blue-100">
+                                    {mood?.emoji ?? '•'}
+                                </span>
+                                <div>
+                                    <p className="font-semibold text-slate-900">{mood?.label ?? 'Belum dipilih'}</p>
+                                    <p className="text-sm text-slate-600">Ringkasan suasana belajar hari ini</p>
+                                </div>
+                            </div>
+                        </Card>
+                    </div>
 
                     <Card className="space-y-3 p-5 shadow-none">
                         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Reflection</p>

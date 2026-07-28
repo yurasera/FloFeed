@@ -1,3 +1,4 @@
+import { JoinClassStep } from '../components/JoinClassStep'
 import { MoodStep } from '../components/MoodStep'
 import { ReflectionStep } from '../components/ReflectionStep'
 import { ReviewStep } from '../components/ReviewStep'
@@ -6,6 +7,11 @@ import { SuccessStep } from '../components/SuccessStep'
 import type { FeedbackStepDefinition } from '../types/feedback'
 
 export const feedbackSteps: FeedbackStepDefinition[] = [
+    {
+        id: 'join-class',
+        title: 'Join Class',
+        render: (actions) => <JoinClassStep onNext={actions.onNext} />,
+    },
     {
         id: 'welcome',
         title: 'Welcome',

@@ -31,3 +31,31 @@ export interface MoodSummary {
     emoji: string
     label: string
 }
+
+export interface Mentor {
+    id: string
+    name: string
+    email: string
+}
+
+export interface Class {
+    id: string
+    code: string
+    name: string
+    mentorId: string
+}
+
+export interface FeedbackSession {
+    classId: string
+    selectedMood: string
+    reflectionAnswers: FeedbackAnswerMap
+    createdAt: string
+}
+
+export interface FeedbackResponse {
+    id: string
+    classId: string
+    selectedMood: string
+    reflectionAnswers: FeedbackAnswerMap
+    createdAt: string
+}

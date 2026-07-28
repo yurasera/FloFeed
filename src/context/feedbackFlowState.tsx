@@ -1,11 +1,13 @@
 import { createContext, useContext, useState, type ReactNode } from 'react'
-import type { FeedbackAnswerMap } from '../types/feedback'
+import type { Class, FeedbackAnswerMap } from '../types/feedback'
 
 type FeedbackFlowStateValue = {
     selectedMood: string
     setSelectedMood: (mood: string) => void
     reflectionAnswers: FeedbackAnswerMap
     setReflectionAnswer: (questionId: string, value: string) => void
+    selectedClass: Class | null
+    setSelectedClass: (selectedClass: Class | null) => void
     resetFeedbackFlowState: () => void
 }
 
@@ -18,6 +20,7 @@ type FeedbackFlowStateProviderProps = {
 export function FeedbackFlowStateProvider({ children }: FeedbackFlowStateProviderProps) {
     const [selectedMood, setSelectedMood] = useState('')
     const [reflectionAnswers, setReflectionAnswers] = useState<FeedbackAnswerMap>({})
+    const [selectedClass, setSelectedClass] = useState<Class | null>(null)
 
     const setReflectionAnswer = (questionId: string, value: string) => {
         setReflectionAnswers((currentAnswers) => ({
@@ -29,11 +32,20 @@ export function FeedbackFlowStateProvider({ children }: FeedbackFlowStateProvide
     const resetFeedbackFlowState = () => {
         setSelectedMood('')
         setReflectionAnswers({})
+        setSelectedClass(null)
     }
 
     return (
         <FeedbackFlowStateContext.Provider
-            value={{ selectedMood, setSelectedMood, reflectionAnswers, setReflectionAnswer, resetFeedbackFlowState }}
+            value={{
+                selectedMood,
+                setSelectedMood,
+                reflectionAnswers,
+                setReflectionAnswer,
+                selectedClass,
+                setSelectedClass,
+                resetFeedbackFlowState,
+            }}
         >
             {children}
         </FeedbackFlowStateContext.Provider>
