@@ -66,3 +66,10 @@ export interface FeedbackResponse {
     reflectionAnswers: FeedbackAnswerMap
     createdAt: string
 }
+
+export interface FeedbackSummary {
+    classId: string
+    totalResponses: number
+    moodDistribution: Record<string, number>
+    commonReflection: string
+}

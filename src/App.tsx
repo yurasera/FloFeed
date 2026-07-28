@@ -4,12 +4,29 @@ import { StepFlow } from './components/StepFlow'
 import { feedbackSteps } from './data/feedbackSteps'
 import { useFeedbackFlow } from './hooks/useFeedbackFlow'
 import { MentorClassManagementPage } from './pages/MentorClassManagementPage'
+import { feedbackService } from './services/feedbackService'
 
 function FeedbackFlowScreen() {
-    const { resetFeedbackFlowState } = useFeedbackFlowState()
-    const { currentStepIndex, handlePrevious, handleNext, handleComplete } = useFeedbackFlow(
+    const { resetFeedbackFlowState, selectedMood, reflectionAnswers, selectedClass } = useFeedbackFlowState()
+
+    const handleComplete = async () => {
+        if (!selectedClass) {
+            resetFeedbackFlowState()
+            return
+        }
+
+        await feedbackService.createFeedback({
+            classId: selectedClass.id,
+            selectedMood,
+            reflectionAnswers,
+        })
+
+        resetFeedbackFlowState()
+    }
+
+    const { currentStepIndex, handlePrevious, handleNext, handleComplete: handleFlowComplete } = useFeedbackFlow(
         feedbackSteps.length,
-        resetFeedbackFlowState,
+        handleComplete,
     )
 
     return (
@@ -19,7 +36,7 @@ function FeedbackFlowScreen() {
                 currentStepIndex={currentStepIndex}
                 onPrevious={handlePrevious}
                 onNext={handleNext}
-                onComplete={handleComplete}
+                onComplete={handleFlowComplete}
             />
         </main>
     )
