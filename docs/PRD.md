@@ -2,22 +2,51 @@
 
 # Flofeed MVP
 
-## 1. Product Overview
+---
 
-### Product Name
+# 1. Product Overview
+
+## Product Name
+
 Flofeed
 
-### Product Vision
+## Product Positioning
 
-Flofeed helps mentors create better learning experiences by collecting honest learner feedback and transforming it into actionable insights using AI.
+**Flofeed is a Feedback Engagement Platform for Learning.**
 
-### Product Summary
+Unlike traditional feedback forms that only collect responses, Flofeed is designed to build a sustainable feedback culture by combining:
 
-Flofeed is an AI-powered anonymous feedback platform designed for programming bootcamps and learning communities.
+* Psychological Safety
+* Accountability
+* Reflection
+* Engagement
 
-The product addresses a common problem experienced by mentors: learners often stay silent when they are confused or struggling. As a result, mentors improve their teaching based on assumptions rather than real feedback.
+AI acts as a supporting tool that helps mentors understand learner feedback efficiently, rather than being the core value of the product.
 
-Flofeed creates a safe environment where learners can share honest feedback anonymously and helps mentors understand learning problems through AI-generated insights.
+---
+
+## Product Vision
+
+**Build a sustainable feedback culture in learning.**
+
+Flofeed helps learners consistently reflect on their learning experience while helping mentors improve teaching through honest, actionable, and AI-assisted learner feedback.
+
+---
+
+## Product Summary
+
+Flofeed is a Feedback Engagement Platform for Learning designed for programming bootcamps and learning communities.
+
+Rather than being only an anonymous feedback tool, Flofeed combines four core principles:
+
+* Psychological Safety
+* Accountability
+* Reflection
+* Engagement
+
+Learners can safely provide anonymous feedback while remaining accountable through login. Guided reflection helps learners express what they experienced during learning, while AI transforms collected feedback into actionable insights for mentors.
+
+The goal is not only to collect more feedback, but also to build a sustainable habit of reflection and continuous improvement throughout the learning process.
 
 ---
 
@@ -25,29 +54,43 @@ Flofeed creates a safe environment where learners can share honest feedback anon
 
 ## Background
 
-Programming bootcamp mentors usually teach classes with 10–30 participants.
+Programming bootcamp mentors usually teach classes with **10–30 learners**.
 
 After each session:
 
-- Only around 2–5 participants actively provide feedback.
-- Most participants remain silent.
-- When mentors ask:
-  - "Does everyone understand?"
-  - "Any questions?"
+* Only around **2–5 learners** actively provide feedback.
+* Most learners remain silent.
+* When mentors ask:
+
+  * "Does everyone understand?"
+  * "Any questions?"
 
 The common responses are:
 
-- Silence
-- "Yes, I understand"
+* Silence
+* "Yes, I understand."
 
-However, many participants may still be confused or struggling.
+However, many learners may still be confused or struggling.
 
 Mentors often discover these problems later through:
-- Assignment results
-- Private conversations
-- Individual discussions
 
-This creates a situation where mentors must improve their teaching based on assumptions instead of real learner insights.
+* Assignment results
+* Private conversations
+* Individual discussions
+
+This creates a situation where mentors improve their teaching based on assumptions instead of learner insights.
+
+Research interviews also revealed that silence is not caused only by fear.
+
+Common reasons include:
+
+* Learners are afraid of being judged.
+* Learners do not know what to write.
+* They believe everything is already fine.
+* Feedback feels like a formality.
+* They do not see the impact of giving feedback.
+
+These findings indicate that increasing feedback participation requires more than anonymity. Learners also need guidance to reflect on their learning experience.
 
 ---
 
@@ -59,10 +102,10 @@ Programming bootcamp mentors.
 
 ### Characteristics
 
-- Teach programming classes.
-- Handle 10–30 learners per class.
-- Need continuous improvement of teaching quality.
-- Currently rely on verbal questions or manual feedback forms.
+* Teach programming classes.
+* Handle 10–30 learners per class.
+* Continuously improve teaching quality.
+* Currently rely on verbal questions or traditional feedback forms.
 
 ---
 
@@ -71,294 +114,469 @@ Programming bootcamp mentors.
 ## Mentor Persona
 
 ### Name
+
 Alex (Example)
 
 ### Role
+
 Programming Bootcamp Mentor
 
 ### Situation
 
-Alex teaches frontend programming to 25 participants.
+Alex teaches frontend programming to 25 learners.
 
-After each class:
-- Only 3 participants give feedback.
-- Most participants say everything is clear.
-- Some participants fail assignments because they actually don't understand the concept.
+After every class:
+
+* Only a few learners submit feedback.
+* Most learners say everything is clear.
+* Several learners later fail assignments because they actually do not understand the material.
 
 ### Pain Points
 
-- Cannot identify learning difficulties early.
-- Doesn't know whether teaching speed is appropriate.
-- Cannot measure learner understanding.
-- Spends time guessing what needs improvement.
+* Cannot identify learning difficulties early.
+* Does not know whether the teaching pace is appropriate.
+* Cannot measure learner understanding.
+* Spends time guessing what needs improvement.
 
-### Goal
+### Goals
 
-Understand learner problems quickly and improve teaching quality based on real feedback.
+* Understand learner problems quickly.
+* Improve teaching based on real learner insights.
 
 ---
 
 ## Learner Persona
 
 ### Name
+
 Sarah (Example)
 
 ### Role
-Bootcamp Participant
+
+Programming Bootcamp Participant
 
 ### Situation
 
 Sarah struggles with a programming concept but hesitates to ask questions.
 
-Reasons:
-- Afraid of looking less capable.
-- Afraid of slowing down the class.
-- Afraid of being judged.
-
 ### Pain Points
 
-- Difficult to express confusion openly.
-- Does not have a safe channel to provide feedback.
+* Afraid of being judged.
+* Afraid of slowing down the class.
+* Doesn't know what kind of feedback to write.
+* Feels feedback has little impact.
+* Often submits generic feedback because there is no guidance.
 
-### Goal
+### Goals
 
-Share honest opinions without feeling judged.
+* Reflect on learning easily.
+* Give honest feedback without fear.
+* Know that feedback contributes to improving future classes.
 
 ---
 
-# 5. MVP Hypothesis
+# 5. Research Insights
+
+Interview findings revealed four major themes.
+
+## Psychological Safety
+
+Learners feel safer providing feedback when:
+
+* Their identity is anonymous.
+* The learning environment feels safe.
+* They trust that mentors will not react negatively.
+
+## Reflection Barrier
+
+Many learners remain silent because:
+
+* They do not know what to write.
+* They cannot identify what was difficult.
+* They feel everything was already fine.
+
+## Accountability
+
+Feedback participation should become part of the learning process while maintaining learner anonymity toward mentors.
+
+## Engagement
+
+Learners need motivation to consistently reflect after every learning session instead of submitting feedback only occasionally.
+
+---
+
+# 6. MVP Hypothesis
 
 ## Core Hypothesis
 
-We believe learners avoid giving honest feedback because they fear being judged.
+We believe learners are more willing to provide honest and useful feedback when:
 
-If we provide an anonymous and simple feedback experience supported by AI analysis,
+* they feel psychologically safe,
+* they remain accountable through login,
+* and they are guided through a simple reflection process.
 
-then learners will provide more honest feedback and mentors will gain actionable insights to improve teaching.
+If learners can submit anonymous feedback while remaining accountable through the system,
 
-## Success Criteria
-
-The hypothesis is validated when:
-
-- More learners submit feedback compared to traditional methods.
-- Feedback contains more specific problems.
-- Mentors can identify improvement areas faster.
+then mentors will receive more honest and actionable feedback after every learning session.
 
 ---
 
-# 6. MVP Goals
+# 7. MVP Goals
 
 ## Primary Goal
 
-Validate whether anonymity increases honest learner feedback.
+Validate whether combining:
+
+* Psychological Safety
+* Accountability
+* Guided Reflection
+
+increases learner feedback participation.
 
 ## Secondary Goal
 
-Validate whether AI-generated insights help mentors understand teaching problems faster.
+Validate whether AI-generated insights help mentors identify teaching improvements faster.
 
 ---
 
-# 7. MVP Scope
+# 8. Core Product Principles
 
-## Included Features
+## Psychological Safety
 
-## 1. Anonymous Feedback Submission
+Learners can provide anonymous feedback.
 
-Learners can submit feedback without revealing identity.
-
-Input:
-
-- Learning experience rating
-- Understanding level
-- Difficulty level
-- Written feedback
-
-Example:
-
-"Which part was difficult today?"
-
-"The explanation was too fast."
-
-"I need more examples."
+Mentors never know who submitted each response.
 
 ---
 
-## 2. AI Feedback Analysis
+## Accountability
 
-AI processes collected feedback.
+Learners log into Flofeed.
 
-Output:
+The system knows:
 
-### Summary
+* who submitted feedback,
+* learner participation,
+* feedback history.
 
-Example:
-
-"Most learners understand the basic concept but struggle with implementation."
-
-### Common Issues
-
-Example:
-
-- Material pace too fast
-- Need more coding examples
-- Need additional practice
-
-### Sentiment
-
-Example:
-
-Positive:
-70%
-
-Neutral:
-20%
-
-Negative:
-10%
+Mentors only see anonymous responses and aggregated insights.
 
 ---
 
-## 3. Mentor Insight Dashboard
+## Reflection
 
-Mentor can view:
-
-- Total feedback received
-- Learning satisfaction
-- Main difficulties
-- AI recommendations
-
-Example:
-
-Recommendation:
-
-"Consider adding a practical exercise after explaining React Hooks because many learners mentioned difficulty applying the concept."
-
----
-
-# 8. User Flow
-Learner
-
-Open Feedback Link
-|
-|
-Submit Anonymous Feedback
-|
-|
-AI Processes Feedback
-|
-|
-Mentor Receives Insights
-
-Mentor
-
-Open Dashboard
-|
-|
-Review AI Summary
-|
-|
-Improve Teaching Approach
-
-
----
-
-# 9. AI Usage
-
-AI is used to:
-
-## Feedback Classification
-
-Automatically categorize feedback:
+Learners are guided through lightweight reflection before writing feedback.
 
 Examples:
 
-- Material difficulty
-- Teaching speed
-- Explanation clarity
-- Practice needs
+* Mood Check
+* Prompt-Based Reflection
+* Written Feedback
+
+This reduces the "I don't know what to write" problem.
+
+---
+
+## Engagement
+
+Gamification encourages learners to consistently participate in feedback after every learning session.
+
+The objective is to build a habit of reflection rather than encourage faster submissions.
+
+---
+
+# 9. MVP Scope
+
+## Learner Features
+
+* Login & Registration
+* Join Feedback Session
+* Anonymous Feedback
+* Mood Check
+* Prompt-Based Reflection
+* Simple Written Feedback
+* Feedback Submission Status
+* Point History
+
+---
+
+## Mentor Features
+
+* Feedback Dashboard
+* Anonymous Responses
+* AI Summary
+* Common Themes
+* Sentiment Analysis
+* Teaching Recommendations
+
+---
+
+# 10. Gamification
+
+Gamification encourages consistency rather than speed.
+
+## Base Points
+
+Submit feedback within **24 hours**
+
++10 Points
+
+Submit feedback after **24 hours**
+
++5 Points
+
+The 24-hour window encourages learners to reflect while the learning experience is still fresh without forcing immediate responses.
+
+---
+
+## Consistency Rewards
+
+Submit Feedback
+
++10 Points
+
+7-Day Feedback Streak
+
++30 Points
+
+30 Feedback Submitted
+
++100 Points
+
+---
+
+## Reflection Activities
+
+Mood Check
+
++5 Points
+
+Prompt Reflection
+
++10 Points
+
+Complete Feedback
+
++15 Points
+
+Points are awarded based on participation rather than feedback length.
+
+Longer responses do not automatically receive more points.
+
+---
+
+# 11. User Flow
+
+## Learner
+
+Landing Page
+
+↓
+
+Join Session
+
+↓
+
+Login
+
+↓
+
+Mood Check
+
+↓
+
+Prompt Reflection
+
+↓
+
+Anonymous Feedback
+
+↓
+
+Submit Feedback
+
+↓
+
+Points Earned
+
+---
+
+## Mentor
+
+Open Dashboard
+
+↓
+
+View Session Summary
+
+↓
+
+Review AI Insights
+
+↓
+
+Improve Teaching
+
+---
+
+# 12. AI Usage
+
+AI supports mentor decision-making rather than replacing it.
+
+AI is responsible for:
+
+## Feedback Classification
+
+Automatically categorizing learner feedback.
+
+Examples:
+
+* Material Difficulty
+* Teaching Speed
+* Explanation Clarity
+* Practice Needs
+
+---
 
 ## Sentiment Analysis
 
-Understand learner emotions:
+Identify overall learner sentiment.
 
-- Positive
-- Neutral
-- Negative
+* Positive
+* Neutral
+* Negative
+
+---
+
+## Theme Detection
+
+Identify repeated issues across multiple learners.
+
+---
 
 ## Insight Generation
 
-Convert multiple feedback responses into actionable recommendations.
+Generate concise teaching recommendations.
 
-Example:
+Example
 
 Input:
 
-"Too fast"
-"Need more examples"
-"Confused about state management"
+* Too fast
+* Need more examples
+* Confused about React Hooks
 
-AI Output:
+Output:
 
-"Several learners need slower explanations and more practical examples for state management topics."
-
----
-
-# 10. Non Goals (Not Included in MVP)
-
-The MVP will not include:
-
-- User authentication
-- Payment system
-- Complete LMS features
-- Course management
-- Video learning
-- Social community
-
-The focus is only validating feedback collection and AI insight generation.
+> Several learners struggled with React Hooks implementation. Consider slowing the explanation and adding more hands-on exercises.
 
 ---
 
-# 11. Success Metrics
+# 13. Non Goals (Out of MVP Scope)
 
-## Learner Metrics
+The MVP will **not** include:
 
-- Feedback submission rate
-- Average feedback completion time
-- Feedback detail quality
+* Avatar Progression
+* XP & Level System
+* Badge & Achievement
+* Multi-Card Feedback
+* Advanced Learning Analytics
+* AI Mentor Assistant
+* Payment System
+* LMS Features
+* Course Management
+* Video Learning
+* Social Community
 
-## Mentor Metrics
-
-- Time needed to understand class problems
-- Number of actionable insights generated
-- Mentor satisfaction with insights
-
----
-
-# 12. Future Development
-
-After MVP validation:
-
-## Phase 2
-
-- QR code feedback access
-- Multiple class management
-- Feedback history
-- Learning progress tracking
-
-## Phase 3
-
-- AI teaching assistant
-- Personalized mentor recommendations
-- Learning analytics
+The MVP focuses on validating learner feedback participation and mentor insight generation.
 
 ---
 
-# 13. Current MVP Status
+# 14. Success Metrics
 
-Status:
+## Feedback Coverage
 
-Prototype / Validation Stage
+Percentage of learners submitting feedback.
 
-The MVP focuses on testing the assumption:
+---
 
-"Will learners provide more honest feedback when they feel safe and anonymous?"
+## Useful Feedback
+
+Percentage of feedback that helps mentors identify actionable improvements.
+
+---
+
+## Reflection Completion
+
+Percentage of learners completing the full reflection flow.
+
+---
+
+## Psychological Safety
+
+Learners report feeling comfortable providing honest feedback.
+
+---
+
+## Mentor Value
+
+Mentors report that AI insights help improve teaching decisions.
+
+---
+
+# 15. Future Development
+
+## Gamification
+
+* XP
+* Level
+* Avatar Progression
+* Badge
+* Achievement
+* Reward Collection
+
+---
+
+## Mentor Intelligence
+
+* Advanced AI Summary
+* Learning Trend Analysis
+* Teaching Analytics
+* AI Mentor Assistant
+
+---
+
+## Flexible Feedback
+
+### Multi-Card Feedback
+
+A single feedback session can contain multiple Feedback Cards.
+
+Example:
+
+* Learning Material
+* Teaching Delivery
+* Practice & Project
+* Suggestions
+
+Each card may use different question types:
+
+* Mood Check
+* Rating
+* Prompt-Based Reflection
+* Short Text
+* Multiple Choice
+
+This allows mentors to collect more structured insights while keeping each reflection focused.
+
+---
+
+# 16. Current MVP Status
+
+**Status:** Validation Stage
+
+The MVP validates the following assumption:
+
+> Learners are more willing to provide honest and useful feedback when psychological safety, accountability, and guided reflection are combined.
+
+The long-term vision is to transform feedback from a one-time activity into a sustainable learning habit that continuously improves both learners and mentors.
