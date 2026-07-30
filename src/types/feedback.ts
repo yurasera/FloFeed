@@ -73,3 +73,24 @@ export interface FeedbackSummary {
     moodDistribution: Record<string, number>
     commonReflection: string
 }
+
+export interface FeedbackCompletion {
+    learnerId: string
+    classId: string
+    submittedAt: string
+    status: 'completed' | 'pending'
+}
+
+export interface ClassRoster {
+    classId: string
+    learnerCount: number
+    completedCount: number
+    pendingCount: number
+}
+
+export interface CompletionSummary {
+    classId: string
+    coveragePercent: number
+    completedCount: number
+    pendingCount: number
+}

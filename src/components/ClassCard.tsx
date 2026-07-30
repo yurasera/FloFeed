@@ -1,5 +1,7 @@
 import { Card } from './Card'
 import type { Class } from '../types/feedback'
+import { useEffect, useState } from 'react'
+import { completionService } from '../services/completionService'
 
 type ClassCardProps = {
     classItem: Class
@@ -7,6 +9,12 @@ type ClassCardProps = {
 }
 
 export function ClassCard({ classItem, mentorName }: ClassCardProps) {
+    const [roster, setRoster] = useState<{ learnerCount: number; completedCount: number; pendingCount: number } | null>(null)
+
+    useEffect(() => {
+        void completionService.getClassRoster(classItem.id).then(setRoster)
+    }, [classItem.id])
+
     return (
         <Card className="space-y-4 p-5 shadow-none">
             <div className="flex items-start justify-between gap-3">
@@ -22,6 +30,13 @@ export function ClassCard({ classItem, mentorName }: ClassCardProps) {
             <div className="space-y-2 text-sm text-slate-600">
                 <p>Mentor: {mentorName ?? classItem.mentorId}</p>
                 <p>Created: {new Date(classItem.createdAt).toLocaleDateString('id-ID')}</p>
+                {roster && (
+                    <div className="mt-2 text-sm">
+                        <p>Learners: {roster.learnerCount}</p>
+                        <p className="text-emerald-700">Completed: {roster.completedCount}</p>
+                        <p className="text-amber-700">Pending: {roster.pendingCount}</p>
+                    </div>
+                )}
             </div>
         </Card>
     )

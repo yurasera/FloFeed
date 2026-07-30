@@ -6,6 +6,7 @@ import { useFeedbackFlowState } from '../context/feedbackFlowState'
 import { useFeedbackData } from '../context/feedbackDataContext'
 import { feedbackService } from '../services/feedbackService'
 import { useLearnerAuth } from '../context/learnerAuthContext'
+import { completionService } from '../services/completionService'
 import { Card } from './Card'
 import { Link } from 'react-router-dom'
 
@@ -58,6 +59,7 @@ function LearnerSessionBanner() {
 export function FeedbackFlowScreen() {
     const { resetFeedbackFlowState, selectedMood, reflectionAnswers, selectedClass } = useFeedbackFlowState()
     const { refreshFeedback } = useFeedbackData()
+    const { learner } = useLearnerAuth()
 
     const handleComplete = async () => {
         if (!selectedClass) {
@@ -70,6 +72,11 @@ export function FeedbackFlowScreen() {
             selectedMood,
             reflectionAnswers,
         })
+
+        // Record completion for authenticated learner
+        if (learner && learner.id) {
+            await completionService.recordCompletion(learner.id, selectedClass.id)
+        }
 
         await refreshFeedback()
         resetFeedbackFlowState()
