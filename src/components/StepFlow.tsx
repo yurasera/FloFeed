@@ -4,6 +4,7 @@ import { ProgressBar } from './ProgressBar'
 import { SectionTitle } from './SectionTitle'
 import { StepNavigator } from './StepNavigator'
 import { StepPanel } from './StepPanel'
+import type { ReactNode } from 'react'
 import type { FeedbackFlowActions, FeedbackStepDefinition } from '../types/feedback'
 
 type StepFlowProps = {
@@ -12,9 +13,10 @@ type StepFlowProps = {
     onPrevious: () => void
     onNext: () => void
     onComplete: () => void
+    topContent?: ReactNode
 }
 
-export function StepFlow({ steps, currentStepIndex, onPrevious, onNext, onComplete }: StepFlowProps) {
+export function StepFlow({ steps, currentStepIndex, onPrevious, onNext, onComplete, topContent }: StepFlowProps) {
     const activeStep = steps[currentStepIndex]
     const totalSteps = steps.length
     const progressValue = totalSteps > 1 ? (currentStepIndex / (totalSteps - 1)) * 100 : 100
@@ -28,6 +30,7 @@ export function StepFlow({ steps, currentStepIndex, onPrevious, onNext, onComple
 
     return (
         <PageContainer className="py-8 sm:py-10">
+            {topContent ? <div className="mb-6">{topContent}</div> : null}
             <Card className="space-y-8 bg-white">
                 <section className="space-y-4">
                     <SectionTitle

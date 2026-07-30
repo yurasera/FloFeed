@@ -1,62 +1,33 @@
-import { FeedbackFlowStateProvider } from './context/feedbackFlowState'
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { FeedbackDataProvider } from './context/feedbackDataContext'
-import { useFeedbackFlowState } from './context/feedbackFlowState'
-import { useFeedbackData } from './context/feedbackDataContext'
-import { StepFlow } from './components/StepFlow'
-import { feedbackSteps } from './data/feedbackSteps'
-import { useFeedbackFlow } from './hooks/useFeedbackFlow'
+import { FeedbackFlowStateProvider } from './context/feedbackFlowState'
+import { LearnerAuthProvider } from './context/learnerAuthContext'
+import { FeedbackPage } from './pages/FeedbackPage'
+import { HomePage } from './pages/HomePage'
+import { LoginPage } from './pages/LoginPage'
 import { MentorClassManagementPage } from './pages/MentorClassManagementPage'
 import { MentorInsightDashboardPage } from './pages/MentorInsightDashboardPage'
-import { feedbackService } from './services/feedbackService'
-
-function FeedbackFlowScreen() {
-    const { resetFeedbackFlowState, selectedMood, reflectionAnswers, selectedClass } = useFeedbackFlowState()
-    const { refreshFeedback } = useFeedbackData()
-
-    const handleComplete = async () => {
-        if (!selectedClass) {
-            resetFeedbackFlowState()
-            return
-        }
-
-        await feedbackService.createFeedback({
-            classId: selectedClass.id,
-            selectedMood,
-            reflectionAnswers,
-        })
-
-        await refreshFeedback()
-        resetFeedbackFlowState()
-    }
-
-    const { currentStepIndex, handlePrevious, handleNext, handleComplete: handleFlowComplete } = useFeedbackFlow(
-        feedbackSteps.length,
-        handleComplete,
-    )
-
-    return (
-        <main className="min-h-screen bg-slate-50 text-slate-900">
-            <StepFlow
-                steps={feedbackSteps}
-                currentStepIndex={currentStepIndex}
-                onPrevious={handlePrevious}
-                onNext={handleNext}
-                onComplete={handleFlowComplete}
-            />
-        </main>
-    )
-}
+import { RegisterPage } from './pages/RegisterPage'
 
 export default function App() {
     return (
-        <FeedbackFlowStateProvider>
-            <FeedbackDataProvider>
-                <div className="min-h-screen bg-slate-50 text-slate-900">
-                    <FeedbackFlowScreen />
-                    <MentorClassManagementPage />
-                    <MentorInsightDashboardPage />
-                </div>
-            </FeedbackDataProvider>
-        </FeedbackFlowStateProvider>
+        <LearnerAuthProvider>
+            <FeedbackFlowStateProvider>
+                <FeedbackDataProvider>
+                    <HashRouter>
+                        <Routes>
+                            <Route path="/" element={<HomePage />} />
+                            <Route path="/login" element={<LoginPage />} />
+                            <Route path="/register" element={<RegisterPage />} />
+                            <Route path="/feedback" element={<FeedbackPage />} />
+                            <Route path="/mentor/classes" element={<MentorClassManagementPage />} />
+                            <Route path="/mentor/insights" element={<MentorInsightDashboardPage />} />
+                            <Route path="/mentor" element={<Navigate to="/mentor/classes" replace />} />
+                            <Route path="*" element={<Navigate to="/" replace />} />
+                        </Routes>
+                    </HashRouter>
+                </FeedbackDataProvider>
+            </FeedbackFlowStateProvider>
+        </LearnerAuthProvider>
     )
 }

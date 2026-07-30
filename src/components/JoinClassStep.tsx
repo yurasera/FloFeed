@@ -6,6 +6,7 @@ import { StepShell } from './StepShell'
 import { ClassCodeInput } from './ClassCodeInput'
 import { useFeedbackFlowState } from '../context/feedbackFlowState'
 import { findClassByCode } from '../services/classService'
+import { useLearnerAuth } from '../context/learnerAuthContext'
 
 type JoinClassStepProps = {
     onNext: () => void
@@ -13,6 +14,7 @@ type JoinClassStepProps = {
 
 export function JoinClassStep({ onNext }: JoinClassStepProps) {
     const { selectedClass, setSelectedClass } = useFeedbackFlowState()
+    const { joinClass } = useLearnerAuth()
     const [code, setCode] = useState(selectedClass?.code ?? '')
     const [error, setError] = useState('')
 
@@ -29,6 +31,7 @@ export function JoinClassStep({ onNext }: JoinClassStepProps) {
 
         setError('')
         setSelectedClass(matchedClass)
+        void joinClass(matchedClass.id)
         onNext()
     }
 
