@@ -94,3 +94,21 @@ export interface CompletionSummary {
     completedCount: number
     pendingCount: number
 }
+
+export interface FeedbackHistoryEntry {
+    id: string
+    learnerId: string
+    classId: string
+    className: string
+    selectedMood: string
+    createdAt: string
+    pointsEarned: number
+}
+
+export interface LearnerProgressSummary {
+    learnerId: string
+    totalFeedback: number
+    totalPoints: number
+    lastSubmittedAt: string | null
+    currentStreak: number
+}

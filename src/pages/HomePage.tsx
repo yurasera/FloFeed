@@ -51,6 +51,14 @@ export function HomePage() {
                             >
                                 Lanjut ke feedback
                             </Link>
+                            {isAuthenticated ? (
+                                <Link
+                                    to="/history"
+                                    className="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 px-5 py-3 text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100"
+                                >
+                                    Riwayat feedback
+                                </Link>
+                            ) : null}
                         </div>
 
                         <div className="grid gap-3 sm:grid-cols-3">
@@ -98,6 +106,12 @@ export function HomePage() {
                                     className="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
                                 >
                                     Lanjut feedback
+                                </Link>
+                                <Link
+                                    to="/history"
+                                    className="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100"
+                                >
+                                    Riwayat
                                 </Link>
                                 <button
                                     type="button"
