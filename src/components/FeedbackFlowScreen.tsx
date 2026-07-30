@@ -12,11 +12,11 @@ import { Link } from 'react-router-dom'
 function LearnerSessionBanner() {
     const { learner, session, memberships, logoutLearner, touchSession } = useLearnerAuth()
 
-    useEffect(() => {
-        if (learner) {
-            void touchSession()
-        }
-    }, [learner, touchSession])
+    // useEffect(() => {
+    //     if (learner) {
+    //         void touchSession()
+    //     }
+    // }, [learner, touchSession])
 
     if (!learner || !session) {
         return null

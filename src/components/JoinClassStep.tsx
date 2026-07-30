@@ -13,26 +13,46 @@ type JoinClassStepProps = {
 }
 
 export function JoinClassStep({ onNext }: JoinClassStepProps) {
+     console.log("JoinClassStep render");
     const { selectedClass, setSelectedClass } = useFeedbackFlowState()
     const { joinClass } = useLearnerAuth()
-    const [code, setCode] = useState(selectedClass?.code ?? '')
+    // const [code, setCode] = useState(selectedClass?.code ?? '')
+    const [code, setCode] = useState('')
     const [error, setError] = useState('')
 
     const matchedClass = useMemo(() => {
         return findClassByCode(code)
     }, [code])
 
+    const handleCodeChange = (newCode: string) => {
+        setCode(newCode)
+        if (error) {
+            setError('')
+        }
+    }
+
     const handleContinue = () => {
+        console.log("1")
         if (!matchedClass) {
-            setError('Kode kelas tidak ditemukan. Coba lagi.')
+            console.log("2")
+            console.log("code:", code)
+            console.log("matchedClass:", matchedClass)
+            // setError('Kode kelas tidak ditemukan. Coba lagi.')
+            console.log("2.1")
             setSelectedClass(null)
+            console.log("2.2")
+            console.log("render", { error })
             return
         }
+        console.log("3")
 
         setError('')
         setSelectedClass(matchedClass)
-        void joinClass(matchedClass.id)
+        console.log("4")
+        // void joinClass(matchedClass.id)
+        console.log("5")
         onNext()
+        console.log("6")
     }
 
     return (
@@ -44,7 +64,8 @@ export function JoinClassStep({ onNext }: JoinClassStepProps) {
                 </p>
 
                 <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
-                    <ClassCodeInput value={code} onChange={setCode} error={error} />
+                    <ClassCodeInput value={code} onChange={handleCodeChange} error={error} />
+                   
 
                     {matchedClass ? (
                         <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
