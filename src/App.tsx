@@ -9,6 +9,7 @@ import { MentorClassManagementPage } from './pages/MentorClassManagementPage'
 import { MentorInsightDashboardPage } from './pages/MentorInsightDashboardPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { FeedbackHistoryPage } from './pages/FeedbackHistoryPage'
+import { Navbar } from './components/Navbar'
 
 export default function App() {
     return (
@@ -16,6 +17,7 @@ export default function App() {
             <FeedbackFlowStateProvider>
                 <FeedbackDataProvider>
                     <HashRouter>
+                        <Navbar />
                         <Routes>
                             <Route path="/" element={<HomePage />} />
                             <Route path="/login" element={<LoginPage />} />
