@@ -1,4 +1,5 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useLearnerAuth } from '../context/learnerAuthContext'
 
 const navItems = [
     { label: 'Home', to: '/' },
@@ -18,7 +19,14 @@ function normalizePath(path: string) {
 
 export function Navbar() {
     const location = useLocation()
-    const currentPath = normalizePath(location.pathname)
+    const navigate = useNavigate()
+    const { isAuthenticated, logoutLearner } = useLearnerAuth()
+    const currentPath = location.pathname
+
+    const handleLogout = async () => {
+        await logoutLearner()
+        navigate('/')
+    }
 
     return (
         <header className="border-b border-slate-200 bg-white/95 px-4 py-3 shadow-sm shadow-slate-200/50 backdrop-blur sm:px-6 lg:px-8">
@@ -29,21 +37,30 @@ export function Navbar() {
                 </div>
 
                 <nav className="flex flex-wrap items-center gap-2">
-                    {navItems.map((item) => {
-                        const isActive = currentPath === normalizePath(item.to)
+                    {(isAuthenticated ? navItems : [{ label: 'Home', to: '/' }, { label: 'Login', to: '/login' }]).map((item) => {
+                        const isActive = currentPath === item.to
                         return (
                             <Link
                                 key={item.to}
                                 to={item.to}
                                 className={`rounded-full px-4 py-2 text-sm font-semibold transition ${isActive
-                                        ? 'bg-slate-900 text-white shadow-sm shadow-slate-900/10'
-                                        : 'border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+                                    ? 'bg-slate-900 text-white shadow-sm shadow-slate-900/10'
+                                    : 'border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
                                     }`}
                             >
                                 {item.label}
                             </Link>
                         )
                     })}
+                    {isAuthenticated ? (
+                        <button
+                            type="button"
+                            onClick={handleLogout}
+                            className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+                        >
+                            Logout
+                        </button>
+                    ) : null}
                 </nav>
             </div>
         </header>

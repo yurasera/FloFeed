@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { Card } from '../components/Card'
 import { PageContainer } from '../components/PageContainer'
 import { SectionTitle } from '../components/SectionTitle'
@@ -17,20 +17,18 @@ function FeatureCard({ title, description }: { title: string; description: strin
 export function HomePage() {
     const { learner, session, memberships, isAuthenticated, logoutLearner } = useLearnerAuth()
 
+    if (isAuthenticated) {
+        return <Navigate to="/feedback" replace />
+    }
+
     return (
         <PageContainer className="py-8 sm:py-10">
-            <div className="mb-8 flex items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white/80 px-6 py-5 shadow-sm shadow-slate-200/20">
+            <div className="mb-8 rounded-3xl border border-slate-200 bg-white/80 px-6 py-5 shadow-sm shadow-slate-200/20">
                 <div>
                     <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">FloFeed</p>
                     <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Selamat datang di FloFeed</h1>
                     <p className="mt-2 text-sm leading-6 text-slate-600">Mulai dengan login untuk mengelola feedback anonim.</p>
                 </div>
-                <Link
-                    to="/login"
-                    className="inline-flex items-center justify-center rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
-                >
-                    Login
-                </Link>
             </div>
 
             <div className="grid gap-6">
