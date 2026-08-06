@@ -80,21 +80,13 @@ export function HomePage() {
 
     return (
         <PageContainer className="py-8 sm:py-10">
-            <div className="mb-8 rounded-3xl border border-slate-200 bg-white/80 px-6 py-5 shadow-sm shadow-slate-200/20">
-                <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">FloFeed</p>
-                    <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Selamat datang di FloFeed</h1>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">Mulai dengan login untuk mengelola feedback anonim.</p>
-                </div>
-            </div>
-
             <Card className="space-y-5 bg-white shadow-sm shadow-slate-200/20">
-                <div className="flex flex-col gap-4 rounded-t-3xl border-b border-slate-200 bg-slate-50 px-6 py-5 sm:flex-row sm:items-end sm:justify-between">
-                    <div className="space-y-2">
+                <div className="flex flex-col gap-4 rounded-t-3xl border-b border-slate-200 bg-slate-50 px-6 py-5">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Try FloFeed Demo</p>
-                        <h2 className="text-xl font-semibold text-slate-900 sm:text-2xl">Experience anonymous feedback from learner to mentor.</h2>
+                        <p className="text-sm font-semibold uppercase text-slate-900 ">Experience anonymous feedback from learner to mentor.</p>
                     </div>
-                    <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500 sm:text-sm">
+                    <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500 text-sm">
                         {demoStepLabels.map((label, index) => (
                             <div
                                 key={label}
