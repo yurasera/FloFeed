@@ -2,8 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useLearnerAuth } from '../context/learnerAuthContext'
 
 const navItems = [
-    { label: 'Home', to: '/' },
-    { label: 'Feedback', to: '/feedback' },
+    { label: 'Home', to: '/feedback' },
     { label: 'Riwayat', to: '/history' },
     { label: 'Mentor Classes', to: '/mentor/classes' },
     { label: 'Mentor Insights', to: '/mentor/insights' },
@@ -56,7 +55,7 @@ export function Navbar() {
                         <button
                             type="button"
                             onClick={handleLogout}
-                            className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+                            className="rounded-full px-4 py-2 text-sm font-semibold transition border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
                         >
                             Logout
                         </button>
