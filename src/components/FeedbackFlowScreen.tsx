@@ -58,6 +58,20 @@ function LearnerSessionBanner() {
                     Keluar
                 </button>
             </div>
+            <div className="flex flex-wrap gap-3 border-t border-blue-100 pt-3">
+                <Link
+                    to="/mentor/classes"
+                    className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-100"
+                >
+                    Mentor classes
+                </Link>
+                <Link
+                    to="/mentor/insights"
+                    className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:border-slate-300 hover:bg-slate-100"
+                >
+                    Mentor insights
+                </Link>
+            </div>
         </Card>
     )
 }
