@@ -28,12 +28,20 @@ const demoTimelineSuffix = [
     'Sending to Mentor Dashboard...',
 ]
 
+const feedbackQuestions: Array<{ key: keyof DemoAnswers; label: string }> = [
+    { key: 'standout', label: 'What stood out the most today?' },
+    { key: 'keep', label: 'What should we keep for next session?' },
+    { key: 'improve', label: 'What could be improved?' },
+    { key: 'anythingElse', label: 'Anything else?' },
+]
+
 export function HomePage() {
     const { isAuthenticated } = useLearnerAuth()
     const [demoStep, setDemoStep] = useState(1)
     const [learnerName, setLearnerName] = useState('')
     const [rating, setRating] = useState(5)
     const [answers, setAnswers] = useState<DemoAnswers>(defaultAnswers)
+    const [feedbackQuestionIndex, setFeedbackQuestionIndex] = useState(0)
     const [animationPhase, setAnimationPhase] = useState(0)
 
     useEffect(() => {
@@ -69,18 +77,20 @@ export function HomePage() {
         setLearnerName('')
         setRating(5)
         setAnswers(defaultAnswers)
+        setFeedbackQuestionIndex(0)
         setAnimationPhase(0)
     }
 
     const timelineItems = [learnerName || 'Learner', ...demoTimelineSuffix]
+    const [isHowItWorksOpen, setIsHowItWorksOpen] = useState(false)
 
     if (isAuthenticated) {
         return <Navigate to="/feedback" replace />
     }
 
     return (
-        <PageContainer className="py-8 sm:py-10">
-            <Card className="space-y-5 bg-white shadow-sm shadow-slate-200/20">
+        <PageContainer>
+            <Card className="bg-white shadow-sm shadow-slate-200/20">
                 <div className="flex flex-col gap-4 rounded-t-3xl border-b border-slate-200 bg-slate-50 px-6 py-5">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Try FloFeed Demo</p>
@@ -118,7 +128,10 @@ export function HomePage() {
 
                             <button
                                 type="button"
-                                onClick={() => setDemoStep(2)}
+                                onClick={() => {
+                                    setFeedbackQuestionIndex(0)
+                                    setDemoStep(2)
+                                }}
                                 disabled={!learnerName.trim()}
                                 className={`inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition ${learnerName.trim() ? 'bg-blue-600 text-white hover:bg-blue-500' : 'bg-slate-300 text-slate-500 cursor-not-allowed'}`}
                             >
@@ -132,8 +145,7 @@ export function HomePage() {
                             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/20">
                                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                     <div>
-                                        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Session</p>
-                                        <h3 className="mt-1 text-xl font-semibold text-slate-900">SwiftUI Basics</h3>
+                                        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Session : SwiftUI Basics</p>
                                     </div>
                                     <div className="rounded-2xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700">Mentor John Doe</div>
                                 </div>
@@ -158,48 +170,47 @@ export function HomePage() {
                                     </div>
 
                                     <div className="space-y-4">
-                                        <label className="block text-sm font-semibold text-slate-700">What stood out the most today?</label>
+                                        <div className="flex items-center justify-between text-sm text-slate-500">
+                                            <span>{feedbackQuestions[feedbackQuestionIndex].label}</span>
+                                            <span>{feedbackQuestionIndex + 1}/{feedbackQuestions.length}</span>
+                                        </div>
                                         <textarea
-                                            value={answers.standout}
-                                            onChange={(event) => setAnswers({ ...answers, standout: event.target.value })}
-                                            rows={3}
-                                            className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                                        />
-
-                                        <label className="block text-sm font-semibold text-slate-700">What should we keep for next session?</label>
-                                        <textarea
-                                            value={answers.keep}
-                                            onChange={(event) => setAnswers({ ...answers, keep: event.target.value })}
-                                            rows={3}
-                                            className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                                        />
-
-                                        <label className="block text-sm font-semibold text-slate-700">What could be improved?</label>
-                                        <textarea
-                                            value={answers.improve}
-                                            onChange={(event) => setAnswers({ ...answers, improve: event.target.value })}
-                                            rows={3}
-                                            className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                                        />
-
-                                        <label className="block text-sm font-semibold text-slate-700">Anything else?</label>
-                                        <textarea
-                                            value={answers.anythingElse}
-                                            onChange={(event) => setAnswers({ ...answers, anythingElse: event.target.value })}
-                                            rows={2}
+                                            value={answers[feedbackQuestions[feedbackQuestionIndex].key]}
+                                            onChange={(event) => setAnswers({
+                                                ...answers,
+                                                [feedbackQuestions[feedbackQuestionIndex].key]: event.target.value,
+                                            })}
+                                            rows={5}
                                             className="w-full rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                                         />
                                     </div>
                                 </div>
                             </div>
 
-                            <button
-                                type="button"
-                                onClick={() => setDemoStep(3)}
-                                className="inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-500"
-                            >
-                                Submit Feedback
-                            </button>
+                            <div className="flex justify-end gap-3">
+                                {feedbackQuestionIndex > 0 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setFeedbackQuestionIndex(feedbackQuestionIndex - 1)}
+                                        className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                                    >
+                                        Previous
+                                    </button>
+                                )}
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        if (feedbackQuestionIndex < feedbackQuestions.length - 1) {
+                                            setFeedbackQuestionIndex(feedbackQuestionIndex + 1)
+                                        } else {
+                                            setDemoStep(3)
+                                        }
+                                    }}
+                                    className="inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-500"
+                                >
+                                    {feedbackQuestionIndex < feedbackQuestions.length - 1 ? 'Next Question' : 'Submit Feedback'}
+                                </button>
+                            </div>
                         </div>
                     )}
 
@@ -336,23 +347,35 @@ export function HomePage() {
 
             <div className="grid gap-6">
                 <Card className="space-y-4 bg-white">
-                    <SectionTitle
-                        eyebrow="How it works"
-                        title="Alur learner"
-                        description="Register atau login, pertahankan session, lalu lanjut ke feedback flow tanpa mengungkap identitas learner."
-                    />
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <SectionTitle
+                            eyebrow="How it works"
+                            title="Alur learner"
+                            description="Register atau login, pertahankan session, lalu lanjut ke feedback flow tanpa mengungkap identitas learner."
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setIsHowItWorksOpen((current) => !current)}
+                            className="self-start rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                            aria-label={isHowItWorksOpen ? 'Collapse details' : 'Expand details'}
+                        >
+                            {isHowItWorksOpen ? '▼' : '►'}
+                        </button>
+                    </div>
 
-                    <ol className="space-y-3 text-sm leading-6 text-slate-600">
-                        <li className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                            1. Buat akun learner atau masuk dengan akun yang sudah tersimpan.
-                        </li>
-                        <li className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                            2. Session tetap tersimpan di perangkat sehingga learner bisa kembali kapan saja.
-                        </li>
-                        <li className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                            3. Kirim feedback anonim ke mentor tanpa membawa identitas learner.
-                        </li>
-                    </ol>
+                    {isHowItWorksOpen && (
+                        <ol className="space-y-3 text-sm leading-6 text-slate-600">
+                            <li className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                1. Buat akun learner atau masuk dengan akun yang sudah tersimpan.
+                            </li>
+                            <li className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                2. Session tetap tersimpan di perangkat sehingga learner bisa kembali kapan saja.
+                            </li>
+                            <li className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                                3. Kirim feedback anonim ke mentor tanpa membawa identitas learner.
+                            </li>
+                        </ol>
+                    )}
                 </Card>
             </div>
         </PageContainer>
