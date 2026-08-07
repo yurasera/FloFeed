@@ -6,6 +6,7 @@ import { PrimaryButton } from './PrimaryButton'
 import { SectionTitle } from './SectionTitle'
 import { ShieldIcon } from './ShieldIcon'
 import { useLearnerAuth } from '../context/learnerAuthContext'
+import { supabase } from '../lib/supabase'
 
 type LearnerAuthScreenProps = {
     mode: 'login' | 'register'
@@ -69,10 +70,43 @@ export function LearnerAuthScreen({ mode }: LearnerAuthScreenProps) {
                     throw new Error('Nama learner wajib diisi.')
                 }
 
-                await registerLearner({
-                    name,
-                    ...payload,
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            full_name: name,
+                        },
+                    },
                 })
+
+                if (error) {
+                    throw error
+                }
+
+                alert('Registration successful!')
+                console.log(data)
+
+                const user = data.user
+                console.log(data.user)
+                console.log(error)
+                if (user) {
+                    const { error: profileError } = await supabase
+                        .from("profiles")
+                        .insert({
+                            id: user.id,
+                            full_name: name,
+                            role: "learner",
+                        })
+
+                    if (profileError) {
+                        console.log(profileError)
+                    }
+                }
+                // await registerLearner({
+                //     name,
+                //     ...payload,
+                // })
             } else {
                 await loginLearner(payload)
             }
@@ -125,24 +159,24 @@ export function LearnerAuthScreen({ mode }: LearnerAuthScreenProps) {
                                     </p>
                                     <p>{learner.email}</p>
                                     <p>Last active: {new Date(session.lastActiveAt).toLocaleString('id-ID')}</p>
-                            <div className="flex flex-wrap gap-3 pt-2">
-                                <Link
-                                    to="/feedback"
-                                    className="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
-                                >
-                                    Continue feedback
-                                </Link>
-                                <Link
-                                    to="/history"
-                                    className="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100"
-                                >
-                                    Riwayat
-                                </Link>
-                                <button
-                                    type="button"
-                                    onClick={() => void logoutLearner()}
-                                    className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
-                                >
+                                    <div className="flex flex-wrap gap-3 pt-2">
+                                        <Link
+                                            to="/feedback"
+                                            className="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+                                        >
+                                            Continue feedback
+                                        </Link>
+                                        <Link
+                                            to="/history"
+                                            className="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100"
+                                        >
+                                            Riwayat
+                                        </Link>
+                                        <button
+                                            type="button"
+                                            onClick={() => void logoutLearner()}
+                                            className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                                        >
                                             Sign out
                                         </button>
                                     </div>
