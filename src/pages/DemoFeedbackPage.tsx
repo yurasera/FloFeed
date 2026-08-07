@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { PageContainer } from '../components/PageContainer'
 
@@ -10,17 +10,23 @@ type DemoAnswers = {
 }
 
 const defaultAnswers: DemoAnswers = {
+    standout: '',
+    keep: '',
+    improve: '',
+    anythingElse: '',
+}
+
+const placeholderAnswers: DemoAnswers = {
     standout: 'The discussion made me more confident to ask questions.',
-    keep: 'Real project examples.',
-    improve: 'Please slow down the explanation of State Management.',
-    anythingElse: 'No.',
+    keep: 'Misalnya cara penyampaian, materi, aktivitas, atau pengalaman yang menurut Anda sudah baik.',
+    improve: 'Sesi berikut nya saya ingin lebih banyak diskusi dan contoh praktis.',
+    anythingElse: '??',
 }
 
 const feedbackQuestions: Array<{ key: keyof DemoAnswers; label: string }> = [
-    { key: 'standout', label: 'What stood out the most today?' },
-    { key: 'keep', label: 'What should we keep for next session?' },
-    { key: 'improve', label: 'What could be improved?' },
-    { key: 'anythingElse', label: 'Anything else?' },
+    { key: 'keep', label: 'Apa yang ingin tetap ada di sesi berikutnya?' },
+    { key: 'improve', label: 'Apa yang perlu diperbaiki di sesi berikutnya?' },
+    { key: 'anythingElse', label: 'Jika ada hal lain yang ingin Anda sampaikan, apa itu?' },
 ]
 
 export function DemoFeedbackPage() {
@@ -31,9 +37,25 @@ export function DemoFeedbackPage() {
     const [answers, setAnswers] = useState<DemoAnswers>(defaultAnswers)
     const [stepIndex, setStepIndex] = useState(0)
     const [submitted, setSubmitted] = useState(false)
+    const [animationState, setAnimationState] = useState<'idle' | 'loading' | 'done'>('idle')
     const totalSteps = feedbackQuestions.length + 1
     const isRatingStep = stepIndex === 0
     const currentQuestion = stepIndex > 0 ? feedbackQuestions[stepIndex - 1] : null
+    const isCurrentAnswerEmpty = !isRatingStep && currentQuestion ? answers[currentQuestion.key].trim().length === 0 : false
+    const isAnimating = submitted && animationState === 'loading'
+    const isComplete = submitted && animationState === 'done'
+
+    useEffect(() => {
+        if (!submitted || animationState !== 'loading') {
+            return
+        }
+
+        const timer = window.setTimeout(() => {
+            setAnimationState('done')
+        }, 5400)
+
+        return () => window.clearTimeout(timer)
+    }, [submitted, animationState])
 
     return (
         <PageContainer className="min-h-screen w-full">
@@ -47,7 +69,7 @@ export function DemoFeedbackPage() {
                         ← Back
                     </button>
                     <div className="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700">
-                        {!submitted ? `Draft Feedback` : `Review Submitted`}
+                        {!submitted ? 'Draft Feedback' : isAnimating ? 'Processing...' : 'Review Submitted'}
                     </div>
                 </div>
 
@@ -63,10 +85,9 @@ export function DemoFeedbackPage() {
                         <div className="space-y-10">
                             <div className="text-center">
                                 <p className="text-xs uppercase tracking-[0.32em] text-slate-500">Question {stepIndex + 1}/{totalSteps}</p>
-                                <h1 className="mt-4 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+                                <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                                     {isRatingStep ? "How satisfied are you with today's session?" : currentQuestion?.label}
                                 </h1>
-                                <p className="mt-4 text-sm leading-6 text-slate-500">Answer one step at a time for a cleaner feedback experience.</p>
                             </div>
 
                             {isRatingStep ? (
@@ -85,16 +106,18 @@ export function DemoFeedbackPage() {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="rounded-[1.75rem] border border-slate-200/80 bg-slate-50 p-6">
-                                    <textarea
+                                <div className="mx-auto max-w-3xl">
+                                    <input
+                                        type="text"
                                         value={answers[currentQuestion!.key]}
                                         onChange={(event) => setAnswers({
                                             ...answers,
                                             [currentQuestion!.key]: event.target.value,
                                         })}
-                                        rows={8}
-                                        className="min-h-[280px] w-full rounded-[1.75rem] border border-slate-300 bg-white px-6 py-6 text-lg leading-8 text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                                        placeholder="Type your answer here..."
+                                        required
+                                        placeholder={placeholderAnswers[currentQuestion!.key] || 'Type your answer here...'}
+                                        style={{ fontSize: "2.25rem" }}
+                                        className="w-full border-b border-slate-300 bg-white px-6 py-4 text-2xl leading-8 text-slate-900 transition focus:outline-none focus:ring-0 focus:border-slate-300 placeholder:text-2xl"
                                     />
                                 </div>
                             )}
@@ -124,14 +147,27 @@ export function DemoFeedbackPage() {
                                                 setStepIndex(stepIndex + 1)
                                             } else {
                                                 setSubmitted(true)
+                                                setAnimationState('loading')
                                             }
                                         }}
-                                        className="inline-flex min-w-[240px] items-center justify-center rounded-full bg-blue-600 px-8 py-4 text-base font-semibold text-white transition hover:bg-blue-500"
+                                        disabled={isCurrentAnswerEmpty}
+                                        className={`inline-flex min-w-[240px] items-center justify-center rounded-full px-8 py-4 text-base font-semibold text-white transition ${isCurrentAnswerEmpty ? 'cursor-not-allowed bg-slate-300 text-slate-500' : 'bg-blue-600 hover:bg-blue-500'}`}
                                     >
                                         {stepIndex < totalSteps - 1 ? 'Continue' : 'Submit Feedback'}
                                     </button>
                                 </div>
                             </div>
+                        </div>
+                    ) : animationState === 'loading' ? (
+                        <div className="space-y-10 text-center">
+                            <p className="text-xs uppercase tracking-[0.32em] text-slate-500">Processing anonymous feedback</p>
+                            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-blue-100 text-blue-600 shadow-inner shadow-blue-100/50 animate-pulse">
+                                <span className="text-4xl">⏳</span>
+                            </div>
+                            <h2 className="text-3xl font-semibold text-slate-900">Connecting learner and mentor</h2>
+                            <p className="mx-auto max-w-2xl text-sm leading-6 text-slate-600">
+                                Kami sedang memproses feedback Anda secara anonim dan menyiapkan ringkasan untuk mentor.
+                            </p>
                         </div>
                     ) : (
                         <div className="space-y-8 text-center">
@@ -145,20 +181,62 @@ export function DemoFeedbackPage() {
                                 <div className="rounded-[1.75rem] border border-slate-200/80 bg-slate-50 p-6 text-left">
                                     <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Learner</p>
                                     <p className="mt-3 text-lg font-semibold text-slate-900">{learnerName || 'Anonymous learner'}</p>
+                                    <div className="mt-4 space-y-4 text-sm text-slate-600">
+                                        <div>
+                                            <p className="font-semibold text-slate-900">Pertahankan</p>
+                                            <p>{answers.keep || '-'} </p>
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-slate-900">Perbaiki</p>
+                                            <p>{answers.improve || '-'} </p>
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-slate-900">Catatan lain</p>
+                                            <p>{answers.anythingElse || '-'} </p>
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-slate-900">Rating session</p>
+                                            <p>{rating} / 5</p>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="rounded-[1.75rem] border border-slate-200/80 bg-slate-50 p-6 text-left">
-                                    <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Session Rating</p>
-                                    <p className="mt-3 text-lg font-semibold text-slate-900">{rating} / 5</p>
+                                    <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Mentor</p>
+                                    <p className="mt-3 text-lg font-semibold text-slate-900">Anonymous review dari 11 learner</p>
+                                    <div className="mt-4 space-y-4 text-sm text-slate-600">
+                                        <div>
+                                            <p className="font-semibold text-slate-900">Rating session</p>
+                                            <p>{rating} / 5</p>
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-slate-900">Insight utama</p>
+                                            <p>Peserta menyukai penyampaian yang jelas, tetapi meminta lebih banyak diskusi dan contoh praktis.</p>
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-slate-900">Status anonimitas</p>
+                                            <p>Feedback dikirim tanpa identitas peserta.</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <button
-                                type="button"
-                                onClick={() => navigate('/')}
-                                className="inline-flex min-w-[220px] items-center justify-center rounded-full bg-blue-600 px-8 py-4 text-base font-semibold text-white transition hover:bg-blue-500"
-                            >
-                                Back to home
-                            </button>
+                            <div className="flex w-full gap-4">
+                                <button
+                                    type="button"
+                                    onClick={() => navigate('/')}
+                                    className="flex-1 rounded-full border border-slate-300 bg-white px-8 py-4 text-base font-semibold text-slate-700 transition hover:bg-slate-50"
+                                >
+                                    Back to Home
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => navigate('/login')}
+                                    className="flex-1 rounded-full bg-blue-600 px-8 py-4 text-base font-semibold text-white transition hover:bg-blue-500"
+                                >
+                                    Login
+                                </button>
+                            </div>
                         </div>
                     )}
                 </div>
