@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { Card } from '../components/Card'
 import { PageContainer } from '../components/PageContainer'
 import { SectionTitle } from '../components/SectionTitle'
@@ -37,6 +37,7 @@ const feedbackQuestions: Array<{ key: keyof DemoAnswers; label: string }> = [
 
 export function HomePage() {
     const { isAuthenticated } = useLearnerAuth()
+    const navigate = useNavigate()
     const [demoStep, setDemoStep] = useState(1)
     const [learnerName, setLearnerName] = useState('')
     const [rating, setRating] = useState(5)
@@ -130,7 +131,7 @@ export function HomePage() {
                                 type="button"
                                 onClick={() => {
                                     setFeedbackQuestionIndex(0)
-                                    setDemoStep(2)
+                                    navigate('/demo-feedback', { state: { learnerName } })
                                 }}
                                 disabled={!learnerName.trim()}
                                 className={`inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition ${learnerName.trim() ? 'bg-blue-600 text-white hover:bg-blue-500' : 'bg-slate-300 text-slate-500 cursor-not-allowed'}`}
