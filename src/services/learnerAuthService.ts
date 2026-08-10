@@ -220,11 +220,29 @@ class MockLearnerAuthService implements LearnerAuthService {
                 throw new Error(profileQuery.error.message)
             }
 
-            const insertProfile = await supabase.from('profiles').insert({
-                id: user.id,
-                full_name: fallbackName,
-                role: 'learner',
-            }).select('full_name').single()
+            // Pastikan session/auth masih aktif sebelum INSERT
+            const {
+                data: { user: currentUser },
+                error: authError,
+            } = await supabase.auth.getUser()
+
+            if (authError) {
+                throw new Error(authError.message)
+            }
+
+            if (!currentUser) {
+                throw new Error('User belum login atau session tidak tersedia.')
+            }
+
+            const insertProfile = await supabase
+                .from('profiles')
+                .insert({
+                    id: currentUser.id,
+                    full_name: fallbackName,
+                    role: 'learner',
+                })
+                .select('full_name')
+                .single()
 
             if (insertProfile.error) {
                 throw new Error(insertProfile.error.message)
