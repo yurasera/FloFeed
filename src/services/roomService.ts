@@ -55,6 +55,20 @@ export const roomService = {
         return data ? mapRoomRow(data) : null
     },
 
+    async getRoomById(roomId: string): Promise<Room | null> {
+        const { data, error } = await supabase
+            .from('rooms')
+            .select('id, room_name, room_code, master_id, created_at, updated_at')
+            .eq('id', roomId)
+            .maybeSingle()
+
+        if (error) {
+            throw new Error(error.message)
+        }
+
+        return data ? mapRoomRow(data) : null
+    },
+
     async createRoom(input: RoomCreateInput): Promise<Room> {
         const { data, error } = await supabase
             .from('rooms')

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { PageContainer } from '../components/PageContainer'
 import { Card } from '../components/Card'
@@ -7,6 +7,7 @@ import { ClassCodeInput } from '../components/ClassCodeInput'
 import { PrimaryButton } from '../components/PrimaryButton'
 import { SecondaryButton } from '../components/SecondaryButton'
 import { useFeedbackFlowState } from '../context/feedbackFlowState'
+import { useFeedbackData } from '../context/feedbackDataContext'
 import { roomService } from '../services/roomService'
 import type { Class } from '../types/feedback'
 
@@ -17,6 +18,8 @@ export function RoomJoinPage() {
     const [error, setError] = useState('')
     const [roomInfo, setRoomInfo] = useState<Class | null>(null)
     const [isChecking, setIsChecking] = useState(false)
+    const { feedbackResponses } = useFeedbackData()
+    const [roomsWithFeedback, setRoomsWithFeedback] = useState<Array<{ id: string; name: string; code?: string }>>([])
 
     const handleCodeChange = (newCode: string) => {
         setCode(newCode)
@@ -71,6 +74,42 @@ export function RoomJoinPage() {
 
         navigate('/room/feedback')
     }
+
+    useEffect(() => {
+        let mounted = true
+
+        const loadRooms = async () => {
+            try {
+                const uniqueClassIds = Array.from(new Set(feedbackResponses.map((r) => r.classId)))
+                const fetched: Array<{ id: string; name: string; code?: string }> = []
+
+                await Promise.all(
+                    uniqueClassIds.map(async (classId) => {
+                        try {
+                            const room = await roomService.getRoomById(classId)
+                            if (room) {
+                                fetched.push({ id: room.id, name: room.roomName, code: room.roomCode })
+                            }
+                        } catch (e) {
+                            // ignore individual lookup errors
+                        }
+                    }),
+                )
+
+                if (mounted) {
+                    setRoomsWithFeedback(fetched)
+                }
+            } catch (e) {
+                // ignore
+            }
+        }
+
+        void loadRooms()
+
+        return () => {
+            mounted = false
+        }
+    }, [feedbackResponses])
 
     return (
         <PageContainer className="py-10">
@@ -140,6 +179,20 @@ export function RoomJoinPage() {
                         <p>Masukkan kode room yang valid di atas lalu klik <strong>Cari Room</strong>.</p>
                         <p>Jika room tersedia, informasi room akan muncul dan Anda bisa melanjutkan ke alur feedback.</p>
                         <p>Room code biasanya tampil di halaman room master setelah room dibuat.</p>
+
+                        {roomsWithFeedback.length > 0 ? (
+                            <div className="mt-4">
+                                <p className="text-sm font-semibold text-slate-700">Rooms dengan feedback</p>
+                                <ul className="mt-2 space-y-2 text-sm text-slate-700">
+                                    {roomsWithFeedback.map((r) => (
+                                        <li key={r.id} className="flex items-center justify-between">
+                                            <span className="font-medium">{r.name}</span>
+                                            {r.code ? <span className="text-slate-500">{r.code}</span> : null}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ) : null}
                     </div>
                 </Card>
             </div>
