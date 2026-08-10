@@ -154,6 +154,7 @@ export function RoomPage() {
                   </div>
 
                   <div className="space-y-2 text-sm text-slate-600">
+                    <p>Room code: <span className="font-semibold text-slate-900">{room.roomCode}</span></p>
                     <p>Master ID: {room.masterId}</p>
                     <p>Last updated: {new Date(room.updatedAt).toLocaleDateString('id-ID')}</p>
                   </div>
