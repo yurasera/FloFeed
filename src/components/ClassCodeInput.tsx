@@ -5,9 +5,18 @@ type ClassCodeInputProps = {
     onChange: (value: string) => void
     error?: string
     disabled?: boolean
+    label?: string
+    placeholder?: string
 }
 
-export function ClassCodeInput({ value, onChange, error, disabled = false }: ClassCodeInputProps) {
+export function ClassCodeInput({
+    value,
+    onChange,
+    error,
+    disabled = false,
+    label = 'Kode Kelas',
+    placeholder = 'Contoh: ALPHA01',
+}: ClassCodeInputProps) {
     const inputId = useId()
 
     return (

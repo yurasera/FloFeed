@@ -1,58 +1,73 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { PrimaryButton } from './PrimaryButton'
 import { SecondaryButton } from './SecondaryButton'
 import { StepSectionHeader } from './StepSectionHeader'
 import { StepShell } from './StepShell'
 import { ClassCodeInput } from './ClassCodeInput'
 import { useFeedbackFlowState } from '../context/feedbackFlowState'
-import { findClassByCode } from '../services/classService'
-import { useLearnerAuth } from '../context/learnerAuthContext'
+import { roomService } from '../services/roomService'
+import type { Class } from '../types/feedback'
 
 type JoinClassStepProps = {
     onNext: () => void
 }
 
 export function JoinClassStep({ onNext }: JoinClassStepProps) {
-     console.log("JoinClassStep render");
-    const { selectedClass, setSelectedClass } = useFeedbackFlowState()
-    const { joinClass } = useLearnerAuth()
-    // const [code, setCode] = useState(selectedClass?.code ?? '')
+    const { setSelectedClass } = useFeedbackFlowState()
     const [code, setCode] = useState('')
     const [error, setError] = useState('')
-
-    const matchedClass = useMemo(() => {
-        return findClassByCode(code)
-    }, [code])
+    const [matchedRoomName, setMatchedRoomName] = useState<string | null>(null)
+    const [isChecking, setIsChecking] = useState(false)
 
     const handleCodeChange = (newCode: string) => {
         setCode(newCode)
         if (error) {
             setError('')
         }
+        if (matchedRoomName) {
+            setMatchedRoomName(null)
+        }
     }
 
-    const handleContinue = () => {
-        console.log("1")
-        if (!matchedClass) {
-            console.log("2")
-            console.log("code:", code)
-            console.log("matchedClass:", matchedClass)
-            // setError('Kode kelas tidak ditemukan. Coba lagi.')
-            console.log("2.1")
+    const handleContinue = async () => {
+        if (!code.trim()) {
+            setError('Kode room wajib diisi.')
             setSelectedClass(null)
-            console.log("2.2")
-            console.log("render", { error })
             return
         }
-        console.log("3")
 
+        setIsChecking(true)
         setError('')
-        setSelectedClass(matchedClass)
-        console.log("4")
-        // void joinClass(matchedClass.id)
-        console.log("5")
-        onNext()
-        console.log("6")
+
+        try {
+            const room = await roomService.getRoomByCode(code)
+
+            if (!room) {
+                setError('Kode room tidak ditemukan. Coba lagi.')
+                setMatchedRoomName(null)
+                setSelectedClass(null)
+                return
+            }
+
+            setMatchedRoomName(room.roomName)
+            const mappedClass: Class = {
+                id: room.id,
+                code: room.roomCode,
+                name: room.roomName,
+                mentorId: room.masterId,
+                createdAt: room.createdAt,
+                isActive: true,
+            }
+
+            setSelectedClass(mappedClass)
+            onNext()
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Terjadi kesalahan saat memeriksa room.')
+            setSelectedClass(null)
+            setMatchedRoomName(null)
+        } finally {
+            setIsChecking(false)
+        }
     }
 
     return (
@@ -64,13 +79,19 @@ export function JoinClassStep({ onNext }: JoinClassStepProps) {
                 </p>
 
                 <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
-                    <ClassCodeInput value={code} onChange={handleCodeChange} error={error} />
-                   
+                    <ClassCodeInput
+                        value={code}
+                        onChange={handleCodeChange}
+                        error={error}
+                        label="Kode Room"
+                        placeholder="Contoh: ABC123"
+                        disabled={isChecking}
+                    />
 
-                    {matchedClass ? (
+                    {matchedRoomName ? (
                         <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
-                            <p className="font-semibold">Kelas ditemukan</p>
-                            <p className="mt-1">{matchedClass.name}</p>
+                            <p className="font-semibold">Room ditemukan</p>
+                            <p className="mt-1">{matchedRoomName}</p>
                         </div>
                     ) : null}
                 </div>
