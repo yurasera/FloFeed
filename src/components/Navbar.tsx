@@ -4,6 +4,7 @@ import { useLearnerAuth } from '../context/learnerAuthContext'
 const navItems = [
     { label: 'Home', to: '/feedback' },
     { label: 'Room', to: '/room' },
+    { label: 'Join Room', to: '/room/join' },
     { label: 'Riwayat', to: '/history' },
     { label: 'Mentor Classes', to: '/mentor/classes' },
     { label: 'Mentor Insights', to: '/mentor/insights' },
