@@ -77,6 +77,10 @@ export function RoomJoinPage() {
         navigate('/room/feedback')
     }
 
+    const selectedRoomAlreadyFilled = roomInfo
+        ? feedbackResponses.some((r) => r.roomId === roomInfo.id && r.memberId && learner?.id && r.memberId === learner.id)
+        : false
+
     useEffect(() => {
         let mounted = true
 
@@ -150,7 +154,12 @@ export function RoomJoinPage() {
 
                     {roomInfo ? (
                         <Card className="space-y-4 border-blue-100 bg-blue-50 p-6">
-                            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Room ditemukan</p>
+                            <div className="flex items-center justify-between">
+                                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Room ditemukan</p>
+                                {selectedRoomAlreadyFilled ? (
+                                    <div className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">Sudah diisi</div>
+                                ) : null}
+                            </div>
                             <div className="space-y-3 text-sm text-slate-700">
                                 <div>
                                     <p className="font-semibold">Nama Room</p>
@@ -169,8 +178,8 @@ export function RoomJoinPage() {
                                     <p>{new Date(roomInfo.createdAt).toLocaleString('id-ID')}</p>
                                 </div>
                             </div>
-                            <PrimaryButton type="button" onClick={handleProceed} className="w-full">
-                                Lanjut ke feedback
+                            <PrimaryButton type="button" onClick={handleProceed} className="w-full" disabled={selectedRoomAlreadyFilled}>
+                                {selectedRoomAlreadyFilled ? 'Sudah diisi' : 'Lanjut ke feedback'}
                             </PrimaryButton>
                         </Card>
                     ) : null}
