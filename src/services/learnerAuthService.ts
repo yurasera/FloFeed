@@ -1,3 +1,4 @@
+import { supabase } from '../lib/supabase'
 import type {
     Learner,
     LearnerAuthSnapshot,
@@ -188,24 +189,69 @@ class MockLearnerAuthService implements LearnerAuthService {
             throw new Error('Password wajib diisi.')
         }
 
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        })
+
+        if (error) {
+            throw new Error(error.message)
+        }
+
+        const user = data.user
+
+        if (!user) {
+            throw new Error('Gagal melakukan autentikasi learner.')
+        }
+
+        const profileQuery = await supabase
+            .from('profiles')
+            .select('full_name')
+            .eq('id', user.id)
+            .single()
+
+        const userMetadata = user.user_metadata as { full_name?: string } | null
+        const name = profileQuery.data?.full_name ?? userMetadata?.full_name ?? email
+        const createdAt = user.created_at ?? now()
+
         const state = readState()
-        const matchedLearner = state.learners.find((item) => normalizeEmail(item.email) === email)
+        const existingLearner = state.learners.find((item) => item.id === user.id)
 
-        if (!matchedLearner) {
-            throw new Error('Akun learner belum ditemukan.')
+        const storedLearner: StoredLearnerRecord = existingLearner
+            ? {
+                ...existingLearner,
+                name,
+                email,
+                createdAt,
+                lastActiveAt: now(),
+            }
+            : {
+                id: user.id,
+                name,
+                email,
+                createdAt,
+                password: '',
+                memberships: [],
+                lastActiveAt: now(),
+            }
+
+        const learners = existingLearner
+            ? state.learners.map((item) => (item.id === user.id ? storedLearner : item))
+            : [storedLearner, ...state.learners]
+
+        const nextState: StoredLearnerAuthState = {
+            learners,
+            currentLearnerId: user.id,
         }
 
-        if (matchedLearner.password !== password) {
-            throw new Error('Password tidak cocok.')
-        }
-
-        const nextState = updateCurrentLearner(state, matchedLearner.id)
         writeState(nextState)
 
-        return toSnapshot(nextState.learners.find((item) => item.id === matchedLearner.id)) as LearnerAuthSnapshot
+        return toSnapshot(storedLearner) as LearnerAuthSnapshot
     }
 
     async logout() {
+        await supabase.auth.signOut()
+
         const state = readState()
         writeState({
             ...state,
@@ -224,9 +270,9 @@ class MockLearnerAuthService implements LearnerAuthService {
         const nextLearners = state.learners.map((item) =>
             item.id === currentLearner.id
                 ? {
-                      ...item,
-                      lastActiveAt: now(),
-                  }
+                    ...item,
+                    lastActiveAt: now(),
+                }
                 : item,
         )
 
@@ -257,23 +303,23 @@ class MockLearnerAuthService implements LearnerAuthService {
             const memberships =
                 membershipIndex === -1
                     ? [
-                          {
-                              learnerId: item.id,
-                              classId,
-                              joinedAt,
-                              isActive: true,
-                          },
-                          ...item.memberships,
-                      ]
+                        {
+                            learnerId: item.id,
+                            classId,
+                            joinedAt,
+                            isActive: true,
+                        },
+                        ...item.memberships,
+                    ]
                     : item.memberships.map((membership, index) =>
-                          index === membershipIndex
-                              ? {
-                                    ...membership,
-                                    joinedAt: membership.joinedAt,
-                                    isActive: true,
-                                }
-                              : membership,
-                      )
+                        index === membershipIndex
+                            ? {
+                                ...membership,
+                                joinedAt: membership.joinedAt,
+                                isActive: true,
+                            }
+                            : membership,
+                    )
 
             return {
                 ...item,
