@@ -1,5 +1,5 @@
 export interface Room {
-  id: string
+  id: number
   roomName: string
   roomCode: string
   masterId: string

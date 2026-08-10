@@ -39,7 +39,7 @@ export interface Mentor {
 }
 
 export interface Class {
-    id: string
+    id: number
     code: string
     name: string
     mentorId: string
@@ -61,7 +61,7 @@ export interface FeedbackSession {
 
 export interface FeedbackResponse {
     id: string
-    roomId: string
+    roomId: number
     memberId?: string | null
     selectedMood: string
     reflectionAnswers: FeedbackAnswerMap

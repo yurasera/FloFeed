@@ -21,7 +21,7 @@ export function RoomJoinPage() {
     const [isChecking, setIsChecking] = useState(false)
     const { feedbackResponses } = useFeedbackData()
     const { learner } = useLearnerAuth()
-    const [roomsWithFeedback, setRoomsWithFeedback] = useState<Array<{ id: string; name: string; code?: string }>>([])
+    const [roomsWithFeedback, setRoomsWithFeedback] = useState<Array<{ id: number; name: string; code?: string }>>([])
 
     const handleCodeChange = (newCode: string) => {
         setCode(newCode)
@@ -78,7 +78,7 @@ export function RoomJoinPage() {
     }
 
     const selectedRoomAlreadyFilled = roomInfo
-        ? feedbackResponses.some((r) => r.roomId === roomInfo.id && r.memberId && learner?.id && r.memberId === learner.id)
+        ? feedbackResponses.some((r) => r.roomId == roomInfo.id && r.memberId && learner?.id && r.memberId === learner.id)
         : false
 
     useEffect(() => {
@@ -93,7 +93,7 @@ export function RoomJoinPage() {
                             .map((r) => r.roomId),
                     ),
                 )
-                const fetched: Array<{ id: string; name: string; code?: string }> = []
+                const fetched: Array<{ id: number; name: string; code?: string }> = []
                 await Promise.all(
                     uniqueRoomIds.map(async (roomId) => {
                         try {

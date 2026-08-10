@@ -1,22 +1,8 @@
-import { useEffect } from 'react'
-import { StepFlow } from './StepFlow'
-import { useFeedbackFlow } from '../hooks/useFeedbackFlow'
-import { useFeedbackFlowState } from '../context/feedbackFlowState'
-import { useFeedbackData } from '../context/feedbackDataContext'
-import { feedbackService } from '../services/feedbackService'
 import { useLearnerAuth } from '../context/learnerAuthContext'
-import { completionService } from '../services/completionService'
 import { Card } from './Card'
-import { Link } from 'react-router-dom'
 
 function LearnerSessionBanner() {
     const { learner, session, memberships, logoutLearner, touchSession } = useLearnerAuth()
-
-    // useEffect(() => {
-    //     if (learner) {
-    //         void touchSession()
-    //     }
-    // }, [learner, touchSession])
 
     if (!learner || !session) {
         return null
@@ -40,34 +26,6 @@ function LearnerSessionBanner() {
 }
 
 export function FeedbackFlowScreen() {
-    const { resetFeedbackFlowState, selectedMood, reflectionAnswers, selectedClass } = useFeedbackFlowState()
-    const { refreshFeedback } = useFeedbackData()
-    const { learner } = useLearnerAuth()
-
-    const handleComplete = async () => {
-        if (!selectedClass) {
-            resetFeedbackFlowState()
-            return
-        }
-
-        await feedbackService.createFeedback({
-            roomId: selectedClass.id,
-            memberId: learner?.id ?? null,
-            selectedMood,
-            reflectionAnswers,
-        })
-
-        // Record completion for authenticated learner
-        if (learner && learner.id) {
-            await completionService.recordCompletion(learner.id, selectedClass.id)
-        }
-
-        await refreshFeedback()
-        resetFeedbackFlowState()
-    }
-
- 
-
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900">
             <main className="space-y-6">
@@ -76,8 +34,6 @@ export function FeedbackFlowScreen() {
                         <LearnerSessionBanner />
                     </div>
                 </div>
-
-               
             </main>
         </div>
     )

@@ -7,7 +7,7 @@ function generateRoomCode() {
 }
 
 function mapRoomRow(row: {
-    id: string
+    id: number
     room_name: string
     room_code: string
     master_id: string
@@ -55,7 +55,7 @@ export const roomService = {
         return data ? mapRoomRow(data) : null
     },
 
-    async getRoomById(roomId: string): Promise<Room | null> {
+    async getRoomById(roomId: number): Promise<Room | null> {
         const { data, error } = await supabase
             .from('rooms')
             .select('id, room_name, room_code, master_id, created_at, updated_at')

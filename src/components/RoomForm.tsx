@@ -20,7 +20,10 @@ export function RoomForm({ initialName = '', onSubmit, onCancel, submitLabel = '
       return
     }
 
-    onSubmit({ roomName: roomName.trim() })
+    onSubmit({
+        roomName: roomName.trim(),
+        masterId: ''
+    })
     setRoomName('')
   }
 
