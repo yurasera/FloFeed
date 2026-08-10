@@ -8,6 +8,7 @@ import { PrimaryButton } from '../components/PrimaryButton'
 import { SecondaryButton } from '../components/SecondaryButton'
 import { useFeedbackFlowState } from '../context/feedbackFlowState'
 import { useFeedbackData } from '../context/feedbackDataContext'
+import { useLearnerAuth } from '../context/learnerAuthContext'
 import { roomService } from '../services/roomService'
 import type { Class } from '../types/feedback'
 
@@ -19,6 +20,7 @@ export function RoomJoinPage() {
     const [roomInfo, setRoomInfo] = useState<Class | null>(null)
     const [isChecking, setIsChecking] = useState(false)
     const { feedbackResponses } = useFeedbackData()
+    const { learner } = useLearnerAuth()
     const [roomsWithFeedback, setRoomsWithFeedback] = useState<Array<{ id: string; name: string; code?: string }>>([])
 
     const handleCodeChange = (newCode: string) => {
@@ -80,13 +82,18 @@ export function RoomJoinPage() {
 
         const loadRooms = async () => {
             try {
-                const uniqueClassIds = Array.from(new Set(feedbackResponses.map((r) => r.classId)))
+                const uniqueRoomIds = Array.from(
+                    new Set(
+                        feedbackResponses
+                            .filter((r) => r.memberId && learner?.id && r.memberId === learner.id)
+                            .map((r) => r.roomId),
+                    ),
+                )
                 const fetched: Array<{ id: string; name: string; code?: string }> = []
-
                 await Promise.all(
-                    uniqueClassIds.map(async (classId) => {
+                    uniqueRoomIds.map(async (roomId) => {
                         try {
-                            const room = await roomService.getRoomById(classId)
+                            const room = await roomService.getRoomById(roomId)
                             if (room) {
                                 fetched.push({ id: room.id, name: room.roomName, code: room.roomCode })
                             }
@@ -109,7 +116,7 @@ export function RoomJoinPage() {
         return () => {
             mounted = false
         }
-    }, [feedbackResponses])
+    }, [feedbackResponses, learner?.id])
 
     return (
         <PageContainer className="py-10">
