@@ -82,6 +82,7 @@ export function RoomFeedbackPage() {
         try {
             await feedbackService.createFeedback({
                 roomId: selectedClass.id,
+                memberId: learner?.id ?? null,
                 selectedMood: rating.toString(),
                 reflectionAnswers: answers,
             })

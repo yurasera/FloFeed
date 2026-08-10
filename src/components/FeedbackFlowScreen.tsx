@@ -52,7 +52,8 @@ export function FeedbackFlowScreen() {
         }
 
         await feedbackService.createFeedback({
-            classId: selectedClass.id,
+            roomId: selectedClass.id,
+            memberId: learner?.id ?? null,
             selectedMood,
             reflectionAnswers,
         })

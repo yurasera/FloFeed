@@ -62,6 +62,7 @@ export interface FeedbackSession {
 export interface FeedbackResponse {
     id: string
     roomId: string
+    memberId?: string | null
     selectedMood: string
     reflectionAnswers: FeedbackAnswerMap
     createdAt: string

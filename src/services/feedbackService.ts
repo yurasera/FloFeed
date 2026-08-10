@@ -11,6 +11,7 @@ export interface FeedbackService {
 type FeedbackResponseRow = {
     id: string
     room_id: string
+    member_id: string | null
     selected_mood: string
     reflection_answers: Record<string, string>
     created_at: string
@@ -19,6 +20,7 @@ type FeedbackResponseRow = {
 const mapRowToFeedbackResponse = (row: FeedbackResponseRow): FeedbackResponse => ({
     id: row.id,
     roomId: row.room_id,
+    memberId: row.member_id ?? null,
     selectedMood: row.selected_mood,
     reflectionAnswers: row.reflection_answers,
     createdAt: row.created_at,
@@ -79,6 +81,7 @@ export class SupabaseFeedbackService implements FeedbackService {
             .insert([
                 {
                     room_id: payload.roomId,
+                    member_id: (payload as any).memberId ?? null,
                     selected_mood: payload.selectedMood,
                     reflection_answers: payload.reflectionAnswers,
                 },
@@ -99,7 +102,7 @@ export class SupabaseFeedbackService implements FeedbackService {
     async getFeedbackByClass(roomId: string): Promise<FeedbackResponse[]> {
         const { data, error } = await supabase
             .from<FeedbackResponseRow>('feedback_responses')
-            .select('id,room_id,selected_mood,reflection_answers,created_at')
+            .select('id,room_id,member_id,selected_mood,reflection_answers,created_at')
             .eq('room_id', roomId)
             .order('created_at', { ascending: false })
 
@@ -113,7 +116,7 @@ export class SupabaseFeedbackService implements FeedbackService {
     async getAllFeedback(): Promise<FeedbackResponse[]> {
         const { data, error } = await supabase
             .from<FeedbackResponseRow>('feedback_responses')
-            .select('id,room_id,selected_mood,reflection_answers,created_at')
+            .select('id,room_id,member_id,selected_mood,reflection_answers,created_at')
             .order('created_at', { ascending: false })
 
         if (error) {
