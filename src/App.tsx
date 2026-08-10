@@ -9,7 +9,6 @@ import { LoginPage } from './pages/LoginPage'
 import { MentorClassManagementPage } from './pages/MentorClassManagementPage'
 import { MentorInsightDashboardPage } from './pages/MentorInsightDashboardPage'
 import { RegisterPage } from './pages/RegisterPage'
-import { FeedbackHistoryPage } from './pages/FeedbackHistoryPage'
 import { RoomPage } from './pages/RoomPage'
 import { RoomJoinPage } from './pages/RoomJoinPage'
 import { RoomFeedbackPage } from './pages/RoomFeedbackPage'
@@ -34,7 +33,6 @@ function AppRouter() {
                 <Route path="/room/join" element={<RoomJoinPage />} />
                 <Route path="/room/feedback" element={<RoomFeedbackPage />} />
                 <Route path="/mentor" element={<Navigate to="/mentor/classes" replace />} />
-                <Route path="/history" element={<FeedbackHistoryPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </>

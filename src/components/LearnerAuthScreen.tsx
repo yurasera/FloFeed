@@ -149,44 +149,6 @@ export function LearnerAuthScreen({ mode }: LearnerAuthScreenProps) {
                                 <p className="mt-1 text-sm leading-6 text-slate-600">Service layer siap diganti ke Supabase Auth tanpa ubah UI utama.</p>
                             </div>
                         </div>
-
-                        <div className="rounded-3xl border border-blue-100 bg-white/80 p-5 shadow-sm">
-                            <p className="text-sm font-semibold text-blue-700">Current session</p>
-                            {isAuthenticated && learner && session ? (
-                                <div className="mt-3 space-y-2 text-sm text-slate-600">
-                                    <p>
-                                        Signed in as <span className="font-semibold text-slate-900">{learner.name}</span>
-                                    </p>
-                                    <p>{learner.email}</p>
-                                    <p>Last active: {new Date(session.lastActiveAt).toLocaleString('id-ID')}</p>
-                                    <div className="flex flex-wrap gap-3 pt-2">
-                                        <Link
-                                            to="/feedback"
-                                            className="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
-                                        >
-                                            Continue feedback
-                                        </Link>
-                                        <Link
-                                            to="/history"
-                                            className="inline-flex items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100"
-                                        >
-                                            Riwayat
-                                        </Link>
-                                        <button
-                                            type="button"
-                                            onClick={() => void logoutLearner()}
-                                            className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
-                                        >
-                                            Sign out
-                                        </button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <p className="mt-3 text-sm leading-6 text-slate-600">
-                                    Belum ada sesi aktif. Login atau buat akun baru untuk menyimpan status sesi dan melanjutkan ke feedback.
-                                </p>
-                            )}
-                        </div>
                     </div>
                 </Card>
 
