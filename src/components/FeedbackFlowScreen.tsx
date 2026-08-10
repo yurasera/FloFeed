@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { StepFlow } from './StepFlow'
-import { feedbackSteps } from '../data/feedbackSteps'
 import { useFeedbackFlow } from '../hooks/useFeedbackFlow'
 import { useFeedbackFlowState } from '../context/feedbackFlowState'
 import { useFeedbackData } from '../context/feedbackDataContext'
@@ -67,10 +66,7 @@ export function FeedbackFlowScreen() {
         resetFeedbackFlowState()
     }
 
-    const { currentStepIndex, handlePrevious, handleNext, handleComplete: handleFlowComplete } = useFeedbackFlow(
-        feedbackSteps.length,
-        handleComplete,
-    )
+ 
 
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -81,13 +77,7 @@ export function FeedbackFlowScreen() {
                     </div>
                 </div>
 
-                <StepFlow
-                    steps={feedbackSteps}
-                    currentStepIndex={currentStepIndex}
-                    onPrevious={handlePrevious}
-                    onNext={handleNext}
-                    onComplete={handleFlowComplete}
-                />
+               
             </main>
         </div>
     )
