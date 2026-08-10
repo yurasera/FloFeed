@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { PageContainer } from '../components/PageContainer'
 import { useFeedbackFlowState } from '../context/feedbackFlowState'
+import { useFeedbackData } from '../context/feedbackDataContext'
+import { feedbackService } from '../services/feedbackService'
+import { useLearnerAuth } from '../context/learnerAuthContext'
+import { completionService } from '../services/completionService'
 
 type DemoAnswers = {
     standout: string
@@ -33,11 +37,15 @@ const feedbackQuestions: Array<{ key: keyof DemoAnswers; label: string }> = [
 export function RoomFeedbackPage() {
     const navigate = useNavigate()
     const { selectedClass } = useFeedbackFlowState()
+    const { refreshFeedback } = useFeedbackData()
+    const { learner } = useLearnerAuth()
     const [rating, setRating] = useState(5)
     const [answers, setAnswers] = useState<DemoAnswers>(defaultAnswers)
     const [stepIndex, setStepIndex] = useState(0)
     const [submitted, setSubmitted] = useState(false)
     const [animationState, setAnimationState] = useState<'idle' | 'loading' | 'done'>('idle')
+    const [submissionError, setSubmissionError] = useState('')
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const totalSteps = feedbackQuestions.length + 1
     const isRatingStep = stepIndex === 0
     const currentQuestion = stepIndex > 0 ? feedbackQuestions[stepIndex - 1] : null
@@ -62,6 +70,35 @@ export function RoomFeedbackPage() {
 
         return () => window.clearTimeout(timer)
     }, [submitted, animationState])
+
+    const handleSubmitFeedback = async () => {
+        if (!selectedClass) {
+            return
+        }
+
+        setSubmissionError('')
+        setIsSubmitting(true)
+
+        try {
+            await feedbackService.createFeedback({
+                roomId: selectedClass.id,
+                selectedMood: rating.toString(),
+                reflectionAnswers: answers,
+            })
+
+            if (learner?.id) {
+                await completionService.recordCompletion(learner.id, selectedClass.id)
+            }
+
+            await refreshFeedback()
+            setSubmitted(true)
+            setAnimationState('loading')
+        } catch (error) {
+            setSubmissionError(error instanceof Error ? error.message : 'Gagal menyimpan feedback. Silakan coba lagi.')
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
 
     return (
         <PageContainer className="min-h-screen w-full">
@@ -154,17 +191,22 @@ export function RoomFeedbackPage() {
                                             if (stepIndex < totalSteps - 1) {
                                                 setStepIndex(stepIndex + 1)
                                             } else {
-                                                setSubmitted(true)
-                                                setAnimationState('loading')
+                                                void handleSubmitFeedback()
                                             }
                                         }}
-                                        disabled={isCurrentAnswerEmpty}
-                                        className={`inline-flex min-w-[240px] items-center justify-center rounded-full px-8 py-4 text-base font-semibold text-white transition ${isCurrentAnswerEmpty ? 'cursor-not-allowed bg-slate-300 text-slate-500' : 'bg-blue-600 hover:bg-blue-500'}`}
+                                        disabled={isCurrentAnswerEmpty || isSubmitting}
+                                        className={`inline-flex min-w-[240px] items-center justify-center rounded-full px-8 py-4 text-base font-semibold text-white transition ${isCurrentAnswerEmpty || isSubmitting ? 'cursor-not-allowed bg-slate-300 text-slate-500' : 'bg-blue-600 hover:bg-blue-500'}`}
                                     >
-                                        {stepIndex < totalSteps - 1 ? 'Continue' : 'Submit Feedback'}
+                                        {isSubmitting ? 'Submitting...' : stepIndex < totalSteps - 1 ? 'Continue' : 'Submit Feedback'}
                                     </button>
                                 </div>
                             </div>
+
+                            {submissionError ? (
+                                <div className="rounded-3xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+                                    {submissionError}
+                                </div>
+                            ) : null}
                         </div>
                     ) : animationState === 'loading' ? (
                         <div className="space-y-10 text-center">

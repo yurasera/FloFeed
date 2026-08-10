@@ -61,14 +61,14 @@ export interface FeedbackSession {
 
 export interface FeedbackResponse {
     id: string
-    classId: string
+    roomId: string
     selectedMood: string
     reflectionAnswers: FeedbackAnswerMap
     createdAt: string
 }
 
 export interface FeedbackSummary {
-    classId: string
+    roomId: string
     totalResponses: number
     moodDistribution: Record<string, number>
     commonReflection: string
