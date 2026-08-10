@@ -204,14 +204,35 @@ class MockLearnerAuthService implements LearnerAuthService {
             throw new Error('Gagal melakukan autentikasi learner.')
         }
 
+        const userMetadata = user.user_metadata as { full_name?: string } | null
+        const fallbackName = userMetadata?.full_name ?? email
+
         const profileQuery = await supabase
             .from('profiles')
             .select('full_name')
             .eq('id', user.id)
             .single()
 
-        const userMetadata = user.user_metadata as { full_name?: string } | null
-        const name = profileQuery.data?.full_name ?? userMetadata?.full_name ?? email
+        let name = profileQuery.data?.full_name ?? fallbackName
+
+        if (!profileQuery.data) {
+            if (profileQuery.error && profileQuery.error.code !== 'PGRST116') {
+                throw new Error(profileQuery.error.message)
+            }
+
+            const insertProfile = await supabase.from('profiles').insert({
+                id: user.id,
+                full_name: fallbackName,
+                role: 'learner',
+            }).select('full_name').single()
+
+            if (insertProfile.error) {
+                throw new Error(insertProfile.error.message)
+            }
+
+            name = insertProfile.data?.full_name ?? fallbackName
+        }
+
         const createdAt = user.created_at ?? now()
 
         const state = readState()
