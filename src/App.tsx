@@ -6,8 +6,6 @@ import { FeedbackPage } from './pages/FeedbackPage'
 import { HomePage } from './pages/HomePage'
 import { DemoFeedbackPage } from './pages/DemoFeedbackPage'
 import { LoginPage } from './pages/LoginPage'
-import { MentorClassManagementPage } from './pages/MentorClassManagementPage'
-import { MentorInsightDashboardPage } from './pages/MentorInsightDashboardPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { RoomPage } from './pages/RoomPage'
 import { RoomJoinPage } from './pages/RoomJoinPage'
@@ -27,8 +25,6 @@ function AppRouter() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/feedback" element={<FeedbackPage />} />
-                <Route path="/mentor/classes" element={<MentorClassManagementPage />} />
-                <Route path="/mentor/insights" element={<MentorInsightDashboardPage />} />
                 <Route path="/room" element={<RoomPage />} />
                 <Route path="/room/join" element={<RoomJoinPage />} />
                 <Route path="/room/feedback" element={<RoomFeedbackPage />} />

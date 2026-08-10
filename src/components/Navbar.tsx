@@ -5,8 +5,6 @@ const navItems = [
     { label: 'Home', to: '/feedback' },
     { label: 'Room', to: '/room' },
     { label: 'Join Room', to: '/room/join' },
-    { label: 'Mentor Classes', to: '/mentor/classes' },
-    { label: 'Mentor Insights', to: '/mentor/insights' },
 ]
 
 function normalizePath(path: string) {
