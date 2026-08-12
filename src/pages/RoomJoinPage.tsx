@@ -199,11 +199,13 @@ export function RoomJoinPage() {
                         {roomsWithFeedback.length > 0 ? (
                             <div className="mt-4">
                                 <p className="text-sm font-semibold text-slate-700">Rooms dengan feedback</p>
-                                <ul className="mt-2 space-y-2 text-sm text-slate-700">
+                                <ul className="mt-2 space-y-3 text-sm text-slate-700">
                                     {roomsWithFeedback.map((r) => (
-                                        <li key={r.id} className="flex items-center justify-between">
-                                            <span className="font-medium">{r.name}</span>
-                                            {r.code ? <span className="text-slate-500">{r.code}</span> : null}
+                                        <li key={r.id} className="rounded-3xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                                            <div className="flex items-center justify-between gap-4">
+                                                <span className="font-medium text-slate-800">{r.name}</span>
+                                                {r.code ? <span className="text-slate-500">{r.code}</span> : null}
+                                            </div>
                                         </li>
                                     ))}
                                 </ul>
