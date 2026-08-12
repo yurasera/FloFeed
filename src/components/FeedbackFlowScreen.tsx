@@ -1,5 +1,7 @@
 import { useLearnerAuth } from '../context/learnerAuthContext'
+import { useState } from 'react'
 import { Card } from './Card'
+import { ClassCodeInput } from './ClassCodeInput'
 
 function LearnerSessionBanner() {
     const { learner, session, memberships, logoutLearner, touchSession } = useLearnerAuth()
@@ -26,12 +28,32 @@ function LearnerSessionBanner() {
 }
 
 export function FeedbackFlowScreen() {
+    const [code, setCode] = useState('')
+    const [error, setError] = useState('')
+    const [isChecking, setIsChecking] = useState(false)
+
+    const handleCodeChange = (newCode: string) => {
+        setCode(newCode)
+        if (error) {
+            setError('')
+        }
+    }
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900">
             <main className="space-y-6">
                 <div className="border-b border-slate-200/70 bg-white/80 backdrop-blur">
                     <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8">
                         <LearnerSessionBanner />
+                        <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                            <ClassCodeInput
+                                value={code}
+                                onChange={handleCodeChange}
+                                error={error}
+                                label="Kode Room"
+                                placeholder="Contoh: ABC123"
+                                disabled={isChecking}
+                            />
+                        </div>
                     </div>
                 </div>
             </main>
