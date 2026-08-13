@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PageContainer } from '../components/PageContainer'
+import { PageContainer } from '../components/layout/PageContainer'
 import { useFeedbackFlowState } from '../context/feedbackFlowState'
 import { useFeedbackData } from '../context/feedbackDataContext'
 import { feedbackService } from '../services/feedbackService'

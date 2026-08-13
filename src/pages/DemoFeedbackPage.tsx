@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { PageContainer } from '../components/PageContainer'
+import { PageContainer } from '../components/layout/PageContainer'
 
 type DemoAnswers = {
     standout: string

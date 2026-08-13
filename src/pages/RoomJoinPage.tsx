@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PageContainer } from '../components/PageContainer'
+import { PageContainer } from '../components/layout/PageContainer'
 import { Card } from '../components/ui/Card'
 import { SectionTitle } from '../components/SectionTitle'
 import { RoomCodeInputCard } from '../components/RoomCodeInputCard'

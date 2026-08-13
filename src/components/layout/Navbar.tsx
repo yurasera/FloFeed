@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useLearnerAuth } from '../context/learnerAuthContext'
+import { useLearnerAuth } from '../../context/learnerAuthContext'
 
 const navItems = [
     { label: 'Home', to: '/feedback' },

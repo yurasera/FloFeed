@@ -10,7 +10,7 @@ import { RegisterPage } from './pages/RegisterPage'
 import { RoomPage } from './pages/RoomPage'
 import { RoomJoinPage } from './pages/RoomJoinPage'
 import { RoomFeedbackPage } from './pages/RoomFeedbackPage'
-import { Navbar } from './components/Navbar'
+import { Navbar } from './components/layout/Navbar'
 
 function AppRouter() {
     const location = useLocation()

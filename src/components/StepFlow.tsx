@@ -1,5 +1,5 @@
 import { Card } from './ui/Card'
-import { PageContainer } from './PageContainer'
+import { PageContainer } from './layout/PageContainer'
 import { ProgressBar } from './ui/ProgressBar'
 import { SectionTitle } from './SectionTitle'
 import { StepNavigator } from './StepNavigator'

@@ -1,7 +1,7 @@
 import { useEffect, useId, useMemo, useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Card } from './ui/Card'
-import { PageContainer } from './PageContainer'
+import { PageContainer } from './layout/PageContainer'
 import { PrimaryButton } from './ui/PrimaryButton'
 import { SectionTitle } from './SectionTitle'
 import { ShieldIcon } from './ShieldIcon'

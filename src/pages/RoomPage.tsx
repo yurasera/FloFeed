@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { PageContainer } from '../components/PageContainer'
+import { PageContainer } from '../components/layout/PageContainer'
 import { Card } from '../components/ui/Card'
 import { SectionTitle } from '../components/SectionTitle'
 import { RoomForm } from '../components/RoomForm'
