@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { Card } from '../components/Card'
+import { Card } from '../components/ui/Card'
 import { PageContainer } from '../components/PageContainer'
 import { SectionTitle } from '../components/SectionTitle'
 import { useLearnerAuth } from '../context/learnerAuthContext'

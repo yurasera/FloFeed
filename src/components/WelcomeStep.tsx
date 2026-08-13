@@ -1,4 +1,4 @@
-import { PrimaryButton } from './PrimaryButton'
+import { PrimaryButton } from './ui/PrimaryButton'
 import { ShieldIcon } from './ShieldIcon'
 import { IllustrationPlaceholder } from './IllustrationPlaceholder'
 import { StepSectionHeader } from './StepSectionHeader'

@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { PrimaryButton } from './PrimaryButton'
-import { SecondaryButton } from './SecondaryButton'
+import { PrimaryButton } from './ui/PrimaryButton'
+import { SecondaryButton } from './ui/SecondaryButton'
 import { StepSectionHeader } from './StepSectionHeader'
 import { StepShell } from './StepShell'
 import { ClassCodeInput } from './ClassCodeInput'

@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { PrimaryButton } from './PrimaryButton'
-import { SecondaryButton } from './SecondaryButton'
+import { PrimaryButton } from './ui/PrimaryButton'
+import { SecondaryButton } from './ui/SecondaryButton'
 import type { RoomCreateInput, RoomUpdateInput } from '../types/room'
 
 type RoomFormProps = {
@@ -21,8 +21,8 @@ export function RoomForm({ initialName = '', onSubmit, onCancel, submitLabel = '
     }
 
     onSubmit({
-        roomName: roomName.trim(),
-        masterId: ''
+      roomName: roomName.trim(),
+      masterId: ''
     })
     setRoomName('')
   }

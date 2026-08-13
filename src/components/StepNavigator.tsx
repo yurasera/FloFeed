@@ -1,5 +1,5 @@
-import { PrimaryButton } from './PrimaryButton'
-import { SecondaryButton } from './SecondaryButton'
+import { PrimaryButton } from './ui/PrimaryButton'
+import { SecondaryButton } from './ui/SecondaryButton'
 
 type StepNavigatorProps = {
     isFirstStep: boolean

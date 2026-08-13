@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { PageContainer } from '../components/PageContainer'
-import { Card } from '../components/Card'
+import { Card } from '../components/ui/Card'
 import { SectionTitle } from '../components/SectionTitle'
 import { RoomForm } from '../components/RoomForm'
 import { roomService } from '../services/roomService'
@@ -103,7 +103,7 @@ export function RoomPage() {
     if (rooms.length === 0) {
       return 'Belum ada room.'
     }
-    return `${rooms.length} room` 
+    return `${rooms.length} room`
   }, [rooms.length])
 
   return (
