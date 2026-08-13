@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { Card } from './ui/Card'
-import { SectionTitle } from './SectionTitle'
-import { PrimaryButton } from './ui/PrimaryButton'
-import { SecondaryButton } from './ui/SecondaryButton'
-import { ClassCodeInput } from './ClassCodeInput'
-import { roomService } from '../services/roomService'
-import type { Class } from '../types/feedback'
+import { Card } from '../../../components/ui/Card'
+import { SectionTitle } from '../../../components/SectionTitle'
+import { PrimaryButton } from '../../../components/ui/PrimaryButton'
+import { SecondaryButton } from '../../../components/ui/SecondaryButton'
+import { ClassCodeInput } from '../../../components/ClassCodeInput'
+import { roomService } from '../../../services/roomService'
+import type { Class } from '../../../types/feedback'
 
 type RoomCodeInputCardProps = {
     eyebrow: string

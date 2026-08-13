@@ -1,11 +1,11 @@
-import { Card } from './ui/Card'
-import { PageContainer } from './layout/PageContainer'
-import { ProgressBar } from './ui/ProgressBar'
-import { SectionTitle } from './SectionTitle'
+import { Card } from '../ui/Card'
+import { PageContainer } from '../layout/PageContainer'
+import { ProgressBar } from '../ui/ProgressBar'
+import { SectionTitle } from '../SectionTitle'
 import { StepNavigator } from './StepNavigator'
 import { StepPanel } from './StepPanel'
 import type { ReactNode } from 'react'
-import type { FeedbackFlowActions, FeedbackStepDefinition } from '../types/feedback'
+import type { FeedbackFlowActions, FeedbackStepDefinition } from '../../types/feedback'
 
 type StepFlowProps = {
     steps: FeedbackStepDefinition[]

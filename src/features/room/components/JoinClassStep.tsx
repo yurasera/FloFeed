@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { PrimaryButton } from './ui/PrimaryButton'
-import { SecondaryButton } from './ui/SecondaryButton'
-import { StepSectionHeader } from './StepSectionHeader'
-import { StepShell } from './StepShell'
-import { ClassCodeInput } from './ClassCodeInput'
-import { useFeedbackFlowState } from '../context/feedbackFlowState'
-import { roomService } from '../services/roomService'
-import type { Class } from '../types/feedback'
+import { PrimaryButton } from '../../../components/ui/PrimaryButton'
+import { SecondaryButton } from '../../../components/ui/SecondaryButton'
+import { StepSectionHeader } from '../../../components/flow/StepSectionHeader'
+import { StepShell } from '../../../components/flow/StepShell'
+import { ClassCodeInput } from '../../../components/ClassCodeInput'
+import { useFeedbackFlowState } from '../../../context/feedbackFlowState'
+import { roomService } from '../../../services/roomService'
+import type { Class } from '../../../types/feedback'
 
 type JoinClassStepProps = {
     onNext: () => void

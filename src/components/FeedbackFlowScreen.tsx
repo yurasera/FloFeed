@@ -1,7 +1,7 @@
 import { useLearnerAuth } from '../context/learnerAuthContext'
 import { useNavigate } from 'react-router-dom'
 import { Card } from './ui/Card'
-import { RoomCodeInputCard } from './RoomCodeInputCard'
+import { RoomCodeInputCard } from '../features/room/components/RoomCodeInputCard'
 
 function LearnerSessionBanner() {
     const { learner, session, memberships, logoutLearner, touchSession } = useLearnerAuth()

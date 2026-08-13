@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { PrimaryButton } from './ui/PrimaryButton'
-import { SecondaryButton } from './ui/SecondaryButton'
-import type { ClassCreationForm, Mentor } from '../types/feedback'
+import { PrimaryButton } from '../../../components/ui/PrimaryButton'
+import { SecondaryButton } from '../../../components/ui/SecondaryButton'
+import type { ClassCreationForm, Mentor } from '../../../types/feedback'
 
 type CreateClassFormProps = {
     mentors: Mentor[]

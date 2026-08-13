@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { PrimaryButton } from './ui/PrimaryButton'
-import { SecondaryButton } from './ui/SecondaryButton'
-import type { RoomCreateInput, RoomUpdateInput } from '../types/room'
+import { PrimaryButton } from '../../../components/ui/PrimaryButton'
+import { SecondaryButton } from '../../../components/ui/SecondaryButton'
+import type { RoomCreateInput, RoomUpdateInput } from '../../../types/room'
 
 type RoomFormProps = {
   initialName?: string
