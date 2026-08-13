@@ -1,6 +1,6 @@
-import { PrimaryButton } from './ui/PrimaryButton'
-import { ConfettiDecoration } from './ConfettiDecoration'
-import { IllustrationPlaceholder } from './IllustrationPlaceholder'
+import { PrimaryButton } from '../../../components/ui/PrimaryButton'
+import { ConfettiDecoration } from '../../../components/ConfettiDecoration'
+import { IllustrationPlaceholder } from '../../../components/IllustrationPlaceholder'
 import { StepSectionHeader } from './StepSectionHeader'
 import { StepShell } from './StepShell'
 

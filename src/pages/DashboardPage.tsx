@@ -1,5 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom'
-import { FeedbackFlowScreen } from '../components/FeedbackFlowScreen'
+import { FeedbackFlowScreen } from '../features/feedback/components/FeedbackFlowScreen'
 import { useLearnerAuth } from '../context/learnerAuthContext'
 
 export function DashboardPage() {

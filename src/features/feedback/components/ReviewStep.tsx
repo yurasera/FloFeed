@@ -1,12 +1,12 @@
-import { Card } from './ui/Card'
-import { PrimaryButton } from './ui/PrimaryButton'
-import { SecondaryButton } from './ui/SecondaryButton'
-import { getReflectionQuestions } from '../data/reflectionQuestions'
-import { useFeedbackFlowState } from '../context/feedbackFlowState'
-import { StepSectionHeader } from './StepSectionHeader'
-import { StepShell } from './StepShell'
-import type { MoodSummary } from '../types/feedback'
-import { InlineStateMessage } from './ui/InlineStateMessage'
+import { Card } from '../../../components/ui/Card'
+import { PrimaryButton } from '../../../components/ui/PrimaryButton'
+import { SecondaryButton } from '../../../components/ui/SecondaryButton'
+import { getReflectionQuestions } from '../../../data/reflectionQuestions'
+import { useFeedbackFlowState } from '../../../context/feedbackFlowState'
+import { StepSectionHeader } from '../../../components/flow/StepSectionHeader'
+import { StepShell } from '../../../components/flow/StepShell'
+import type { MoodSummary } from '../../../types/feedback'
+import { InlineStateMessage } from '../../../components/ui/InlineStateMessage'
 
 type ReviewStepProps = {
     onPrevious: () => void

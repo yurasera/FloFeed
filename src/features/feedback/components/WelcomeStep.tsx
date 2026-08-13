@@ -1,6 +1,6 @@
-import { PrimaryButton } from './ui/PrimaryButton'
-import { ShieldIcon } from './ShieldIcon'
-import { IllustrationPlaceholder } from './IllustrationPlaceholder'
+import { PrimaryButton } from '../../../components/ui/PrimaryButton'
+import { ShieldIcon } from '../../../components/ShieldIcon'
+import { IllustrationPlaceholder } from '../../../components/IllustrationPlaceholder'
 import { StepSectionHeader } from './StepSectionHeader'
 import { StepShell } from './StepShell'
 
