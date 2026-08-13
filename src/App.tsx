@@ -2,7 +2,7 @@ import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-d
 import { FeedbackDataProvider } from './context/feedbackDataContext'
 import { FeedbackFlowStateProvider } from './context/feedbackFlowState'
 import { LearnerAuthProvider } from './context/learnerAuthContext'
-import { FeedbackPage } from './pages/FeedbackPage'
+import { FeedbackPage } from './pages/DashboardPage'
 import { HomePage } from './pages/HomePage'
 import { DemoFeedbackPage } from './pages/DemoFeedbackPage'
 import { LoginPage } from './pages/LoginPage'
