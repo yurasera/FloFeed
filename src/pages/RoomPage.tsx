@@ -7,6 +7,7 @@ import { roomService } from '../services/roomService'
 import { feedbackService } from '../services/feedbackService'
 import { useLearnerAuth } from '../context/learnerAuthContext'
 import type { Room } from '../types/room'
+import type { FeedbackResponse } from '../types/feedback'
 
 export function RoomPage() {
   const { learner, isAuthenticated } = useLearnerAuth()
@@ -15,6 +16,8 @@ export function RoomPage() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedFeedbackRoom, setSelectedFeedbackRoom] = useState<Room | null>(null)
+  const [feedbackList, setFeedbackList] = useState<FeedbackResponse[]>([])
   const [feedbackCounts, setFeedbackCounts] = useState<Record<number, number>>({})
 
   const masterId = learner?.id ?? ''
@@ -61,6 +64,48 @@ export function RoomPage() {
     }
   }, [rooms])
 
+  const handleViewFeedback = async (room: Room) => {
+    try {
+      const feedbacks = await feedbackService.getFeedbackByClass(room.id)
+      setFeedbackList(feedbacks)
+      setSelectedFeedbackRoom(room)
+    } catch (err) {
+      console.error('Gagal memuat feedback:', err)
+    }
+  }
+
+  const calculateFeedbackInsights = (feedbacks: FeedbackResponse[]) => {
+    if (feedbacks.length === 0) {
+      return {
+        totalResponses: 0,
+        moodDistribution: {} as Record<string, number>,
+        commonThemes: [] as string[],
+      }
+    }
+
+    const moodDistribution: Record<string, number> = {}
+    const allAnswers: string[] = []
+
+    feedbacks.forEach((feedback) => {
+      moodDistribution[feedback.selectedMood] = (moodDistribution[feedback.selectedMood] || 0) + 1
+      Object.values(feedback.reflectionAnswers).forEach((answer) => {
+        if (answer && typeof answer === 'string') {
+          allAnswers.push(answer.toLowerCase())
+        }
+      })
+    })
+
+    const commonThemes = allAnswers
+      .filter((answer) => answer.length > 0)
+      .slice(0, 5)
+
+    return {
+      totalResponses: feedbacks.length,
+      moodDistribution,
+      commonThemes,
+    }
+  }
+
   const handleCreateRoom = async (input: { roomName: string }) => {
     if (!masterId) {
       setError('Anda harus login terlebih dahulu.')
@@ -86,7 +131,7 @@ export function RoomPage() {
     setError('')
 
     try {
-      const updatedRoom = await roomService.updateRoom({ id: selectedRoom.id, roomName: input.roomName, masterId })
+      const updatedRoom = await roomService.updateRoom({ id: String(selectedRoom.id), roomName: input.roomName, masterId })
       setRooms((current) => current.map((room) => (room.id === updatedRoom.id ? updatedRoom : room)))
       setSelectedRoom(null)
       setIsFormOpen(false)
@@ -95,13 +140,13 @@ export function RoomPage() {
     }
   }
 
-  const handleDeleteRoom = async (roomId: string) => {
+  const handleDeleteRoom = async (roomId: number) => {
     if (!masterId) {
       return
     }
 
     try {
-      await roomService.deleteRoom(roomId, masterId)
+      await roomService.deleteRoom(String(roomId), masterId)
       setRooms((current) => current.filter((room) => room.id !== roomId))
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Gagal menghapus room.')
@@ -179,7 +224,13 @@ export function RoomPage() {
                     <p>Master ID: {room.masterId}</p>
                     <p>Last updated: {new Date(room.updatedAt).toLocaleDateString('id-ID')}</p>
                     <p className="pt-1 font-semibold text-blue-600">
-                      {feedbackCounts[room.id] ?? 0} feedback terisi
+                      <button
+                        type="button"
+                        onClick={() => void handleViewFeedback(room)}
+                        className="cursor-pointer hover:underline"
+                      >
+                        {feedbackCounts[room.id] ?? 0} feedback terisi
+                      </button>
                     </p>
                   </div>
 
@@ -212,6 +263,104 @@ export function RoomPage() {
           )}
         </section>
       </Card>
+
+      {selectedFeedbackRoom && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <Card className="w-full max-w-2xl max-h-[90vh] space-y-6 overflow-y-auto">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-semibold text-slate-900">{selectedFeedbackRoom.roomName}</h2>
+                <p className="mt-1 text-sm text-slate-600">Feedback Insights & Details</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedFeedbackRoom(null)
+                  setFeedbackList([])
+                }}
+                className="text-2xl text-slate-500 hover:text-slate-700"
+              >
+                ×
+              </button>
+            </div>
+
+            {feedbackList.length === 0 ? (
+              <div className="text-center py-8 text-slate-600">
+                Belum ada feedback untuk room ini.
+              </div>
+            ) : (
+              <>
+                {(() => {
+                  const insights = calculateFeedbackInsights(feedbackList)
+                  return (
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-2 gap-4">
+                        <Card className="p-4 bg-blue-50">
+                          <p className="text-sm text-slate-600">Total Feedback</p>
+                          <p className="text-3xl font-bold text-blue-600">{insights.totalResponses}</p>
+                        </Card>
+                        <Card className="p-4 bg-green-50">
+                          <p className="text-sm text-slate-600">Response Rate</p>
+                          <p className="text-3xl font-bold text-green-600">100%</p>
+                        </Card>
+                      </div>
+
+                      {Object.keys(insights.moodDistribution).length > 0 && (
+                        <div className="space-y-3">
+                          <h3 className="font-semibold text-slate-900">Mood Distribution</h3>
+                          {Object.entries(insights.moodDistribution).map(([mood, count]) => (
+                            <div key={mood} className="space-y-1">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm text-slate-600">{mood}</span>
+                                <span className="font-semibold text-slate-900">{count} ({Math.round((count / insights.totalResponses) * 100)}%)</span>
+                              </div>
+                              <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-blue-500 transition-all"
+                                  style={{ width: `${(count / insights.totalResponses) * 100}%` }}
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="space-y-3">
+                        <h3 className="font-semibold text-slate-900">Feedback Responses</h3>
+                        <div className="space-y-3">
+                          {feedbackList.map((feedback) => (
+                            <Card key={feedback.id} className="p-4 bg-slate-50">
+                              <div className="flex items-start justify-between gap-3 mb-3">
+                                <div>
+                                  <p className="text-sm font-semibold text-slate-900">
+                                    Mood: <span className="text-blue-600">{feedback.selectedMood}</span>
+                                  </p>
+                                  <p className="text-xs text-slate-500">
+                                    {new Date(feedback.createdAt).toLocaleString('id-ID')}
+                                  </p>
+                                </div>
+                              </div>
+                              {Object.entries(feedback.reflectionAnswers).length > 0 && (
+                                <div className="space-y-2 text-sm">
+                                  {Object.entries(feedback.reflectionAnswers).map(([questionId, answer]) => (
+                                    <div key={questionId}>
+                                      <p className="text-slate-600">{answer}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </Card>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })()}
+              </>
+            )}
+          </Card>
+        </div>
+      )}
     </PageContainer>
   )
 }
