@@ -4,6 +4,7 @@ import { Card } from '../components/ui/Card'
 import { SectionTitle } from '../components/SectionTitle'
 import { RoomForm } from '../features/room/components/RoomForm'
 import { roomService } from '../services/roomService'
+import { feedbackService } from '../services/feedbackService'
 import { useLearnerAuth } from '../context/learnerAuthContext'
 import type { Room } from '../types/room'
 
@@ -14,6 +15,7 @@ export function RoomPage() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [feedbackCounts, setFeedbackCounts] = useState<Record<number, number>>({})
 
   const masterId = learner?.id ?? ''
 
@@ -36,9 +38,28 @@ export function RoomPage() {
     }
   }
 
+  const loadFeedbackCounts = async () => {
+    try {
+      const counts: Record<number, number> = {}
+      for (const room of rooms) {
+        const feedbacks = await feedbackService.getFeedbackByClass(room.id)
+        counts[room.id] = feedbacks.length
+      }
+      setFeedbackCounts(counts)
+    } catch (err) {
+      console.error('Gagal memuat jumlah feedback:', err)
+    }
+  }
+
   useEffect(() => {
     void loadRooms()
   }, [masterId])
+
+  useEffect(() => {
+    if (rooms.length > 0) {
+      void loadFeedbackCounts()
+    }
+  }, [rooms])
 
   const handleCreateRoom = async (input: { roomName: string }) => {
     if (!masterId) {
@@ -157,6 +178,9 @@ export function RoomPage() {
                     <p>Room code: <span className="font-semibold text-slate-900">{room.roomCode}</span></p>
                     <p>Master ID: {room.masterId}</p>
                     <p>Last updated: {new Date(room.updatedAt).toLocaleDateString('id-ID')}</p>
+                    <p className="pt-1 font-semibold text-blue-600">
+                      {feedbackCounts[room.id] ?? 0} feedback terisi
+                    </p>
                   </div>
 
                   <div className="flex flex-wrap gap-3 pt-2">
