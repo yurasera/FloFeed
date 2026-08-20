@@ -9,6 +9,8 @@ import { useLearnerAuth } from '../context/learnerAuthContext'
 import type { Room } from '../types/room'
 import type { FeedbackResponse } from '../types/feedback'
 
+const lessons = [{ title: 'Variables' }, { title: 'Data Types' }, { title: 'Scanner Input' }]
+
 export function RoomPage() {
   const { learner, isAuthenticated } = useLearnerAuth()
   const [rooms, setRooms] = useState<Room[]>([])
@@ -198,6 +200,18 @@ export function RoomPage() {
         ) : null}
 
         {actionCard}
+
+        <section className="space-y-4">
+          <h3 className="text-lg font-semibold text-slate-900">Lessons</h3>
+          <div className="space-y-2">
+            {lessons.map((lesson, index) => (
+              <div key={lesson.title} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <span className="text-sm font-semibold text-slate-500">{String(index + 1).padStart(2, '0')}</span>
+                <span className="font-semibold text-slate-900">{lesson.title}</span>
+              </div>
+            ))}
+          </div>
+        </section>
 
         <section className="space-y-4">
           <div className="flex items-center justify-between gap-2">
