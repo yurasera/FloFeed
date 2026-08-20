@@ -2,14 +2,14 @@ import { useEffect, useMemo, useState } from 'react'
 import { PageContainer } from '../components/layout/PageContainer'
 import { Card } from '../components/ui/Card'
 import { SectionTitle } from '../components/SectionTitle'
-import { RoomForm } from '../features/room/components/RoomForm'
+import { RoomForm, type RoomFormInput } from '../features/room/components/RoomForm'
 import { roomService } from '../services/roomService'
 import { feedbackService } from '../services/feedbackService'
 import { useLearnerAuth } from '../context/learnerAuthContext'
 import type { Room } from '../types/room'
 import type { FeedbackResponse } from '../types/feedback'
 
-const lessons = [{ title: 'Variables' }, { title: 'Data Types' }, { title: 'Scanner Input' }]
+const defaultLessons = ['Variables', 'Data Types', 'Scanner Input']
 
 export function RoomPage() {
   const { learner, isAuthenticated } = useLearnerAuth()
@@ -21,6 +21,7 @@ export function RoomPage() {
   const [selectedFeedbackRoom, setSelectedFeedbackRoom] = useState<Room | null>(null)
   const [feedbackList, setFeedbackList] = useState<FeedbackResponse[]>([])
   const [feedbackCounts, setFeedbackCounts] = useState<Record<number, number>>({})
+  const [roomLessons, setRoomLessons] = useState<Record<number, string[]>>({})
 
   const masterId = learner?.id ?? ''
 
@@ -108,7 +109,7 @@ export function RoomPage() {
     }
   }
 
-  const handleCreateRoom = async (input: { roomName: string }) => {
+  const handleCreateRoom = async (input: RoomFormInput) => {
     if (!masterId) {
       setError('Anda harus login terlebih dahulu.')
       return
@@ -119,13 +120,14 @@ export function RoomPage() {
     try {
       const createdRoom = await roomService.createRoom({ roomName: input.roomName, masterId })
       setRooms((current) => [createdRoom, ...current])
+      setRoomLessons((current) => ({ ...current, [createdRoom.id]: input.lessons }))
       setIsFormOpen(false)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Gagal membuat room.')
     }
   }
 
-  const handleEditRoom = async (input: { roomName: string }) => {
+  const handleEditRoom = async (input: RoomFormInput) => {
     if (!selectedRoom || !masterId) {
       return
     }
@@ -135,6 +137,7 @@ export function RoomPage() {
     try {
       const updatedRoom = await roomService.updateRoom({ id: String(selectedRoom.id), roomName: input.roomName, masterId })
       setRooms((current) => current.map((room) => (room.id === updatedRoom.id ? updatedRoom : room)))
+      setRoomLessons((current) => ({ ...current, [updatedRoom.id]: input.lessons }))
       setSelectedRoom(null)
       setIsFormOpen(false)
     } catch (err) {
@@ -157,7 +160,9 @@ export function RoomPage() {
 
   const actionCard = isFormOpen ? (
     <RoomForm
+      key={selectedRoom?.id ?? 'new'}
       initialName={selectedRoom?.roomName ?? ''}
+      initialLessons={selectedRoom ? roomLessons[selectedRoom.id] ?? defaultLessons : defaultLessons}
       onSubmit={selectedRoom ? handleEditRoom : handleCreateRoom}
       onCancel={() => {
         setSelectedRoom(null)
@@ -239,10 +244,10 @@ export function RoomPage() {
                   <div className="space-y-3 border-t border-slate-200 pt-4">
                     <h4 className="font-semibold text-slate-900">Lessons</h4>
                     <div className="space-y-2">
-                      {lessons.map((lesson, index) => (
-                        <div key={lesson.title} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                      {(roomLessons[room.id] ?? defaultLessons).map((lesson, index) => (
+                        <div key={`${room.id}-${index}`} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
                           <span className="text-sm font-semibold text-slate-500">{String(index + 1).padStart(2, '0')}</span>
-                          <span className="font-semibold text-slate-900">{lesson.title}</span>
+                          <span className="font-semibold text-slate-900">{lesson}</span>
                         </div>
                       ))}
                     </div>
