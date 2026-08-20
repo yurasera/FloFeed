@@ -202,18 +202,6 @@ export function RoomPage() {
         {actionCard}
 
         <section className="space-y-4">
-          <h3 className="text-lg font-semibold text-slate-900">Lessons</h3>
-          <div className="space-y-2">
-            {lessons.map((lesson, index) => (
-              <div key={lesson.title} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <span className="text-sm font-semibold text-slate-500">{String(index + 1).padStart(2, '0')}</span>
-                <span className="font-semibold text-slate-900">{lesson.title}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="space-y-4">
           <div className="flex items-center justify-between gap-2">
             <h3 className="text-lg font-semibold text-slate-900">{roomCountText}</h3>
             {isLoading ? <p className="text-sm text-slate-500">Memuat...</p> : null}
@@ -246,6 +234,18 @@ export function RoomPage() {
                         {feedbackCounts[room.id] ?? 0} feedback terisi
                       </button>
                     </p>
+                  </div>
+
+                  <div className="space-y-3 border-t border-slate-200 pt-4">
+                    <h4 className="font-semibold text-slate-900">Lessons</h4>
+                    <div className="space-y-2">
+                      {lessons.map((lesson, index) => (
+                        <div key={lesson.title} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                          <span className="text-sm font-semibold text-slate-500">{String(index + 1).padStart(2, '0')}</span>
+                          <span className="font-semibold text-slate-900">{lesson.title}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="flex flex-wrap gap-3 pt-2">
