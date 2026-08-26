@@ -328,6 +328,26 @@ export function RoomFeedbackPage() {
 
     const prompt = getCurrentPrompt()
     const promptStepLabel = `Step ${stepIndex + 1}`
+    const overallUnderstandingLabel = overallOptions.find((option) => option.value === overallUnderstanding)?.label ?? ''
+    const selectedLessonSummary = overallUnderstanding === 'very_clear'
+        ? selectedStrengthLessons.map((lesson) => lesson.title)
+        : overallUnderstanding === 'mostly_clear'
+            ? selectedMostlyClearLessons.map((lesson) => lesson.title)
+            : overallUnderstanding === 'confused'
+                ? selectedConfusedLessons.map((lesson) => lesson.title)
+                : overallUnderstanding === 'not_understood'
+                    ? [
+                        ...(selectedNotUnderstoodLessonIds.includes('-1') ? ['Hampir semuanya'] : []),
+                        ...selectedNotUnderstoodLessons.map((lesson) => lesson.title),
+                    ]
+                    : selectedLesson ? [selectedLesson.title] : []
+    const selectedReasonSummary = overallUnderstanding === 'very_clear'
+        ? selectedStrengthReasons
+        : overallUnderstanding === 'confused'
+            ? selectedConfusedReasons
+            : overallUnderstanding === 'not_understood'
+                ? selectedNotUnderstoodReasons
+                : secondaryChoice ? [secondaryChoice] : []
 
     const validateCurrentPrompt = () => {
         if (prompt.kind === 'overall') {
@@ -626,6 +646,30 @@ export function RoomFeedbackPage() {
                                     {prompt.title}
                                 </h1>
                             </div>
+
+                            {stepIndex > 0 && overallUnderstanding ? (
+                                <div className="rounded-[1.75rem] border border-slate-200/80 bg-slate-50 p-6 text-left">
+                                    <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Jawaban sebelumnya</p>
+                                    <div className="mt-4 space-y-4 text-sm text-slate-600">
+                                        <div>
+                                            <p className="font-semibold text-slate-900">Pemahaman kamu</p>
+                                            <p>{overallUnderstandingLabel}</p>
+                                        </div>
+                                        {stepIndex > 1 && selectedLessonSummary.length > 0 ? (
+                                            <div>
+                                                <p className="font-semibold text-slate-900">{overallUnderstanding === 'very_clear' ? 'Bagian yang dikuasai' : overallUnderstanding === 'mostly_clear' ? 'Bagian yang masih perlu dilatih' : overallUnderstanding === 'confused' ? 'Bagian yang membingungkan' : 'Bagian yang belum dipahami'}</p>
+                                                <p>{selectedLessonSummary.join(', ')}</p>
+                                            </div>
+                                        ) : null}
+                                        {stepIndex > 2 && selectedReasonSummary.length > 0 ? (
+                                            <div>
+                                                <p className="font-semibold text-slate-900">{overallUnderstanding === 'very_clear' ? 'Yang membuatnya mudah dipahami' : overallUnderstanding === 'mostly_clear' ? 'Yang masih kurang' : overallUnderstanding === 'confused' ? 'Yang membuatnya membingungkan' : 'Yang paling menghambat'}</p>
+                                                <p>{selectedReasonSummary.join(', ')}</p>
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                </div>
+                            ) : null}
 
                             {isLoadingLessons ? (
                                 <div className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm text-slate-600">

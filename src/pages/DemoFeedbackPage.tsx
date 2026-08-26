@@ -90,6 +90,30 @@ export function DemoFeedbackPage() {
                                 </h1>
                             </div>
 
+                            {stepIndex > 0 ? (
+                                <div className="rounded-[1.75rem] border border-slate-200/80 bg-slate-50 p-6 text-left">
+                                    <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Previous answers</p>
+                                    <div className="mt-4 space-y-4 text-sm text-slate-600">
+                                        <div>
+                                            <p className="font-semibold text-slate-900">Session rating</p>
+                                            <p>{rating} / 5</p>
+                                        </div>
+                                        {stepIndex > 1 && answers.keep.trim() ? (
+                                            <div>
+                                                <p className="font-semibold text-slate-900">Keep for next session</p>
+                                                <p>{answers.keep}</p>
+                                            </div>
+                                        ) : null}
+                                        {stepIndex > 2 && answers.improve.trim() ? (
+                                            <div>
+                                                <p className="font-semibold text-slate-900">Improve for next session</p>
+                                                <p>{answers.improve}</p>
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                </div>
+                            ) : null}
+
                             {isRatingStep ? (
                                 <div className="flex justify-center">
                                     <div className="grid grid-cols-5 gap-4 rounded-[2rem] bg-slate-100 p-6">
