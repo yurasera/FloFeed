@@ -3,21 +3,27 @@ import { PrimaryButton } from '../../../components/ui/PrimaryButton'
 import { SecondaryButton } from '../../../components/ui/SecondaryButton'
 import { supabase } from '../../../lib/supabase'
 
+export type RoomLessonDraft = {
+  id?: number | null
+  title: string
+  display_order?: number
+}
+
 export type RoomFormInput = {
   roomName: string
-  lessons: string[]
+  lessons: RoomLessonDraft[]
 }
 
 type RoomFormProps = {
   initialName?: string
-  initialLessons?: string[]
+  initialLessons?: RoomLessonDraft[]
   selectedRoomId?: number | null
   onSubmit: (input: RoomFormInput) => void
   onCancel?: () => void
   submitLabel?: string
 }
 
-async function fetchLessonTitles(selectedRoomId: number): Promise<string[]> {
+async function fetchLessonTitles(selectedRoomId: number): Promise<RoomLessonDraft[]> {
   const { data, error } = await supabase
     .from('lessons')
     .select('id, title, display_order')
@@ -30,13 +36,17 @@ async function fetchLessonTitles(selectedRoomId: number): Promise<string[]> {
   }
 
   return (data ?? [])
-    .map((row) => (typeof row?.title === 'string' ? row.title.trim() : ''))
-    .filter(Boolean)
+    .map((row) => ({
+      id: typeof row?.id === 'number' ? row.id : undefined,
+      title: typeof row?.title === 'string' ? row.title.trim() : '',
+      display_order: typeof row?.display_order === 'number' ? row.display_order : undefined,
+    }))
+    .filter((lesson) => lesson.title.length > 0)
 }
 
 export function RoomForm({ initialName = '', initialLessons = [], selectedRoomId = null, onSubmit, onCancel, submitLabel = 'Simpan' }: RoomFormProps) {
   const [roomName, setRoomName] = useState(initialName)
-  const [lessonTitles, setLessonTitles] = useState<string[]>(initialLessons.length > 0 ? initialLessons : [''])
+  const [lessonTitles, setLessonTitles] = useState<RoomLessonDraft[]>(initialLessons.length > 0 ? initialLessons : [{ title: '' }])
   const [isLoadingLessons, setIsLoadingLessons] = useState(Boolean(selectedRoomId) || initialLessons.length === 0)
   const [lessonError, setLessonError] = useState('')
 
@@ -49,7 +59,7 @@ export function RoomForm({ initialName = '', initialLessons = [], selectedRoomId
     }
 
     if (!selectedRoomId) {
-      setLessonTitles([''])
+      setLessonTitles([{ title: '' }])
       setLessonError('')
       setIsLoadingLessons(false)
       return
@@ -60,7 +70,7 @@ export function RoomForm({ initialName = '', initialLessons = [], selectedRoomId
     const loadLessonTitles = async () => {
       setIsLoadingLessons(true)
       setLessonError('')
-      setLessonTitles([''])
+      setLessonTitles([{ title: '' }])
 
       try {
         const titles = await fetchLessonTitles(selectedRoomId)
@@ -69,7 +79,7 @@ export function RoomForm({ initialName = '', initialLessons = [], selectedRoomId
           return
         }
 
-        setLessonTitles(titles.length > 0 ? titles : [''])
+        setLessonTitles(titles.length > 0 ? titles : [{ title: '' }])
       } catch (error) {
         if (!isMounted) {
           return
@@ -77,7 +87,7 @@ export function RoomForm({ initialName = '', initialLessons = [], selectedRoomId
 
         const message = error instanceof Error ? error.message : 'Gagal memuat daftar lesson.'
         setLessonError(message)
-        setLessonTitles([''])
+        setLessonTitles([{ title: '' }])
       } finally {
         if (isMounted) {
           setIsLoadingLessons(false)
@@ -101,7 +111,13 @@ export function RoomForm({ initialName = '', initialLessons = [], selectedRoomId
 
     onSubmit({
       roomName: roomName.trim(),
-      lessons: lessonTitles.map((title) => title.trim()).filter(Boolean),
+      lessons: lessonTitles
+        .map((lesson, index) => ({
+          id: lesson.id,
+          title: lesson.title.trim(),
+          display_order: index + 1,
+        }))
+        .filter((lesson) => lesson.title.length > 0),
     })
     setRoomName('')
   }
@@ -132,19 +148,19 @@ export function RoomForm({ initialName = '', initialLessons = [], selectedRoomId
           </p>
         ) : null}
 
-        {!isLoadingLessons && !lessonError && lessonTitles.length === 1 && lessonTitles[0] === '' ? (
+        {!isLoadingLessons && !lessonError && lessonTitles.length === 1 && lessonTitles[0]?.title === '' ? (
           <p className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-500">
             Belum ada lesson yang tersedia.
           </p>
         ) : null}
 
-        {lessonTitles.map((title, index) => (
-          <div key={index} className="flex items-center gap-2">
+        {lessonTitles.map((lesson, index) => (
+          <div key={lesson.id ?? `new-${index}`} className="flex items-center gap-2">
             <span className="w-8 text-sm font-semibold text-slate-500">{String(index + 1).padStart(2, '0')}</span>
             <input
-              value={title}
+              value={lesson.title}
               onChange={(event) => {
-                setLessonTitles((current) => current.map((lesson, lessonIndex) => (lessonIndex === index ? event.target.value : lesson)))
+                setLessonTitles((current) => current.map((item, lessonIndex) => (lessonIndex === index ? { ...item, title: event.target.value } : item)))
               }}
               placeholder="Judul lesson"
               className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
@@ -162,7 +178,7 @@ export function RoomForm({ initialName = '', initialLessons = [], selectedRoomId
         ))}
         <button
           type="button"
-          onClick={() => setLessonTitles((current) => [...current, ''])}
+          onClick={() => setLessonTitles((current) => [...current, { title: '' }])}
           className="text-sm font-semibold text-blue-600 transition hover:text-blue-500"
         >
           + Tambah lesson

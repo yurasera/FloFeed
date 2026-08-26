@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { PageContainer } from '../components/layout/PageContainer'
 import { Card } from '../components/ui/Card'
 import { SectionTitle } from '../components/SectionTitle'
-import { RoomForm, type RoomFormInput } from '../features/room/components/RoomForm'
+import { RoomForm, type RoomFormInput, type RoomLessonDraft } from '../features/room/components/RoomForm'
 import { roomService } from '../services/roomService'
 import { feedbackService } from '../services/feedbackService'
 import { useLearnerAuth } from '../context/learnerAuthContext'
@@ -10,29 +10,75 @@ import { supabase } from '../lib/supabase'
 import type { Room } from '../types/room'
 import type { FeedbackResponse } from '../types/feedback'
 
-async function syncRoomLessons(roomId: number, lessonTitles: string[]) {
-  const nextLessons = Array.from(new Set(lessonTitles.map((title) => title.trim()).filter(Boolean)))
+async function syncRoomLessons(roomId: number, lessons: RoomLessonDraft[]) {
+  const nextLessons = lessons
+    .map((lesson, index) => ({
+      id: lesson.id,
+      title: lesson.title.trim(),
+      display_order: index + 1,
+    }))
+    .filter((lesson) => lesson.title.length > 0)
 
-  const { error: deleteError } = await supabase.from('lessons').delete().eq('room_id', roomId)
+  const { data: existingRows, error: fetchError } = await supabase
+    .from('lessons')
+    .select('id, title, display_order')
+    .eq('room_id', roomId)
 
-  if (deleteError) {
-    throw new Error('Gagal memperbarui lesson room di database.')
+  if (fetchError) {
+    throw new Error('Gagal memuat lesson room yang ada di database.')
   }
 
-  if (nextLessons.length === 0) {
-    return
+  const existingLessons = existingRows ?? []
+  const currentIds = new Set(
+    nextLessons
+      .filter((lesson) => typeof lesson.id === 'number')
+      .map((lesson) => lesson.id as number),
+  )
+
+  const removedLessons = existingLessons.filter((lesson) => !currentIds.has(lesson.id))
+  if (removedLessons.length > 0) {
+    const { error: deleteError } = await supabase
+      .from('lessons')
+      .delete()
+      .in(
+        'id',
+        removedLessons.map((lesson) => lesson.id),
+      )
+
+    if (deleteError) {
+      throw new Error('Gagal menghapus lesson room yang dihapus.')
+    }
   }
 
-  const rows = nextLessons.map((title, index) => ({
-    room_id: roomId,
-    title,
-    display_order: index + 1,
-  }))
+  const lessonsToUpdate = nextLessons.filter((lesson) => typeof lesson.id === 'number')
+  for (const lesson of lessonsToUpdate) {
+    const { error: updateError } = await supabase
+      .from('lessons')
+      .update({
+        title: lesson.title,
+        display_order: lesson.display_order,
+      })
+      .eq('id', lesson.id)
+      .eq('room_id', roomId)
 
-  const { error: insertError } = await supabase.from('lessons').insert(rows)
+    if (updateError) {
+      throw new Error('Gagal memperbarui lesson room yang sudah ada.')
+    }
+  }
 
-  if (insertError) {
-    throw new Error('Gagal menyimpan lesson room di database.')
+  const lessonsToInsert = nextLessons.filter((lesson) => lesson.id == null)
+  if (lessonsToInsert.length > 0) {
+    const { error: insertError } = await supabase.from('lessons').insert(
+      lessonsToInsert.map((lesson) => ({
+        room_id: roomId,
+        title: lesson.title,
+        display_order: lesson.display_order,
+      })),
+    )
+
+    if (insertError) {
+      throw new Error('Gagal menambahkan lesson baru room.')
+    }
   }
 }
 
@@ -46,7 +92,7 @@ export function RoomPage() {
   const [selectedFeedbackRoom, setSelectedFeedbackRoom] = useState<Room | null>(null)
   const [feedbackList, setFeedbackList] = useState<FeedbackResponse[]>([])
   const [feedbackCounts, setFeedbackCounts] = useState<Record<number, number>>({})
-  const [roomLessons, setRoomLessons] = useState<Record<number, string[]>>({})
+  const [roomLessons, setRoomLessons] = useState<Record<number, RoomLessonDraft[]>>({})
 
   const masterId = learner?.id ?? ''
 
@@ -72,7 +118,7 @@ export function RoomPage() {
 
       const { data: lessonRows, error: lessonError } = await supabase
         .from('lessons')
-        .select('room_id, title, display_order')
+        .select('id, room_id, title, display_order')
         .in('room_id', roomIds)
         .order('display_order', { ascending: true })
         .order('created_at', { ascending: true })
@@ -81,7 +127,7 @@ export function RoomPage() {
         throw new Error('Gagal memuat lesson room dari database.')
       }
 
-      const nextRoomLessons: Record<number, string[]> = {}
+      const nextRoomLessons: Record<number, RoomLessonDraft[]> = {}
       for (const room of data) {
         nextRoomLessons[room.id] = []
       }
@@ -96,7 +142,14 @@ export function RoomPage() {
           continue
         }
 
-        nextRoomLessons[row.room_id] = [...(nextRoomLessons[row.room_id] ?? []), title]
+        nextRoomLessons[row.room_id] = [
+          ...(nextRoomLessons[row.room_id] ?? []),
+          {
+            id: typeof row.id === 'number' ? row.id : undefined,
+            title,
+            display_order: typeof row.display_order === 'number' ? row.display_order : undefined,
+          },
+        ]
       }
 
       setRoomLessons(nextRoomLessons)
@@ -311,9 +364,9 @@ export function RoomPage() {
                     <h4 className="font-semibold text-slate-900">Lessons</h4>
                     <div className="space-y-2">
                       {(roomLessons[room.id] ?? []).map((lesson, index) => (
-                        <div key={`${room.id}-${index}`} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                        <div key={`${room.id}-${lesson.id ?? 'new'}-${index}`} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
                           <span className="text-sm font-semibold text-slate-500">{String(index + 1).padStart(2, '0')}</span>
-                          <span className="font-semibold text-slate-900">{lesson}</span>
+                          <span className="font-semibold text-slate-900">{lesson.title}</span>
                         </div>
                       ))}
                     </div>
