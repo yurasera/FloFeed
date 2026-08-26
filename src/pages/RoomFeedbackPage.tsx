@@ -882,11 +882,11 @@ export function RoomFeedbackPage() {
                                     <div className="mt-4 space-y-4 text-sm text-slate-600">
                                         <div>
                                             <p className="font-semibold text-slate-900">Pemahaman</p>
-                                            <p>{overallUnderstanding}</p>
+                                            <p>{overallUnderstandingLabel}</p>
                                         </div>
                                         <div>
                                             <p className="font-semibold text-slate-900">Lesson</p>
-                                            <p>{selectedLesson?.title ?? 'Semua'}</p>
+                                            <p>{selectedLessonSummary.length > 0 ? selectedLessonSummary.join(', ') : 'Semua'}</p>
                                         </div>
                                         <div>
                                             <p className="font-semibold text-slate-900">Detail</p>
