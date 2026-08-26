@@ -48,6 +48,7 @@ export function RoomFeedbackPage() {
     const [lessonError, setLessonError] = useState('')
     const [overallUnderstanding, setOverallUnderstanding] = useState<OverallUnderstanding | ''>('')
     const [selectedLessonId, setSelectedLessonId] = useState<number | null>(null)
+    const [selectedStrengthLessonIds, setSelectedStrengthLessonIds] = useState<string[]>([])
     const [secondaryChoice, setSecondaryChoice] = useState('')
     const [specificFeedback, setSpecificFeedback] = useState('')
     const [stepIndex, setStepIndex] = useState(0)
@@ -58,6 +59,7 @@ export function RoomFeedbackPage() {
     const isAnimating = submitted && animationState === 'loading'
 
     const selectedLesson = lessons.find((lesson) => lesson.id === selectedLessonId) ?? null
+    const selectedStrengthLessons = lessons.filter((lesson) => selectedStrengthLessonIds.includes(String(lesson.id)))
     const branchOptions = overallUnderstanding ? secondaryOptionsByOverall[overallUnderstanding] : []
 
     useEffect(() => {
@@ -132,6 +134,7 @@ export function RoomFeedbackPage() {
 
     const resetDependentState = () => {
         setSelectedLessonId(null)
+        setSelectedStrengthLessonIds([])
         setSecondaryChoice('')
         setSpecificFeedback('')
     }
@@ -147,6 +150,19 @@ export function RoomFeedbackPage() {
         setSecondaryChoice('')
         setSpecificFeedback('')
         setStepIndex(2)
+    }
+
+    const toggleStrengthLesson = (lessonId: number) => {
+        const lessonIdString = String(lessonId)
+        setSelectedStrengthLessonIds((current) => {
+            if (current.includes(lessonIdString)) {
+                return current.filter((item) => item !== lessonIdString)
+            }
+
+            return [...current, lessonIdString]
+        })
+        setSecondaryChoice('')
+        setSpecificFeedback('')
     }
 
     const handleSecondaryChoice = (value: string) => {
@@ -217,6 +233,10 @@ export function RoomFeedbackPage() {
         }
 
         if (prompt.kind === 'lesson') {
+            if (overallUnderstanding === 'very_clear') {
+                return selectedStrengthLessonIds.length > 0
+            }
+
             return Boolean(selectedLessonId)
         }
 
@@ -236,16 +256,29 @@ export function RoomFeedbackPage() {
             return
         }
 
-        if (!selectedLessonId && prompt.kind !== 'overall') {
+        if (prompt.kind !== 'overall' && overallUnderstanding === 'very_clear' && selectedStrengthLessonIds.length === 0) {
+            return
+        }
+
+        if (prompt.kind !== 'overall' && overallUnderstanding !== 'very_clear' && !selectedLessonId) {
             return
         }
 
         const payloadReflectionAnswers: Record<string, string> = {
             overallUnderstanding,
-            selectedLessonId: String(selectedLessonId ?? 'Semua'),
-            selectedLessonTitle: selectedLesson?.title ?? 'Semua',
             secondaryChoice: finalSecondaryChoice,
             specificFeedback: specificFeedback.trim(),
+        }
+
+        if (overallUnderstanding === 'very_clear') {
+            const uniqueStrengthLessonIds = Array.from(new Set(selectedStrengthLessonIds))
+            payloadReflectionAnswers.selectedStrengthLessonIds = uniqueStrengthLessonIds.join(',')
+            payloadReflectionAnswers.selectedStrengthLessonTitles = selectedStrengthLessons
+                .map((lesson) => lesson.title)
+                .join(', ')
+        } else {
+            payloadReflectionAnswers.selectedLessonId = String(selectedLessonId ?? '')
+            payloadReflectionAnswers.selectedLessonTitle = selectedLesson?.title ?? ''
         }
 
         setSubmissionError('')
@@ -283,6 +316,15 @@ export function RoomFeedbackPage() {
         }
 
         if (prompt.kind === 'lesson') {
+            if (overallUnderstanding === 'very_clear') {
+                if (selectedStrengthLessonIds.length === 0) {
+                    return
+                }
+
+                setStepIndex(2)
+                return
+            }
+
             if (!selectedLessonId) {
                 return
             }
@@ -385,16 +427,36 @@ export function RoomFeedbackPage() {
                                             Hampir semuanya
                                         </button>
                                     ) : null}
-                                    {lessons.map((lesson) => (
-                                        <button
-                                            key={lesson.id}
-                                            type="button"
-                                            onClick={() => handleLessonChoice(lesson.id)}
-                                            className={`rounded-[1.5rem] border px-5 py-4 text-left text-base font-semibold transition ${selectedLessonId === lesson.id ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'}`}
-                                        >
-                                            {lesson.title}
-                                        </button>
-                                    ))}
+                                    {lessons.map((lesson) => {
+                                        const isSelected = overallUnderstanding === 'very_clear'
+                                            ? selectedStrengthLessonIds.includes(String(lesson.id))
+                                            : selectedLessonId === lesson.id
+
+                                        return (
+                                            <button
+                                                key={lesson.id}
+                                                type="button"
+                                                onClick={() => {
+                                                    if (overallUnderstanding === 'very_clear') {
+                                                        toggleStrengthLesson(lesson.id)
+                                                        return
+                                                    }
+
+                                                    handleLessonChoice(lesson.id)
+                                                }}
+                                                className={`rounded-[1.5rem] border px-5 py-4 text-left text-base font-semibold transition ${isSelected ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'}`}
+                                            >
+                                                <span className="flex items-center gap-3">
+                                                    {overallUnderstanding === 'very_clear' ? (
+                                                        <span className={`flex h-5 w-5 items-center justify-center rounded border text-xs ${isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white text-transparent'}`}>
+                                                            ✓
+                                                        </span>
+                                                    ) : null}
+                                                    {lesson.title}
+                                                </span>
+                                            </button>
+                                        )
+                                    })}
                                 </div>
                             ) : null}
 
