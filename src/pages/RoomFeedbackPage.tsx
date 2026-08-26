@@ -6,56 +6,115 @@ import { useFeedbackData } from '../context/feedbackDataContext'
 import { feedbackService } from '../services/feedbackService'
 import { useLearnerAuth } from '../context/learnerAuthContext'
 import { completionService } from '../services/completionService'
+import { supabase } from '../lib/supabase'
 
-type DemoAnswers = {
-    standout: string
-    keep: string
-    improve: string
-    anythingElse: string
+type OverallUnderstanding = 'very_clear' | 'mostly_clear' | 'confused' | 'not_understood'
+
+type Lesson = {
+    id: number
+    title: string
 }
 
-const defaultAnswers: DemoAnswers = {
-    standout: '',
-    keep: '',
-    improve: '',
-    anythingElse: '',
-}
+type PromptKind = 'overall' | 'lesson' | 'secondary' | 'specific'
 
-const placeholderAnswers: DemoAnswers = {
-    standout: 'The discussion made me more confident to ask questions.',
-    keep: 'Misalnya cara penyampaian, materi, aktivitas, atau pengalaman yang menurut Anda sudah baik.',
-    improve: 'Sesi berikut nya saya ingin lebih banyak diskusi dan contoh praktis.',
-    anythingElse: '??',
-}
-
-const feedbackQuestions: Array<{ key: keyof DemoAnswers; label: string }> = [
-    { key: 'keep', label: 'Apa yang ingin tetap ada di sesi berikutnya?' },
-    { key: 'improve', label: 'Apa yang perlu diperbaiki di sesi berikutnya?' },
-    { key: 'anythingElse', label: 'Jika ada hal lain yang ingin Anda sampaikan, apa itu?' },
+const overallOptions: Array<{ value: OverallUnderstanding; label: string }> = [
+    { value: 'very_clear', label: 'Sangat paham' },
+    { value: 'mostly_clear', label: 'Cukup paham' },
+    { value: 'confused', label: 'Masih ada yang membingungkan' },
+    { value: 'not_understood', label: 'Belum paham' },
 ]
+
+const secondaryOptionsByOverall: Record<OverallUnderstanding, string[]> = {
+    very_clear: ['Penjelasan mentor', 'Contoh kode', 'Practice', 'Sudah pernah belajar sebelumnya', 'Lainnya'],
+    mostly_clear: ['Perlu lebih banyak contoh', 'Perlu lebih banyak latihan', 'Masih bingung konsepnya', 'Kadang lupa syntax', 'Masih sering error'],
+    confused: ['Tidak memahami konsep', 'Bingung syntax', 'Bingung kapan digunakan', 'Sering mendapatkan error', 'Sulit menerapkan sendiri'],
+    not_understood: ['Tidak memahami konsep dasar', 'Tidak mengikuti penjelasan', 'Sulit mengikuti contoh kode', 'Bingung saat practice', 'Tidak tahu harus mulai dari mana'],
+}
+
+const stepLabels: Record<OverallUnderstanding, string> = {
+    very_clear: 'Bagian mana yang paling kamu kuasai?',
+    mostly_clear: 'Bagian mana yang masih perlu kamu latih?',
+    confused: 'Bagian mana yang membingungkan?',
+    not_understood: 'Bagian mana yang paling sulit dipahami?',
+}
 
 export function RoomFeedbackPage() {
     const navigate = useNavigate()
     const { selectedClass } = useFeedbackFlowState()
     const { refreshFeedback } = useFeedbackData()
     const { learner } = useLearnerAuth()
-    const [rating, setRating] = useState(5)
-    const [answers, setAnswers] = useState<DemoAnswers>(defaultAnswers)
+    const [lessons, setLessons] = useState<Lesson[]>([])
+    const [isLoadingLessons, setIsLoadingLessons] = useState(false)
+    const [lessonError, setLessonError] = useState('')
+    const [overallUnderstanding, setOverallUnderstanding] = useState<OverallUnderstanding | ''>('')
+    const [selectedLessonId, setSelectedLessonId] = useState<number | null>(null)
+    const [secondaryChoice, setSecondaryChoice] = useState('')
+    const [specificFeedback, setSpecificFeedback] = useState('')
     const [stepIndex, setStepIndex] = useState(0)
     const [submitted, setSubmitted] = useState(false)
     const [animationState, setAnimationState] = useState<'idle' | 'loading' | 'done'>('idle')
     const [submissionError, setSubmissionError] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const totalSteps = feedbackQuestions.length + 1
-    const isRatingStep = stepIndex === 0
-    const currentQuestion = stepIndex > 0 ? feedbackQuestions[stepIndex - 1] : null
-    const isCurrentAnswerEmpty = !isRatingStep && currentQuestion ? answers[currentQuestion.key].trim().length === 0 : false
     const isAnimating = submitted && animationState === 'loading'
+
+    const selectedLesson = lessons.find((lesson) => lesson.id === selectedLessonId) ?? null
+    const branchOptions = overallUnderstanding ? secondaryOptionsByOverall[overallUnderstanding] : []
 
     useEffect(() => {
         if (!selectedClass) {
             navigate('/room/join', { replace: true })
             return
+        }
+
+        let isMounted = true
+
+        const loadLessons = async () => {
+            setIsLoadingLessons(true)
+            setLessonError('')
+
+            try {
+                const { data, error } = await supabase
+                    .from('lessons')
+                    .select('id, title, display_order')
+                    .eq('room_id', selectedClass.id)
+                    .order('display_order', { ascending: true })
+                    .order('created_at', { ascending: true })
+
+                if (!isMounted) {
+                    return
+                }
+
+                if (error) {
+                    throw new Error('Gagal memuat lesson untuk room ini.')
+                }
+
+                const mappedLessons = (data ?? [])
+                    .filter((row): row is { id: number; title: string; display_order: number } => typeof row?.id === 'number' && typeof row?.title === 'string')
+                    .map((row) => ({
+                        id: row.id,
+                        title: row.title.trim(),
+                    }))
+                    .filter((row) => row.title.length > 0)
+
+                setLessons(mappedLessons)
+            } catch (error) {
+                if (!isMounted) {
+                    return
+                }
+
+                setLessons([])
+                setLessonError(error instanceof Error ? error.message : 'Gagal memuat lesson untuk room ini.')
+            } finally {
+                if (isMounted) {
+                    setIsLoadingLessons(false)
+                }
+            }
+        }
+
+        void loadLessons()
+
+        return () => {
+            isMounted = false
         }
     }, [selectedClass, navigate])
 
@@ -71,9 +130,122 @@ export function RoomFeedbackPage() {
         return () => window.clearTimeout(timer)
     }, [submitted, animationState])
 
-    const handleSubmitFeedback = async () => {
+    const resetDependentState = () => {
+        setSelectedLessonId(null)
+        setSecondaryChoice('')
+        setSpecificFeedback('')
+    }
+
+    const handleOverallChoice = (value: OverallUnderstanding) => {
+        setOverallUnderstanding(value)
+        resetDependentState()
+        setStepIndex(1)
+    }
+
+    const handleLessonChoice = (lessonId: number) => {
+        setSelectedLessonId(lessonId)
+        setSecondaryChoice('')
+        setSpecificFeedback('')
+        setStepIndex(2)
+    }
+
+    const handleSecondaryChoice = (value: string) => {
+        setSecondaryChoice(value)
+
+        if (value === 'Lainnya' || overallUnderstanding === 'confused' || overallUnderstanding === 'not_understood') {
+            setStepIndex(3)
+            return
+        }
+
+        void handleSubmitFeedback(value)
+    }
+
+    const handleBack = () => {
+        setStepIndex((current) => Math.max(0, current - 1))
+    }
+
+    const getCurrentPrompt = (): { kind: PromptKind; title: string; placeholder?: string; options?: string[] } => {
+        if (stepIndex === 0) {
+            return {
+                kind: 'overall',
+                title: 'Bagaimana pemahaman kamu tentang materi hari ini?',
+                options: overallOptions.map((option) => option.label),
+            }
+        }
+
+        if (stepIndex === 1) {
+            return {
+                kind: 'lesson',
+                title: overallUnderstanding ? stepLabels[overallUnderstanding] : 'Pilih bagian yang ingin dibahas',
+                options: overallUnderstanding === 'not_understood' ? [...lessons.map((lesson) => lesson.title), 'Hampir semuanya'] : [...lessons.map((lesson) => lesson.title)],
+            }
+        }
+
+        if (stepIndex === 2) {
+            return {
+                kind: 'secondary',
+                title: overallUnderstanding === 'very_clear'
+                    ? 'Apa yang membuat bagian tersebut mudah dipahami?'
+                    : overallUnderstanding === 'mostly_clear'
+                        ? 'Apa yang masih kurang?'
+                        : overallUnderstanding === 'confused'
+                            ? 'Apa yang membuatnya membingungkan?'
+                            : 'Apa yang paling menghambat kamu?',
+                options: branchOptions,
+            }
+        }
+
+        return {
+            kind: 'specific',
+            title:
+                overallUnderstanding === 'confused'
+                    ? 'Bagian mana yang paling spesifik?'
+                    : 'Coba ceritakan bagian yang paling sulit.',
+            placeholder:
+                overallUnderstanding === 'confused'
+                    ? 'Contoh: Saya bingung kapan menggunakan nextInt() dan nextLine().'
+                    : 'Contoh: Saya masih bingung kapan menggunakan int, double, dan String.',
+        }
+    }
+
+    const prompt = getCurrentPrompt()
+    const promptStepLabel = `Step ${stepIndex + 1}`
+
+    const validateCurrentPrompt = () => {
+        if (prompt.kind === 'overall') {
+            return Boolean(overallUnderstanding)
+        }
+
+        if (prompt.kind === 'lesson') {
+            return Boolean(selectedLessonId)
+        }
+
+        if (prompt.kind === 'secondary') {
+            return Boolean(secondaryChoice)
+        }
+
+        return specificFeedback.trim().length > 0
+    }
+
+    const handleSubmitFeedback = async (finalSecondaryChoice: string = secondaryChoice) => {
         if (!selectedClass) {
             return
+        }
+
+        if (!overallUnderstanding) {
+            return
+        }
+
+        if (!selectedLessonId && prompt.kind !== 'overall') {
+            return
+        }
+
+        const payloadReflectionAnswers: Record<string, string> = {
+            overallUnderstanding,
+            selectedLessonId: String(selectedLessonId ?? 'Semua'),
+            selectedLessonTitle: selectedLesson?.title ?? 'Semua',
+            secondaryChoice: finalSecondaryChoice,
+            specificFeedback: specificFeedback.trim(),
         }
 
         setSubmissionError('')
@@ -83,8 +255,8 @@ export function RoomFeedbackPage() {
             await feedbackService.createFeedback({
                 roomId: selectedClass.id,
                 memberId: learner?.id ?? null,
-                selectedMood: rating.toString(),
-                reflectionAnswers: answers,
+                selectedMood: overallUnderstanding,
+                reflectionAnswers: payloadReflectionAnswers,
             })
 
             if (learner?.id) {
@@ -99,6 +271,45 @@ export function RoomFeedbackPage() {
         } finally {
             setIsSubmitting(false)
         }
+    }
+
+    const onContinue = async () => {
+        if (!validateCurrentPrompt()) {
+            return
+        }
+
+        if (prompt.kind === 'overall') {
+            return
+        }
+
+        if (prompt.kind === 'lesson') {
+            if (!selectedLessonId) {
+                return
+            }
+
+            setStepIndex(2)
+            return
+        }
+
+        if (prompt.kind === 'secondary') {
+            if (!secondaryChoice) {
+                return
+            }
+
+            if (secondaryChoice === 'Lainnya' || overallUnderstanding === 'confused' || overallUnderstanding === 'not_understood') {
+                setStepIndex(3)
+                return
+            }
+
+            await handleSubmitFeedback(secondaryChoice)
+            return
+        }
+
+        if (specificFeedback.trim().length === 0) {
+            return
+        }
+
+        await handleSubmitFeedback()
     }
 
     return (
@@ -119,7 +330,7 @@ export function RoomFeedbackPage() {
 
                 <div className="relative w-full overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white p-10 shadow-2xl shadow-slate-900/10">
                     <div className="absolute right-6 top-6 rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">
-                        {isRatingStep ? 'Satisfaction' : 'Feedback'}
+                        {submitted ? 'Submitted' : 'Guided Reflection'}
                     </div>
                     <div className="absolute left-6 top-6 text-xs text-slate-500">
                         {selectedClass ? `Room: ${selectedClass.name}` : 'Room belum dipilih'}
@@ -128,45 +339,91 @@ export function RoomFeedbackPage() {
                     {!submitted ? (
                         <div className="space-y-10">
                             <div className="text-center">
-                                <p className="text-xs uppercase tracking-[0.32em] text-slate-500">Question {stepIndex + 1}/{totalSteps}</p>
+                                <p className="text-xs uppercase tracking-[0.32em] text-slate-500">{promptStepLabel}</p>
                                 <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-                                    {isRatingStep ? "How satisfied are you with today's session?" : currentQuestion?.label}
+                                    {prompt.title}
                                 </h1>
                             </div>
 
-                            {isRatingStep ? (
-                                <div className="flex justify-center">
-                                    <div className="grid grid-cols-5 gap-4 rounded-[2rem] bg-slate-100 p-6">
-                                        {[1, 2, 3, 4, 5].map((value) => (
-                                            <button
-                                                key={value}
-                                                type="button"
-                                                onClick={() => setRating(value)}
-                                                className={`h-20 w-20 rounded-full text-3xl font-semibold transition ${rating === value ? 'bg-blue-600 text-white shadow-xl shadow-blue-200/30' : 'bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100'}`}
-                                            >
-                                                {'★'.repeat(value)}
-                                            </button>
-                                        ))}
-                                    </div>
+                            {isLoadingLessons ? (
+                                <div className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm text-slate-600">
+                                    Memuat lesson untuk room ini...
                                 </div>
-                            ) : (
+                            ) : lessonError ? (
+                                <div className="rounded-3xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-700">
+                                    {lessonError}
+                                </div>
+                            ) : !lessons.length && prompt.kind !== 'overall' ? (
+                                <div className="rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm text-slate-600">
+                                    Belum ada materi untuk sesi ini.
+                                </div>
+                            ) : null}
+
+                            {prompt.kind === 'overall' ? (
+                                <div className="grid gap-4 sm:grid-cols-2">
+                                    {overallOptions.map((option) => (
+                                        <button
+                                            key={option.value}
+                                            type="button"
+                                            onClick={() => handleOverallChoice(option.value)}
+                                            className={`rounded-[1.5rem] border px-5 py-4 text-left text-base font-semibold transition ${overallUnderstanding === option.value ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'}`}
+                                        >
+                                            {option.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            ) : null}
+
+                            {prompt.kind === 'lesson' && lessons.length > 0 ? (
+                                <div className="grid gap-3">
+                                    {overallUnderstanding === 'not_understood' ? (
+                                        <button
+                                            type="button"
+                                            onClick={() => handleLessonChoice(-1 as unknown as number)}
+                                            className={`rounded-[1.5rem] border px-5 py-4 text-left text-base font-semibold transition ${selectedLessonId === -1 ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'}`}
+                                        >
+                                            Hampir semuanya
+                                        </button>
+                                    ) : null}
+                                    {lessons.map((lesson) => (
+                                        <button
+                                            key={lesson.id}
+                                            type="button"
+                                            onClick={() => handleLessonChoice(lesson.id)}
+                                            className={`rounded-[1.5rem] border px-5 py-4 text-left text-base font-semibold transition ${selectedLessonId === lesson.id ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'}`}
+                                        >
+                                            {lesson.title}
+                                        </button>
+                                    ))}
+                                </div>
+                            ) : null}
+
+                            {prompt.kind === 'secondary' && prompt.options ? (
+                                <div className="grid gap-3">
+                                    {prompt.options.map((option) => (
+                                        <button
+                                            key={option}
+                                            type="button"
+                                            onClick={() => handleSecondaryChoice(option)}
+                                            className={`rounded-[1.5rem] border px-5 py-4 text-left text-base font-semibold transition ${secondaryChoice === option ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'}`}
+                                        >
+                                            {option}
+                                        </button>
+                                    ))}
+                                </div>
+                            ) : null}
+
+                            {prompt.kind === 'specific' ? (
                                 <div className="mx-auto max-w-3xl">
-                                    <input
-                                        type="text"
-                                        value={answers[currentQuestion!.key]}
-                                        onChange={(event) =>
-                                            setAnswers({
-                                                ...answers,
-                                                [currentQuestion!.key]: event.target.value,
-                                            })
-                                        }
-                                        required
-                                        placeholder={placeholderAnswers[currentQuestion!.key] || 'Type your answer here...'}
-                                        style={{ fontSize: '2.25rem' }}
-                                        className="w-full border-b border-slate-300 bg-white px-6 py-4 text-2xl leading-8 text-slate-900 transition focus:outline-none focus:ring-0 focus:border-slate-300 placeholder:text-2xl"
+                                    <textarea
+                                        value={specificFeedback}
+                                        onChange={(event) => setSpecificFeedback(event.target.value)}
+                                        placeholder={prompt.placeholder || 'Tuliskan pendapat kamu...'}
+                                        rows={4}
+                                        className="w-full rounded-[1.5rem] border border-slate-300 bg-white px-5 py-4 text-base text-slate-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                                     />
                                 </div>
-                            )}
+                            ) : null}
 
                             <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
                                 <button
@@ -180,7 +437,7 @@ export function RoomFeedbackPage() {
                                     {stepIndex > 0 && (
                                         <button
                                             type="button"
-                                            onClick={() => setStepIndex(stepIndex - 1)}
+                                            onClick={handleBack}
                                             className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-7 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                                         >
                                             Previous
@@ -188,17 +445,11 @@ export function RoomFeedbackPage() {
                                     )}
                                     <button
                                         type="button"
-                                        onClick={() => {
-                                            if (stepIndex < totalSteps - 1) {
-                                                setStepIndex(stepIndex + 1)
-                                            } else {
-                                                void handleSubmitFeedback()
-                                            }
-                                        }}
-                                        disabled={isCurrentAnswerEmpty || isSubmitting}
-                                        className={`inline-flex min-w-[240px] items-center justify-center rounded-full px-8 py-4 text-base font-semibold text-white transition ${isCurrentAnswerEmpty || isSubmitting ? 'cursor-not-allowed bg-slate-300 text-slate-500' : 'bg-blue-600 hover:bg-blue-500'}`}
+                                        onClick={() => void onContinue()}
+                                        disabled={!validateCurrentPrompt() || isSubmitting}
+                                        className={`inline-flex min-w-[220px] items-center justify-center rounded-full px-8 py-4 text-base font-semibold text-white transition ${!validateCurrentPrompt() || isSubmitting ? 'cursor-not-allowed bg-slate-300 text-slate-500' : 'bg-blue-600 hover:bg-blue-500'}`}
                                     >
-                                        {isSubmitting ? 'Submitting...' : stepIndex < totalSteps - 1 ? 'Continue' : 'Submit Feedback'}
+                                        {isSubmitting ? 'Submitting...' : stepIndex === 3 ? 'Submit Feedback' : 'Continue'}
                                     </button>
                                 </div>
                             </div>
@@ -225,47 +476,43 @@ export function RoomFeedbackPage() {
                             <p className="text-xs uppercase tracking-[0.32em] text-slate-500">Feedback complete</p>
                             <h2 className="text-3xl font-semibold text-slate-900">Thanks for submitting</h2>
                             <p className="mx-auto max-w-xl text-sm leading-6 text-slate-600">
-                                Your anonymous feedback has been recorded and is ready for review by the mentor.
+                                Feedback anonim Anda sudah tercatat dan siap ditinjau oleh mentor.
                             </p>
 
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="rounded-[1.75rem] border border-slate-200/80 bg-slate-50 p-6 text-left">
-                                    <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Learner</p>
+                                    <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Ringkasan</p>
                                     <p className="mt-3 text-lg font-semibold text-slate-900">{selectedClass?.name ?? 'Anonymous learner'}</p>
                                     <div className="mt-4 space-y-4 text-sm text-slate-600">
                                         <div>
-                                            <p className="font-semibold text-slate-900">Pertahankan</p>
-                                            <p>{answers.keep || '-'} </p>
+                                            <p className="font-semibold text-slate-900">Pemahaman</p>
+                                            <p>{overallUnderstanding}</p>
                                         </div>
                                         <div>
-                                            <p className="font-semibold text-slate-900">Perbaiki</p>
-                                            <p>{answers.improve || '-'} </p>
+                                            <p className="font-semibold text-slate-900">Lesson</p>
+                                            <p>{selectedLesson?.title ?? 'Semua'}</p>
                                         </div>
                                         <div>
-                                            <p className="font-semibold text-slate-900">Catatan lain</p>
-                                            <p>{answers.anythingElse || '-'} </p>
+                                            <p className="font-semibold text-slate-900">Detail</p>
+                                            <p>{secondaryChoice || '-'} </p>
                                         </div>
                                         <div>
-                                            <p className="font-semibold text-slate-900">Rating session</p>
-                                            <p>{rating} / 5</p>
+                                            <p className="font-semibold text-slate-900">Feedback spesifik</p>
+                                            <p>{specificFeedback || '-'} </p>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="rounded-[1.75rem] border border-slate-200/80 bg-slate-50 p-6 text-left">
                                     <p className="text-xs uppercase tracking-[0.24em] text-slate-500">Mentor</p>
-                                    <p className="mt-3 text-lg font-semibold text-slate-900">Anonymous review dari 11 learner</p>
+                                    <p className="mt-3 text-lg font-semibold text-slate-900">Feedback anonim</p>
                                     <div className="mt-4 space-y-4 text-sm text-slate-600">
                                         <div>
-                                            <p className="font-semibold text-slate-900">Rating session</p>
-                                            <p>{rating} / 5</p>
+                                            <p className="font-semibold text-slate-900">Status</p>
+                                            <p>Feedback dikirim tanpa identitas peserta.</p>
                                         </div>
                                         <div>
                                             <p className="font-semibold text-slate-900">Insight utama</p>
-                                            <p>Peserta menyukai penyampaian yang jelas, tetapi meminta lebih banyak diskusi dan contoh praktis.</p>
-                                        </div>
-                                        <div>
-                                            <p className="font-semibold text-slate-900">Status anonimitas</p>
-                                            <p>Feedback dikirim tanpa identitas peserta.</p>
+                                            <p>{specificFeedback || 'Feedback berhasil dikirim.'}</p>
                                         </div>
                                     </div>
                                 </div>
