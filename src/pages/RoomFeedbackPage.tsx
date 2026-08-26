@@ -890,7 +890,7 @@ export function RoomFeedbackPage() {
                                         </div>
                                         <div>
                                             <p className="font-semibold text-slate-900">Detail</p>
-                                            <p>{secondaryChoice || '-'} </p>
+                                            <p>{selectedReasonSummary.length > 0 ? selectedReasonSummary.join(', ') : '-'} </p>
                                         </div>
                                         <div>
                                             <p className="font-semibold text-slate-900">Feedback spesifik</p>
