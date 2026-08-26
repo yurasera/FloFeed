@@ -6,8 +6,35 @@ import { RoomForm, type RoomFormInput } from '../features/room/components/RoomFo
 import { roomService } from '../services/roomService'
 import { feedbackService } from '../services/feedbackService'
 import { useLearnerAuth } from '../context/learnerAuthContext'
+import { supabase } from '../lib/supabase'
 import type { Room } from '../types/room'
 import type { FeedbackResponse } from '../types/feedback'
+
+async function syncRoomLessons(roomId: number, lessonTitles: string[]) {
+  const nextLessons = Array.from(new Set(lessonTitles.map((title) => title.trim()).filter(Boolean)))
+
+  const { error: deleteError } = await supabase.from('lessons').delete().eq('room_id', roomId)
+
+  if (deleteError) {
+    throw new Error('Gagal memperbarui lesson room di database.')
+  }
+
+  if (nextLessons.length === 0) {
+    return
+  }
+
+  const rows = nextLessons.map((title, index) => ({
+    room_id: roomId,
+    title,
+    display_order: index + 1,
+  }))
+
+  const { error: insertError } = await supabase.from('lessons').insert(rows)
+
+  if (insertError) {
+    throw new Error('Gagal menyimpan lesson room di database.')
+  }
+}
 
 export function RoomPage() {
   const { learner, isAuthenticated } = useLearnerAuth()
@@ -26,6 +53,7 @@ export function RoomPage() {
   const loadRooms = async () => {
     if (!masterId) {
       setRooms([])
+      setRoomLessons({})
       return
     }
 
@@ -35,6 +63,43 @@ export function RoomPage() {
     try {
       const data = await roomService.getRoomsByMaster(masterId)
       setRooms(data)
+
+      const roomIds = data.map((room) => room.id)
+      if (roomIds.length === 0) {
+        setRoomLessons({})
+        return
+      }
+
+      const { data: lessonRows, error: lessonError } = await supabase
+        .from('lessons')
+        .select('room_id, title, display_order')
+        .in('room_id', roomIds)
+        .order('display_order', { ascending: true })
+        .order('created_at', { ascending: true })
+
+      if (lessonError) {
+        throw new Error('Gagal memuat lesson room dari database.')
+      }
+
+      const nextRoomLessons: Record<number, string[]> = {}
+      for (const room of data) {
+        nextRoomLessons[room.id] = []
+      }
+
+      for (const row of lessonRows ?? []) {
+        if (typeof row?.room_id !== 'number' || typeof row?.title !== 'string') {
+          continue
+        }
+
+        const title = row.title.trim()
+        if (!title) {
+          continue
+        }
+
+        nextRoomLessons[row.room_id] = [...(nextRoomLessons[row.room_id] ?? []), title]
+      }
+
+      setRoomLessons(nextRoomLessons)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Gagal memuat daftar room.')
     } finally {
@@ -117,6 +182,7 @@ export function RoomPage() {
 
     try {
       const createdRoom = await roomService.createRoom({ roomName: input.roomName, masterId })
+      await syncRoomLessons(createdRoom.id, input.lessons)
       setRooms((current) => [createdRoom, ...current])
       setRoomLessons((current) => ({ ...current, [createdRoom.id]: input.lessons }))
       setIsFormOpen(false)
@@ -134,6 +200,7 @@ export function RoomPage() {
 
     try {
       const updatedRoom = await roomService.updateRoom({ id: String(selectedRoom.id), roomName: input.roomName, masterId })
+      await syncRoomLessons(updatedRoom.id, input.lessons)
       setRooms((current) => current.map((room) => (room.id === updatedRoom.id ? updatedRoom : room)))
       setRoomLessons((current) => ({ ...current, [updatedRoom.id]: input.lessons }))
       setSelectedRoom(null)
@@ -161,6 +228,7 @@ export function RoomPage() {
       key={selectedRoom?.id ?? 'new'}
       initialName={selectedRoom?.roomName ?? ''}
       initialLessons={selectedRoom ? roomLessons[selectedRoom.id] ?? [] : []}
+      selectedRoomId={selectedRoom?.id ?? null}
       onSubmit={selectedRoom ? handleEditRoom : handleCreateRoom}
       onCancel={() => {
         setSelectedRoom(null)

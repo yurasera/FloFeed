@@ -11,18 +11,19 @@ export type RoomFormInput = {
 type RoomFormProps = {
   initialName?: string
   initialLessons?: string[]
+  selectedRoomId?: number | null
   onSubmit: (input: RoomFormInput) => void
   onCancel?: () => void
   submitLabel?: string
 }
 
-async function fetchLessonTitles(): Promise<string[]> {
+async function fetchLessonTitles(selectedRoomId: number): Promise<string[]> {
   const { data, error } = await supabase
     .from('lessons')
-    .select('title, display_order')
-    .order('display_order', { ascending: true, nullsFirst: false })
+    .select('id, title, display_order')
+    .eq('room_id', selectedRoomId)
+    .order('display_order', { ascending: true })
     .order('created_at', { ascending: true })
-    .limit(200)
 
   if (error) {
     throw new Error('Gagal memuat lesson dari database.')
@@ -33,15 +34,23 @@ async function fetchLessonTitles(): Promise<string[]> {
     .filter(Boolean)
 }
 
-export function RoomForm({ initialName = '', initialLessons = [], onSubmit, onCancel, submitLabel = 'Simpan' }: RoomFormProps) {
+export function RoomForm({ initialName = '', initialLessons = [], selectedRoomId = null, onSubmit, onCancel, submitLabel = 'Simpan' }: RoomFormProps) {
   const [roomName, setRoomName] = useState(initialName)
   const [lessonTitles, setLessonTitles] = useState<string[]>(initialLessons.length > 0 ? initialLessons : [''])
-  const [isLoadingLessons, setIsLoadingLessons] = useState(initialLessons.length === 0)
+  const [isLoadingLessons, setIsLoadingLessons] = useState(Boolean(selectedRoomId) || initialLessons.length === 0)
   const [lessonError, setLessonError] = useState('')
 
   useEffect(() => {
     if (initialLessons.length > 0) {
       setLessonTitles(initialLessons)
+      setIsLoadingLessons(false)
+      setLessonError('')
+      return
+    }
+
+    if (!selectedRoomId) {
+      setLessonTitles([''])
+      setLessonError('')
       setIsLoadingLessons(false)
       return
     }
@@ -51,20 +60,16 @@ export function RoomForm({ initialName = '', initialLessons = [], onSubmit, onCa
     const loadLessonTitles = async () => {
       setIsLoadingLessons(true)
       setLessonError('')
+      setLessonTitles([''])
 
       try {
-        const titles = await fetchLessonTitles()
+        const titles = await fetchLessonTitles(selectedRoomId)
 
         if (!isMounted) {
           return
         }
 
-        if (titles.length > 0) {
-          setLessonTitles(titles)
-          return
-        }
-
-        setLessonTitles([''])
+        setLessonTitles(titles.length > 0 ? titles : [''])
       } catch (error) {
         if (!isMounted) {
           return
@@ -85,7 +90,7 @@ export function RoomForm({ initialName = '', initialLessons = [], onSubmit, onCa
     return () => {
       isMounted = false
     }
-  }, [initialLessons])
+  }, [initialLessons, selectedRoomId])
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
