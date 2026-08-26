@@ -9,8 +9,6 @@ import { useLearnerAuth } from '../context/learnerAuthContext'
 import type { Room } from '../types/room'
 import type { FeedbackResponse } from '../types/feedback'
 
-const defaultLessons = ['Variables', 'Data Types', 'Scanner Input']
-
 export function RoomPage() {
   const { learner, isAuthenticated } = useLearnerAuth()
   const [rooms, setRooms] = useState<Room[]>([])
@@ -162,7 +160,7 @@ export function RoomPage() {
     <RoomForm
       key={selectedRoom?.id ?? 'new'}
       initialName={selectedRoom?.roomName ?? ''}
-      initialLessons={selectedRoom ? roomLessons[selectedRoom.id] ?? defaultLessons : defaultLessons}
+      initialLessons={selectedRoom ? roomLessons[selectedRoom.id] ?? [] : []}
       onSubmit={selectedRoom ? handleEditRoom : handleCreateRoom}
       onCancel={() => {
         setSelectedRoom(null)
@@ -244,7 +242,7 @@ export function RoomPage() {
                   <div className="space-y-3 border-t border-slate-200 pt-4">
                     <h4 className="font-semibold text-slate-900">Lessons</h4>
                     <div className="space-y-2">
-                      {(roomLessons[room.id] ?? defaultLessons).map((lesson, index) => (
+                      {(roomLessons[room.id] ?? []).map((lesson, index) => (
                         <div key={`${room.id}-${index}`} className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
                           <span className="text-sm font-semibold text-slate-500">{String(index + 1).padStart(2, '0')}</span>
                           <span className="font-semibold text-slate-900">{lesson}</span>

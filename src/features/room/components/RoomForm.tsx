@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PrimaryButton } from '../../../components/ui/PrimaryButton'
 import { SecondaryButton } from '../../../components/ui/SecondaryButton'
+import { supabase } from '../../../lib/supabase'
 
 export type RoomFormInput = {
   roomName: string
@@ -15,9 +16,76 @@ type RoomFormProps = {
   submitLabel?: string
 }
 
-export function RoomForm({ initialName = '', initialLessons = [''], onSubmit, onCancel, submitLabel = 'Simpan' }: RoomFormProps) {
+async function fetchLessonTitles(): Promise<string[]> {
+  const { data, error } = await supabase
+    .from('lessons')
+    .select('title, display_order')
+    .order('display_order', { ascending: true, nullsFirst: false })
+    .order('created_at', { ascending: true })
+    .limit(200)
+
+  if (error) {
+    throw new Error('Gagal memuat lesson dari database.')
+  }
+
+  return (data ?? [])
+    .map((row) => (typeof row?.title === 'string' ? row.title.trim() : ''))
+    .filter(Boolean)
+}
+
+export function RoomForm({ initialName = '', initialLessons = [], onSubmit, onCancel, submitLabel = 'Simpan' }: RoomFormProps) {
   const [roomName, setRoomName] = useState(initialName)
-  const [lessonTitles, setLessonTitles] = useState(initialLessons.length > 0 ? initialLessons : [''])
+  const [lessonTitles, setLessonTitles] = useState<string[]>(initialLessons.length > 0 ? initialLessons : [''])
+  const [isLoadingLessons, setIsLoadingLessons] = useState(initialLessons.length === 0)
+  const [lessonError, setLessonError] = useState('')
+
+  useEffect(() => {
+    if (initialLessons.length > 0) {
+      setLessonTitles(initialLessons)
+      setIsLoadingLessons(false)
+      return
+    }
+
+    let isMounted = true
+
+    const loadLessonTitles = async () => {
+      setIsLoadingLessons(true)
+      setLessonError('')
+
+      try {
+        const titles = await fetchLessonTitles()
+
+        if (!isMounted) {
+          return
+        }
+
+        if (titles.length > 0) {
+          setLessonTitles(titles)
+          return
+        }
+
+        setLessonTitles([''])
+      } catch (error) {
+        if (!isMounted) {
+          return
+        }
+
+        const message = error instanceof Error ? error.message : 'Gagal memuat daftar lesson.'
+        setLessonError(message)
+        setLessonTitles([''])
+      } finally {
+        if (isMounted) {
+          setIsLoadingLessons(false)
+        }
+      }
+    }
+
+    void loadLessonTitles()
+
+    return () => {
+      isMounted = false
+    }
+  }, [initialLessons])
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -50,6 +118,21 @@ export function RoomForm({ initialName = '', initialLessons = [''], onSubmit, on
 
       <div className="space-y-2">
         <p className="text-sm font-semibold text-slate-700">Lessons</p>
+
+        {isLoadingLessons ? <p className="text-sm text-slate-500">Memuat lesson…</p> : null}
+
+        {!isLoadingLessons && lessonError ? (
+          <p className="rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700">
+            Gagal memuat lesson. Silakan coba lagi nanti.
+          </p>
+        ) : null}
+
+        {!isLoadingLessons && !lessonError && lessonTitles.length === 1 && lessonTitles[0] === '' ? (
+          <p className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-500">
+            Belum ada lesson yang tersedia.
+          </p>
+        ) : null}
+
         {lessonTitles.map((title, index) => (
           <div key={index} className="flex items-center gap-2">
             <span className="w-8 text-sm font-semibold text-slate-500">{String(index + 1).padStart(2, '0')}</span>
