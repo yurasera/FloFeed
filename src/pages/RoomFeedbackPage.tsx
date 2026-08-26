@@ -49,6 +49,7 @@ export function RoomFeedbackPage() {
     const [overallUnderstanding, setOverallUnderstanding] = useState<OverallUnderstanding | ''>('')
     const [selectedLessonId, setSelectedLessonId] = useState<number | null>(null)
     const [selectedStrengthLessonIds, setSelectedStrengthLessonIds] = useState<string[]>([])
+    const [selectedStrengthReasons, setSelectedStrengthReasons] = useState<string[]>([])
     const [secondaryChoice, setSecondaryChoice] = useState('')
     const [specificFeedback, setSpecificFeedback] = useState('')
     const [stepIndex, setStepIndex] = useState(0)
@@ -135,6 +136,7 @@ export function RoomFeedbackPage() {
     const resetDependentState = () => {
         setSelectedLessonId(null)
         setSelectedStrengthLessonIds([])
+        setSelectedStrengthReasons([])
         setSecondaryChoice('')
         setSpecificFeedback('')
     }
@@ -165,7 +167,23 @@ export function RoomFeedbackPage() {
         setSpecificFeedback('')
     }
 
+    const toggleStrengthReason = (value: string) => {
+        setSelectedStrengthReasons((current) => {
+            if (current.includes(value)) {
+                return current.filter((item) => item !== value)
+            }
+
+            return [...current, value]
+        })
+    }
+
     const handleSecondaryChoice = (value: string) => {
+        if (overallUnderstanding === 'very_clear') {
+            toggleStrengthReason(value)
+            setSecondaryChoice(value)
+            return
+        }
+
         setSecondaryChoice(value)
 
         if (value === 'Lainnya' || overallUnderstanding === 'confused' || overallUnderstanding === 'not_understood') {
@@ -241,6 +259,10 @@ export function RoomFeedbackPage() {
         }
 
         if (prompt.kind === 'secondary') {
+            if (overallUnderstanding === 'very_clear') {
+                return selectedStrengthReasons.length > 0
+            }
+
             return Boolean(secondaryChoice)
         }
 
@@ -272,10 +294,12 @@ export function RoomFeedbackPage() {
 
         if (overallUnderstanding === 'very_clear') {
             const uniqueStrengthLessonIds = Array.from(new Set(selectedStrengthLessonIds))
+            const uniqueStrengthReasons = Array.from(new Set(selectedStrengthReasons))
             payloadReflectionAnswers.selectedStrengthLessonIds = uniqueStrengthLessonIds.join(',')
             payloadReflectionAnswers.selectedStrengthLessonTitles = selectedStrengthLessons
                 .map((lesson) => lesson.title)
                 .join(', ')
+            payloadReflectionAnswers.selectedStrengthReasons = uniqueStrengthReasons.join(',')
         } else {
             payloadReflectionAnswers.selectedLessonId = String(selectedLessonId ?? '')
             payloadReflectionAnswers.selectedLessonTitle = selectedLesson?.title ?? ''
@@ -334,6 +358,21 @@ export function RoomFeedbackPage() {
         }
 
         if (prompt.kind === 'secondary') {
+            if (overallUnderstanding === 'very_clear') {
+                if (selectedStrengthReasons.length === 0) {
+                    return
+                }
+
+                if (selectedStrengthReasons.includes('Lainnya')) {
+                    setStepIndex(3)
+                    return
+                }
+
+                const reasonsText = selectedStrengthReasons.join(', ')
+                await handleSubmitFeedback(reasonsText)
+                return
+            }
+
             if (!secondaryChoice) {
                 return
             }
@@ -462,16 +501,29 @@ export function RoomFeedbackPage() {
 
                             {prompt.kind === 'secondary' && prompt.options ? (
                                 <div className="grid gap-3">
-                                    {prompt.options.map((option) => (
-                                        <button
-                                            key={option}
-                                            type="button"
-                                            onClick={() => handleSecondaryChoice(option)}
-                                            className={`rounded-[1.5rem] border px-5 py-4 text-left text-base font-semibold transition ${secondaryChoice === option ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'}`}
-                                        >
-                                            {option}
-                                        </button>
-                                    ))}
+                                    {prompt.options.map((option) => {
+                                        const isSelected = overallUnderstanding === 'very_clear'
+                                            ? selectedStrengthReasons.includes(option)
+                                            : secondaryChoice === option
+
+                                        return (
+                                            <button
+                                                key={option}
+                                                type="button"
+                                                onClick={() => handleSecondaryChoice(option)}
+                                                className={`rounded-[1.5rem] border px-5 py-4 text-left text-base font-semibold transition ${isSelected ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'}`}
+                                            >
+                                                <span className="flex items-center gap-3">
+                                                    {overallUnderstanding === 'very_clear' ? (
+                                                        <span className={`flex h-5 w-5 items-center justify-center rounded border text-xs ${isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white text-transparent'}`}>
+                                                            ✓
+                                                        </span>
+                                                    ) : null}
+                                                    {option}
+                                                </span>
+                                            </button>
+                                        )
+                                    })}
                                 </div>
                             ) : null}
 
