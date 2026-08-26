@@ -50,6 +50,11 @@ export function RoomFeedbackPage() {
     const [selectedLessonId, setSelectedLessonId] = useState<number | null>(null)
     const [selectedStrengthLessonIds, setSelectedStrengthLessonIds] = useState<string[]>([])
     const [selectedStrengthReasons, setSelectedStrengthReasons] = useState<string[]>([])
+    const [selectedMostlyClearLessonIds, setSelectedMostlyClearLessonIds] = useState<string[]>([])
+    const [selectedConfusedLessonIds, setSelectedConfusedLessonIds] = useState<string[]>([])
+    const [selectedNotUnderstoodLessonIds, setSelectedNotUnderstoodLessonIds] = useState<string[]>([])
+    const [selectedConfusedReasons, setSelectedConfusedReasons] = useState<string[]>([])
+    const [selectedNotUnderstoodReasons, setSelectedNotUnderstoodReasons] = useState<string[]>([])
     const [secondaryChoice, setSecondaryChoice] = useState('')
     const [specificFeedback, setSpecificFeedback] = useState('')
     const [stepIndex, setStepIndex] = useState(0)
@@ -61,6 +66,9 @@ export function RoomFeedbackPage() {
 
     const selectedLesson = lessons.find((lesson) => lesson.id === selectedLessonId) ?? null
     const selectedStrengthLessons = lessons.filter((lesson) => selectedStrengthLessonIds.includes(String(lesson.id)))
+    const selectedMostlyClearLessons = lessons.filter((lesson) => selectedMostlyClearLessonIds.includes(String(lesson.id)))
+    const selectedConfusedLessons = lessons.filter((lesson) => selectedConfusedLessonIds.includes(String(lesson.id)))
+    const selectedNotUnderstoodLessons = lessons.filter((lesson) => selectedNotUnderstoodLessonIds.includes(String(lesson.id)))
     const branchOptions = overallUnderstanding ? secondaryOptionsByOverall[overallUnderstanding] : []
 
     useEffect(() => {
@@ -137,6 +145,11 @@ export function RoomFeedbackPage() {
         setSelectedLessonId(null)
         setSelectedStrengthLessonIds([])
         setSelectedStrengthReasons([])
+        setSelectedMostlyClearLessonIds([])
+        setSelectedConfusedLessonIds([])
+        setSelectedNotUnderstoodLessonIds([])
+        setSelectedConfusedReasons([])
+        setSelectedNotUnderstoodReasons([])
         setSecondaryChoice('')
         setSpecificFeedback('')
     }
@@ -152,6 +165,45 @@ export function RoomFeedbackPage() {
         setSecondaryChoice('')
         setSpecificFeedback('')
         setStepIndex(2)
+    }
+
+    const toggleMostlyClearLesson = (lessonId: number) => {
+        const lessonIdString = String(lessonId)
+        setSelectedMostlyClearLessonIds((current) => {
+            if (current.includes(lessonIdString)) {
+                return current.filter((item) => item !== lessonIdString)
+            }
+
+            return [...current, lessonIdString]
+        })
+        setSecondaryChoice('')
+        setSpecificFeedback('')
+    }
+
+    const toggleConfusedLesson = (lessonId: number) => {
+        const lessonIdString = String(lessonId)
+        setSelectedConfusedLessonIds((current) => {
+            if (current.includes(lessonIdString)) {
+                return current.filter((item) => item !== lessonIdString)
+            }
+
+            return [...current, lessonIdString]
+        })
+        setSecondaryChoice('')
+        setSpecificFeedback('')
+    }
+
+    const toggleNotUnderstoodLesson = (lessonId: number) => {
+        const lessonIdString = String(lessonId)
+        setSelectedNotUnderstoodLessonIds((current) => {
+            if (current.includes(lessonIdString)) {
+                return current.filter((item) => item !== lessonIdString)
+            }
+
+            return [...current, lessonIdString]
+        })
+        setSecondaryChoice('')
+        setSpecificFeedback('')
     }
 
     const toggleStrengthLesson = (lessonId: number) => {
@@ -177,9 +229,41 @@ export function RoomFeedbackPage() {
         })
     }
 
+    const toggleConfusedReason = (value: string) => {
+        setSelectedConfusedReasons((current) => {
+            if (current.includes(value)) {
+                return current.filter((item) => item !== value)
+            }
+
+            return [...current, value]
+        })
+    }
+
+    const toggleNotUnderstoodReason = (value: string) => {
+        setSelectedNotUnderstoodReasons((current) => {
+            if (current.includes(value)) {
+                return current.filter((item) => item !== value)
+            }
+
+            return [...current, value]
+        })
+    }
+
     const handleSecondaryChoice = (value: string) => {
         if (overallUnderstanding === 'very_clear') {
             toggleStrengthReason(value)
+            setSecondaryChoice(value)
+            return
+        }
+
+        if (overallUnderstanding === 'confused') {
+            toggleConfusedReason(value)
+            setSecondaryChoice(value)
+            return
+        }
+
+        if (overallUnderstanding === 'not_understood') {
+            toggleNotUnderstoodReason(value)
             setSecondaryChoice(value)
             return
         }
@@ -255,12 +339,36 @@ export function RoomFeedbackPage() {
                 return selectedStrengthLessonIds.length > 0
             }
 
+            if (overallUnderstanding === 'mostly_clear') {
+                return selectedMostlyClearLessonIds.length > 0
+            }
+
+            if (overallUnderstanding === 'confused') {
+                return selectedConfusedLessonIds.length > 0
+            }
+
+            if (overallUnderstanding === 'not_understood') {
+                return selectedNotUnderstoodLessonIds.length > 0
+            }
+
             return Boolean(selectedLessonId)
         }
 
         if (prompt.kind === 'secondary') {
             if (overallUnderstanding === 'very_clear') {
                 return selectedStrengthReasons.length > 0
+            }
+
+            if (overallUnderstanding === 'mostly_clear') {
+                return Boolean(secondaryChoice)
+            }
+
+            if (overallUnderstanding === 'confused') {
+                return selectedConfusedReasons.length > 0
+            }
+
+            if (overallUnderstanding === 'not_understood') {
+                return selectedNotUnderstoodReasons.length > 0
             }
 
             return Boolean(secondaryChoice)
@@ -282,7 +390,19 @@ export function RoomFeedbackPage() {
             return
         }
 
-        if (prompt.kind !== 'overall' && overallUnderstanding !== 'very_clear' && !selectedLessonId) {
+        if (prompt.kind !== 'overall' && overallUnderstanding === 'mostly_clear' && selectedMostlyClearLessonIds.length === 0) {
+            return
+        }
+
+        if (prompt.kind !== 'overall' && overallUnderstanding === 'confused' && selectedConfusedLessonIds.length === 0) {
+            return
+        }
+
+        if (prompt.kind !== 'overall' && overallUnderstanding === 'not_understood' && selectedNotUnderstoodLessonIds.length === 0) {
+            return
+        }
+
+        if (prompt.kind !== 'overall' && overallUnderstanding !== 'very_clear' && overallUnderstanding !== 'mostly_clear' && !selectedLessonId) {
             return
         }
 
@@ -300,6 +420,30 @@ export function RoomFeedbackPage() {
                 .map((lesson) => lesson.title)
                 .join(', ')
             payloadReflectionAnswers.selectedStrengthReasons = uniqueStrengthReasons.join(',')
+        } else if (overallUnderstanding === 'mostly_clear') {
+            const uniqueMostlyClearLessonIds = Array.from(new Set(selectedMostlyClearLessonIds))
+            payloadReflectionAnswers.selectedMostlyClearLessonIds = uniqueMostlyClearLessonIds.join(',')
+            payloadReflectionAnswers.selectedMostlyClearLessonTitles = selectedMostlyClearLessons
+                .map((lesson) => lesson.title)
+                .join(', ')
+            payloadReflectionAnswers.selectedLessonId = String(selectedLessonId ?? '')
+            payloadReflectionAnswers.selectedLessonTitle = selectedLesson?.title ?? ''
+        } else if (overallUnderstanding === 'confused') {
+            const uniqueConfusedLessonIds = Array.from(new Set(selectedConfusedLessonIds))
+            const uniqueConfusedReasons = Array.from(new Set(selectedConfusedReasons))
+            payloadReflectionAnswers.selectedConfusedLessonIds = uniqueConfusedLessonIds.join(',')
+            payloadReflectionAnswers.selectedConfusedLessonTitles = selectedConfusedLessons
+                .map((lesson) => lesson.title)
+                .join(', ')
+            payloadReflectionAnswers.selectedConfusedReasons = uniqueConfusedReasons.join(',')
+        } else if (overallUnderstanding === 'not_understood') {
+            const uniqueNotUnderstoodLessonIds = Array.from(new Set(selectedNotUnderstoodLessonIds))
+            const uniqueNotUnderstoodReasons = Array.from(new Set(selectedNotUnderstoodReasons))
+            payloadReflectionAnswers.selectedNotUnderstoodLessonIds = uniqueNotUnderstoodLessonIds.join(',')
+            payloadReflectionAnswers.selectedNotUnderstoodLessonTitles = selectedNotUnderstoodLessons
+                .map((lesson) => lesson.title)
+                .join(', ')
+            payloadReflectionAnswers.selectedNotUnderstoodReasons = uniqueNotUnderstoodReasons.join(',')
         } else {
             payloadReflectionAnswers.selectedLessonId = String(selectedLessonId ?? '')
             payloadReflectionAnswers.selectedLessonTitle = selectedLesson?.title ?? ''
@@ -349,6 +493,33 @@ export function RoomFeedbackPage() {
                 return
             }
 
+            if (overallUnderstanding === 'mostly_clear') {
+                if (selectedMostlyClearLessonIds.length === 0) {
+                    return
+                }
+
+                setStepIndex(2)
+                return
+            }
+
+            if (overallUnderstanding === 'confused') {
+                if (selectedConfusedLessonIds.length === 0) {
+                    return
+                }
+
+                setStepIndex(2)
+                return
+            }
+
+            if (overallUnderstanding === 'not_understood') {
+                if (selectedNotUnderstoodLessonIds.length === 0) {
+                    return
+                }
+
+                setStepIndex(2)
+                return
+            }
+
             if (!selectedLessonId) {
                 return
             }
@@ -370,6 +541,36 @@ export function RoomFeedbackPage() {
 
                 const reasonsText = selectedStrengthReasons.join(', ')
                 await handleSubmitFeedback(reasonsText)
+                return
+            }
+
+            if (overallUnderstanding === 'confused') {
+                if (selectedConfusedReasons.length === 0) {
+                    return
+                }
+
+                if (selectedConfusedReasons.includes('Lainnya')) {
+                    setStepIndex(3)
+                    return
+                }
+
+                const confusedReasonsText = selectedConfusedReasons.join(', ')
+                await handleSubmitFeedback(confusedReasonsText)
+                return
+            }
+
+            if (overallUnderstanding === 'not_understood') {
+                if (selectedNotUnderstoodReasons.length === 0) {
+                    return
+                }
+
+                if (selectedNotUnderstoodReasons.includes('Lainnya')) {
+                    setStepIndex(3)
+                    return
+                }
+
+                const notUnderstoodReasonsText = selectedNotUnderstoodReasons.join(', ')
+                await handleSubmitFeedback(notUnderstoodReasonsText)
                 return
             }
 
@@ -460,8 +661,20 @@ export function RoomFeedbackPage() {
                                     {overallUnderstanding === 'not_understood' ? (
                                         <button
                                             type="button"
-                                            onClick={() => handleLessonChoice(-1 as unknown as number)}
-                                            className={`rounded-[1.5rem] border px-5 py-4 text-left text-base font-semibold transition ${selectedLessonId === -1 ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'}`}
+                                            onClick={() => {
+                                                const allOptionId = -1
+                                                const allOptionIdString = String(allOptionId)
+                                                setSelectedNotUnderstoodLessonIds((current) => {
+                                                    if (current.includes(allOptionIdString)) {
+                                                        return current.filter((item) => item !== allOptionIdString)
+                                                    }
+
+                                                    return [...current, allOptionIdString]
+                                                })
+                                                setSecondaryChoice('')
+                                                setSpecificFeedback('')
+                                            }}
+                                            className={`rounded-[1.5rem] border px-5 py-4 text-left text-base font-semibold transition ${selectedNotUnderstoodLessonIds.includes('-1') ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'}`}
                                         >
                                             Hampir semuanya
                                         </button>
@@ -469,7 +682,13 @@ export function RoomFeedbackPage() {
                                     {lessons.map((lesson) => {
                                         const isSelected = overallUnderstanding === 'very_clear'
                                             ? selectedStrengthLessonIds.includes(String(lesson.id))
-                                            : selectedLessonId === lesson.id
+                                            : overallUnderstanding === 'mostly_clear'
+                                                ? selectedMostlyClearLessonIds.includes(String(lesson.id))
+                                                : overallUnderstanding === 'confused'
+                                                    ? selectedConfusedLessonIds.includes(String(lesson.id))
+                                                    : overallUnderstanding === 'not_understood'
+                                                        ? selectedNotUnderstoodLessonIds.includes(String(lesson.id))
+                                                        : selectedLessonId === lesson.id
 
                                         return (
                                             <button
@@ -481,12 +700,27 @@ export function RoomFeedbackPage() {
                                                         return
                                                     }
 
+                                                    if (overallUnderstanding === 'mostly_clear') {
+                                                        toggleMostlyClearLesson(lesson.id)
+                                                        return
+                                                    }
+
+                                                    if (overallUnderstanding === 'confused') {
+                                                        toggleConfusedLesson(lesson.id)
+                                                        return
+                                                    }
+
+                                                    if (overallUnderstanding === 'not_understood') {
+                                                        toggleNotUnderstoodLesson(lesson.id)
+                                                        return
+                                                    }
+
                                                     handleLessonChoice(lesson.id)
                                                 }}
                                                 className={`rounded-[1.5rem] border px-5 py-4 text-left text-base font-semibold transition ${isSelected ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'}`}
                                             >
                                                 <span className="flex items-center gap-3">
-                                                    {overallUnderstanding === 'very_clear' ? (
+                                                    {overallUnderstanding === 'very_clear' || overallUnderstanding === 'mostly_clear' || overallUnderstanding === 'confused' || overallUnderstanding === 'not_understood' ? (
                                                         <span className={`flex h-5 w-5 items-center justify-center rounded border text-xs ${isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white text-transparent'}`}>
                                                             ✓
                                                         </span>
@@ -504,7 +738,11 @@ export function RoomFeedbackPage() {
                                     {prompt.options.map((option) => {
                                         const isSelected = overallUnderstanding === 'very_clear'
                                             ? selectedStrengthReasons.includes(option)
-                                            : secondaryChoice === option
+                                            : overallUnderstanding === 'confused'
+                                                ? selectedConfusedReasons.includes(option)
+                                                : overallUnderstanding === 'not_understood'
+                                                    ? selectedNotUnderstoodReasons.includes(option)
+                                                    : secondaryChoice === option
 
                                         return (
                                             <button
@@ -514,7 +752,7 @@ export function RoomFeedbackPage() {
                                                 className={`rounded-[1.5rem] border px-5 py-4 text-left text-base font-semibold transition ${isSelected ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300 hover:bg-slate-100'}`}
                                             >
                                                 <span className="flex items-center gap-3">
-                                                    {overallUnderstanding === 'very_clear' ? (
+                                                    {overallUnderstanding === 'very_clear' || overallUnderstanding === 'confused' || overallUnderstanding === 'not_understood' ? (
                                                         <span className={`flex h-5 w-5 items-center justify-center rounded border text-xs ${isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white text-transparent'}`}>
                                                             ✓
                                                         </span>
