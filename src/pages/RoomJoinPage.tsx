@@ -76,54 +76,53 @@ export function RoomJoinPage() {
     return (
         <PageContainer className="py-10">
             <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] max-w-4xl mx-auto">
-                <Card className="space-y-8 bg-white">
-                    <RoomCodeInputCard
-                        eyebrow="Room Join"
-                        title="Masuk ke room dengan kode"
-                        description="Masukkan roomCode untuk melihat informasi room dan lanjutkan ke feedback flow."
-                        onRoomFound={(mappedClass) => {
-                            setRoomInfo(mappedClass)
-                            setSelectedClass(mappedClass)
-                        }}
-                        onReset={() => {
-                            setRoomInfo(null)
-                            setSelectedClass(null)
-                        }}
-                        onBack={() => navigate('/')}
-                    />
+                <RoomCodeInputCard
+                    eyebrow="Room Join"
+                    title="Masuk ke room dengan kode"
+                    description="Masukkan roomCode untuk melihat informasi room dan lanjutkan ke feedback flow."
+                    onRoomFound={(mappedClass) => {
+                        setRoomInfo(mappedClass)
+                        setSelectedClass(mappedClass)
+                    }}
+                    onReset={() => {
+                        setRoomInfo(null)
+                        setSelectedClass(null)
+                    }}
+                    onBack={() => navigate('/')}
+                />
 
-                    {roomInfo ? (
-                        <Card className="space-y-4 border-blue-100 bg-blue-50 p-6">
-                            <div className="flex items-center justify-between">
-                                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Room ditemukan</p>
-                                {selectedRoomAlreadyFilled ? (
-                                    <div className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">Sudah diisi</div>
-                                ) : null}
+                {roomInfo ? (
+                    <Card className="space-y-4 border-blue-100 bg-blue-50 p-6">
+                        <div className="flex items-center justify-between">
+                            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Room ditemukan</p>
+                            {selectedRoomAlreadyFilled ? (
+                                <div className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">Sudah diisi</div>
+                            ) : null}
+                        </div>
+                        <div className="space-y-3 text-sm text-slate-700">
+                            <div>
+                                <p className="font-semibold">Nama Room</p>
+                                <p>{roomInfo.name}</p>
                             </div>
-                            <div className="space-y-3 text-sm text-slate-700">
-                                <div>
-                                    <p className="font-semibold">Nama Room</p>
-                                    <p>{roomInfo.name}</p>
-                                </div>
-                                <div>
-                                    <p className="font-semibold">Kode Room</p>
-                                    <p>{roomInfo.code}</p>
-                                </div>
-                                <div>
-                                    <p className="font-semibold">Master ID</p>
-                                    <p>{roomInfo.mentorId}</p>
-                                </div>
-                                <div>
-                                    <p className="font-semibold">Dibuat pada</p>
-                                    <p>{new Date(roomInfo.createdAt).toLocaleString('id-ID')}</p>
-                                </div>
+                            <div>
+                                <p className="font-semibold">Kode Room</p>
+                                <p>{roomInfo.code}</p>
                             </div>
-                            <PrimaryButton type="button" onClick={handleProceed} className="w-full" disabled={selectedRoomAlreadyFilled}>
-                                {selectedRoomAlreadyFilled ? 'Sudah diisi' : 'Lanjut ke feedback'}
-                            </PrimaryButton>
-                        </Card>
-                    ) : null}
-                </Card>
+                            <div>
+                                <p className="font-semibold">Master ID</p>
+                                <p>{roomInfo.mentorId}</p>
+                            </div>
+                            <div>
+                                <p className="font-semibold">Dibuat pada</p>
+                                <p>{new Date(roomInfo.createdAt).toLocaleString('id-ID')}</p>
+                            </div>
+                        </div>
+                        <PrimaryButton type="button" onClick={handleProceed} className="w-full" disabled={selectedRoomAlreadyFilled}>
+                            {selectedRoomAlreadyFilled ? 'Sudah diisi' : 'Lanjut ke feedback'}
+                        </PrimaryButton>
+                    </Card>
+                ) : null}
+
 
                 <Card className="space-y-6 bg-white">
                     <SectionTitle
