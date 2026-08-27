@@ -31,7 +31,7 @@ export function Navbar() {
             <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
                 <div>
                     <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">FloFeed</p>
-                    <p className="text-xs text-slate-400">Platform Feedback Psychological Safety</p>
+                    <p className="text-xs text-slate-400">Structured Feedback, Better Learning</p>
                 </div>
 
                 <nav className="flex flex-wrap items-center gap-2">

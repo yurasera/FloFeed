@@ -155,7 +155,7 @@ export function LearnerAuthScreen({ mode }: LearnerAuthScreenProps) {
                 <Card className="space-y-6 border-slate-200 bg-white">
                     <SectionTitle
                         eyebrow={isRegisterMode ? 'Create account' : 'Welcome back'}
-                        title={isRegisterMode ? 'Buat akun learner' : 'Masuk ke akun learner'}
+                        title={isRegisterMode ? 'Buat akun' : 'Masuk ke akun'}
                         description={isRegisterMode ? 'Buat identitas learner agar sesi tersimpan secara lokal di perangkat ini.' : 'Masuk kembali untuk melanjutkan feedback dan menjaga status sesi tetap aktif.'}
                     />
 
@@ -245,14 +245,9 @@ export function LearnerAuthScreen({ mode }: LearnerAuthScreenProps) {
                                 to={switchHref}
                                 className="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
                             >
-                                {isRegisterMode ? 'Pindah ke masuk' : 'Pindah ke daftar'}
+                                {isRegisterMode ? 'Pindah ke masuk' : 'Buat akun'}
                             </Link>
-                            <Link
-                                to="/"
-                                className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
-                            >
-                                Kembali ke home
-                            </Link>
+                           
                         </div>
                     </div>
                 </Card>
