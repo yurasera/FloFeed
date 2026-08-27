@@ -91,7 +91,7 @@ export function HomePage() {
 
     return (
         <PageContainer>
-            <Card className="bg-white shadow-sm shadow-slate-200/20">
+            <Card className="bg-white shadow-sm shadow-slate-200/20 max-w-4xl mx-auto p-6 sm:p-8 lg:p-10">
                 <div className="flex flex-col gap-4 rounded-t-3xl">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Try FloFeed Demo</p>
@@ -346,39 +346,6 @@ export function HomePage() {
                 </div>
             </Card>
 
-            <div className="grid gap-6">
-                <Card className="space-y-4 bg-white">
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                        <SectionTitle
-                            eyebrow="How it works"
-                            title="Alur learner"
-                            description="Register atau login, pertahankan session, lalu lanjut ke feedback flow tanpa mengungkap identitas learner."
-                        />
-                        <button
-                            type="button"
-                            onClick={() => setIsHowItWorksOpen((current) => !current)}
-                            className="self-start rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                            aria-label={isHowItWorksOpen ? 'Collapse details' : 'Expand details'}
-                        >
-                            {isHowItWorksOpen ? '▼' : '►'}
-                        </button>
-                    </div>
-
-                    {isHowItWorksOpen && (
-                        <ol className="space-y-3 text-sm leading-6 text-slate-600">
-                            <li className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                                1. Buat akun learner atau masuk dengan akun yang sudah tersimpan.
-                            </li>
-                            <li className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                                2. Session tetap tersimpan di perangkat sehingga learner bisa kembali kapan saja.
-                            </li>
-                            <li className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                                3. Kirim feedback anonim ke mentor tanpa membawa identitas learner.
-                            </li>
-                        </ol>
-                    )}
-                </Card>
-            </div>
         </PageContainer>
     )
 }
