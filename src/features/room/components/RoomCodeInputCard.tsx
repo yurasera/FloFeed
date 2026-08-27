@@ -28,7 +28,7 @@ export function RoomCodeInputCard({
     onReset,
     onBack,
     label = 'Kode Room',
-    placeholder = 'Contoh: ABC123',
+    placeholder = 'Contoh: 87WXC2',
     buttonText = 'Cari Room',
     buttonLoadingText = 'Memeriksa...',
 }: RoomCodeInputCardProps) {
@@ -94,9 +94,6 @@ export function RoomCodeInputCard({
                 />
 
                 <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
-                    <SecondaryButton type="button" onClick={onBack} className="sm:min-w-40">
-                        Kembali
-                    </SecondaryButton>
                     <PrimaryButton type="button" onClick={handleSearch} className="sm:min-w-40" disabled={isChecking}>
                         {isChecking ? buttonLoadingText : buttonText}
                     </PrimaryButton>

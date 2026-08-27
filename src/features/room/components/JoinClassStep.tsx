@@ -84,7 +84,7 @@ export function JoinClassStep({ onNext }: JoinClassStepProps) {
                         onChange={handleCodeChange}
                         error={error}
                         label="Kode Room"
-                        placeholder="Contoh: ABC123"
+                        placeholder="Contoh: 87WXC2"
                         disabled={isChecking}
                     />
 
