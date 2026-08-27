@@ -12,7 +12,7 @@ type DemoAnswers = {
     anythingElse: string
 }
 
-const demoStepLabels = ['Learner Login', 'Feedback Form', 'Verified Anonymity', 'Comparison']
+const demoStepLabels = ['Guided Reflection', 'Structured Feedback', 'Find Patterns', 'Take Action']
 
 const defaultAnswers: DemoAnswers = {
     standout: 'The discussion made me more confident to ask questions.',
@@ -39,7 +39,7 @@ export function HomePage() {
     const { isAuthenticated } = useLearnerAuth()
     const navigate = useNavigate()
     const [demoStep, setDemoStep] = useState(1)
-    const [learnerName, setLearnerName] = useState('')
+    const [learnerName, setLearnerName] = useState('Yura')
     const [rating, setRating] = useState(5)
     const [answers, setAnswers] = useState<DemoAnswers>(defaultAnswers)
     const [feedbackQuestionIndex, setFeedbackQuestionIndex] = useState(0)
@@ -95,9 +95,8 @@ export function HomePage() {
                 <div className="flex flex-col gap-4 rounded-t-3xl">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Try FloFeed Demo</p>
-                        <p className="text-sm font-semibold uppercase text-slate-900 ">Experience guided feedback.</p>
                     </div>
-                    <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500 text-sm">
+                    <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 text-sm">
                         {demoStepLabels.map((label, index) => (
                             <div
                                 key={label}
@@ -114,7 +113,7 @@ export function HomePage() {
                         <div className="space-y-6">
                             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/20">
                                 <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Learner</p>
-                                <h3 className="mt-3 text-2xl font-semibold text-slate-900">Experience how anonymous feedback works.</h3>
+                                <h3 className="mt-3 text-2xl font-semibold text-slate-900">Experience how guided feedback works.</h3>
                                 <div className="mt-6 space-y-4">
                                     <label className="block text-sm font-medium text-slate-700">Name</label>
                                     <input
