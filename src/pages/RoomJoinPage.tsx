@@ -75,7 +75,7 @@ export function RoomJoinPage() {
 
     return (
         <PageContainer className="py-10">
-            <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+            <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] max-w-4xl mx-auto">
                 <Card className="space-y-8 bg-white">
                     <RoomCodeInputCard
                         eyebrow="Room Join"
