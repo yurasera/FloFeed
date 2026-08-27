@@ -300,7 +300,7 @@ export function RoomPage() {
 
   return (
     <PageContainer className="py-10">
-      <Card className="space-y-8 bg-white">
+      <Card className="space-y-8 bg-white max-w-4xl mx-auto p-6 sm:p-8 lg:p-10">
         <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <SectionTitle
             eyebrow="Room Management"
