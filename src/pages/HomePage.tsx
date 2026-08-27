@@ -345,7 +345,6 @@ export function HomePage() {
                     )}
                 </div>
             </Card>
-
         </PageContainer>
     )
 }

@@ -122,8 +122,8 @@ export function LearnerAuthScreen({ mode }: LearnerAuthScreenProps) {
 
     return (
         <PageContainer className="py-8 sm:py-10">
-            <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch">
-                <Card className="relative overflow-hidden border-blue-100 bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.16),_transparent_35%),linear-gradient(180deg,_#eff6ff_0%,_#ffffff_100%)]">
+            <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch max-w-4xl mx-auto">
+                <Card className="relative overflow-hidden border-blue-100 bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.16),_transparent_35%),linear-gradient(180deg,_#eff6ff_0%,_#ffffff_100%)] order-last lg:order-first">
                     <div className="space-y-8">
                         <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-inset ring-blue-100">
                             <ShieldIcon />
@@ -135,7 +135,7 @@ export function LearnerAuthScreen({ mode }: LearnerAuthScreenProps) {
                             description="FloFeed guides learners to give more specific feedback, helps identify recurring themes, and gives mentors clear areas to maintain and improve."
                         />
 
-                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
                             <div className="rounded-2xl border border-white/70 bg-white/75 p-4 shadow-sm">
                                 <p className="text-sm font-semibold text-slate-900">1. Guided Reflection</p>
                                 <p className="mt-1 text-sm leading-6 text-slate-600">
