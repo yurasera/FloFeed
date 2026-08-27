@@ -57,7 +57,7 @@ export function FeedbackFlowScreen() {
         <div className="min-h-screen bg-slate-50 text-slate-900">
             <main className="space-y-6">
                 <div className="border-b border-slate-200/70 bg-white/80 backdrop-blur">
-                    <div className="mx-auto w-full max-w-6xl px-4 py-4 sm:px-6 lg:px-8">
+                    <div className="mx-auto w-full max-w-4xl px-4 py-4 sm:px-6 lg:px-8">
                         <LearnerSessionBanner />
                         <div className="mt-6">
                             <RoomCodeInputCard
