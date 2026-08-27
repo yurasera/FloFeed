@@ -92,10 +92,10 @@ export function HomePage() {
     return (
         <PageContainer>
             <Card className="bg-white shadow-sm shadow-slate-200/20">
-                <div className="flex flex-col gap-4 rounded-t-3xl border-b border-slate-200 bg-slate-50 px-6 py-5">
+                <div className="flex flex-col gap-4 rounded-t-3xl">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Try FloFeed Demo</p>
-                        <p className="text-sm font-semibold uppercase text-slate-900 ">Experience anonymous feedback from learner to mentor.</p>
+                        <p className="text-sm font-semibold uppercase text-slate-900 ">Experience guided feedback.</p>
                     </div>
                     <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.24em] text-slate-500 text-sm">
                         {demoStepLabels.map((label, index) => (
@@ -109,7 +109,7 @@ export function HomePage() {
                     </div>
                 </div>
 
-                <div className="rounded-b-3xl bg-slate-50 p-6">
+                <div className="rounded-b-3xl mt-4">
                     {demoStep === 1 && (
                         <div className="space-y-6">
                             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/20">
