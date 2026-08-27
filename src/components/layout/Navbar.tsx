@@ -28,7 +28,7 @@ export function Navbar() {
 
     return (
         <header className="px-3 py-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-5xl rounded-2xl border border-slate-200/70 bg-white/80 backdrop-blur-md shadow-lg shadow-slate-900/8 px-5 py-4 sm:px-7 sm:py-5">
+            <div className="mx-auto max-w-4xl rounded-4xl border border-slate-200/70 bg-white/80 backdrop-blur-md shadow-lg shadow-slate-900/8 px-5 py-2 sm:px-5 sm:py-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-6">
                     {/* Brand Section */}
                     <div className="flex items-center gap-2 flex-shrink-0">
