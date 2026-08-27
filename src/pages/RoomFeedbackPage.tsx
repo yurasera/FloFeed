@@ -631,7 +631,7 @@ export function RoomFeedbackPage() {
                 </div>
 
                 <div className="relative w-full overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white p-10 shadow-2xl shadow-slate-900/10">
-                    <div className="absolute right-6 top-6 rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">
+                    <div className="absolute right-6 top-6 rounded-full hidden bg-slate-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500 sm:block">
                         {submitted ? 'Submitted' : 'Guided Reflection'}
                     </div>
                     <div className="absolute left-6 top-6 text-xs text-slate-500">
