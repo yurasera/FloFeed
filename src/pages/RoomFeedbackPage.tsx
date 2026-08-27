@@ -634,14 +634,14 @@ export function RoomFeedbackPage() {
                     <div className="absolute right-6 top-6 rounded-full hidden bg-slate-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500 sm:block">
                         {submitted ? 'Submitted' : 'Guided Reflection'}
                     </div>
-                    <div className="absolute left-6 top-6 text-xs text-slate-500">
+                    <div className="absolute left-1/2 top-6 -translate-x-1/2 text-center text-xs text-slate-500 sm:left-6 sm:translate-x-0">
                         {selectedClass ? `Room: ${selectedClass.name}` : 'Room belum dipilih'}
                     </div>
 
                     {!submitted ? (
                         <div className="space-y-10">
                             <div className="text-center">
-                                <p className="text-xs uppercase tracking-[0.32em] text-slate-500">{promptStepLabel}</p>
+                                <p className="text-xs uppercase tracking-[0.32em] text-slate-500 mt-8 sm:mt-0">{promptStepLabel}</p>
                                 <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                                     {prompt.title}
                                 </h1>
