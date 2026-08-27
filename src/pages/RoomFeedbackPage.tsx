@@ -809,34 +809,27 @@ export function RoomFeedbackPage() {
                                 </div>
                             ) : null}
 
-                            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
-                                <button
-                                    type="button"
-                                    onClick={() => navigate('/room/join')}
-                                    className="order-last sm:order-first inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-7 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                                >
-                                    Cancel
-                                </button>
-                                <div className="flex w-full flex-row justify-between items-center gap-3 sm:w-auto sm:flex-row">
-                                    {stepIndex > 0 && (
-                                        <button
-                                            type="button"
-                                            onClick={handleBack}
-                                            className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-7 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                                        >
-                                            Previous
-                                        </button>
-                                    )}
+
+                            <div className="flex w-full justify-between items-center gap-4">
+                                {stepIndex > 0 && (
                                     <button
                                         type="button"
-                                        onClick={() => void onContinue()}
-                                        disabled={!validateCurrentPrompt() || isSubmitting}
-                                        className={`inline-flex w-full min-w-0 items-center justify-center rounded-full px-8 py-4 text-base font-semibold text-white transition ${!validateCurrentPrompt() || isSubmitting ? 'cursor-not-allowed bg-slate-300 text-slate-500' : 'bg-blue-600 hover:bg-blue-500'}`}
+                                        onClick={handleBack}
+                                        className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-7 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                                     >
-                                        {isSubmitting ? 'Submitting...' : stepIndex === 3 ? 'Submit Feedback' : 'Continue'}
+                                        Previous
                                     </button>
-                                </div>
+                                )}
+                                <button
+                                    type="button"
+                                    onClick={() => void onContinue()}
+                                    disabled={!validateCurrentPrompt() || isSubmitting}
+                                    className={`inline-flex min-w-0 items-center justify-center rounded-full px-8 py-4 text-base font-semibold text-white transition ${!validateCurrentPrompt() || isSubmitting ? 'cursor-not-allowed bg-slate-300 text-slate-500' : 'bg-blue-600 hover:bg-blue-500'}`}
+                                >
+                                    {isSubmitting ? 'Submitting...' : stepIndex === 3 ? 'Submit Feedback' : 'Continue'}
+                                </button>
                             </div>
+
 
                             {submissionError ? (
                                 <div className="rounded-3xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
