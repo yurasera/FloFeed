@@ -38,7 +38,7 @@ export function Navbar() {
                         <img
                             src="/FloFeed/fs.png"
                             alt="FloFeed Logo"
-                            className="h-8 w-8 object-contain"
+                            className="h-6 w-6 object-contain"
                         />
                         <p className="text-sm font-semibold tracking-wide text-slate-900">FLOFEED</p>
                     </div>
@@ -75,12 +75,12 @@ export function Navbar() {
                     <button
                         type="button"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="sm:hidden flex flex-col gap-1.5 items-center justify-center h-9 w-9 rounded-lg hover:bg-slate-100 transition-colors"
+                        className="sm:hidden flex flex-col gap-1.5 items-center justify-center h-4 w-4 rounded-lg hover:bg-slate-100 transition-colors"
                         aria-label="Toggle menu"
                     >
-                        <span className={`h-0.5 w-6 bg-slate-900 transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
-                        <span className={`h-0.5 w-6 bg-slate-900 transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
-                        <span className={`h-0.5 w-6 bg-slate-900 transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+                        <span className={`h-0.5 w-4 bg-slate-900 transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
+                        <span className={`h-0.5 w-4 bg-slate-900 transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
+                        <span className={`h-0.5 w-4 bg-slate-900 transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
                     </button>
                 </div>
 
