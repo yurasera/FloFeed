@@ -130,23 +130,38 @@ export function LearnerAuthScreen({ mode }: LearnerAuthScreenProps) {
                         </div>
 
                         <SectionTitle
-                            eyebrow="Learner Access"
-                            title={`${toTitleCaseMode(mode)} untuk feedback anonim`}
-                            description="Akun learner disimpan di perangkat ini sebagai lapisan accountability, sementara mentor tetap hanya melihat feedback anonim dan agregat."
+                            eyebrow="How FloFeed Works"
+                            title="From reflection to meaningful action"
+                            description="FloFeed guides learners to give more specific feedback, helps identify recurring themes, and gives mentors clear areas to maintain and improve."
                         />
 
-                        <div className="grid gap-3 sm:grid-cols-3">
+                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                             <div className="rounded-2xl border border-white/70 bg-white/75 p-4 shadow-sm">
-                                <p className="text-sm font-semibold text-slate-900">Anonymity</p>
-                                <p className="mt-1 text-sm leading-6 text-slate-600">Identitas learner tidak pernah masuk ke payload feedback mentor.</p>
+                                <p className="text-sm font-semibold text-slate-900">1. Guided Reflection</p>
+                                <p className="mt-1 text-sm leading-6 text-slate-600">
+                                    Learner gets guided prompts to reflect on their learning experience.
+                                </p>
                             </div>
+
                             <div className="rounded-2xl border border-white/70 bg-white/75 p-4 shadow-sm">
-                                <p className="text-sm font-semibold text-slate-900">Persisted session</p>
-                                <p className="mt-1 text-sm leading-6 text-slate-600">Login tetap tersimpan sehingga learner bisa lanjut ke flow feedback.</p>
+                                <p className="text-sm font-semibold text-slate-900">2. Structured Feedback</p>
+                                <p className="mt-1 text-sm leading-6 text-slate-600">
+                                    Feedback becomes more specific, meaningful, and easier to understand.
+                                </p>
                             </div>
+
                             <div className="rounded-2xl border border-white/70 bg-white/75 p-4 shadow-sm">
-                                <p className="text-sm font-semibold text-slate-900">Supabase-ready</p>
-                                <p className="mt-1 text-sm leading-6 text-slate-600">Service layer siap diganti ke Supabase Auth tanpa ubah UI utama.</p>
+                                <p className="text-sm font-semibold text-slate-900">3. Find Patterns</p>
+                                <p className="mt-1 text-sm leading-6 text-slate-600">
+                                    Feedback is grouped into themes to reveal recurring patterns.
+                                </p>
+                            </div>
+
+                            <div className="rounded-2xl border border-white/70 bg-white/75 p-4 shadow-sm">
+                                <p className="text-sm font-semibold text-slate-900">4. Take Action</p>
+                                <p className="mt-1 text-sm leading-6 text-slate-600">
+                                    Mentor sees clear areas to maintain and improve.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -247,7 +262,7 @@ export function LearnerAuthScreen({ mode }: LearnerAuthScreenProps) {
                             >
                                 {isRegisterMode ? 'Pindah ke masuk' : 'Buat akun'}
                             </Link>
-                           
+
                         </div>
                     </div>
                 </Card>
