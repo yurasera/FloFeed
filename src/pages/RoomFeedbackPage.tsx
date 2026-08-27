@@ -27,8 +27,8 @@ const overallOptions: Array<{ value: OverallUnderstanding; label: string }> = [
 const secondaryOptionsByOverall: Record<OverallUnderstanding, string[]> = {
     very_clear: ['Penjelasan mentor', 'Contoh kode', 'Practice', 'Sudah pernah belajar sebelumnya', 'Lainnya'],
     mostly_clear: ['Perlu lebih banyak contoh', 'Perlu lebih banyak latihan', 'Masih bingung konsepnya', 'Kadang lupa syntax', 'Masih sering error'],
-    confused: ['Tidak memahami konsep', 'Bingung syntax', 'Bingung kapan digunakan', 'Sering mendapatkan error', 'Sulit menerapkan sendiri'],
-    not_understood: ['Tidak memahami konsep dasar', 'Tidak mengikuti penjelasan', 'Sulit mengikuti contoh kode', 'Bingung saat practice', 'Tidak tahu harus mulai dari mana'],
+    confused: ['Tidak memahami konsep', 'Bingung syntax', 'Bingung kapan digunakan', 'Sering mendapatkan error', 'Sulit menerapkan sendiri', 'Lainnya'],
+    not_understood: ['Tidak memahami konsep dasar', 'Tidak mengikuti penjelasan', 'Sulit mengikuti contoh kode', 'Bingung saat practice', 'Tidak tahu harus mulai dari mana', 'Lainnya'],
 }
 
 const stepLabels: Record<OverallUnderstanding, string> = {
@@ -256,6 +256,11 @@ export function RoomFeedbackPage() {
             return
         }
 
+        if (overallUnderstanding === 'mostly_clear') {
+            setSecondaryChoice(value)
+            return
+        }
+
         if (overallUnderstanding === 'confused') {
             toggleConfusedReason(value)
             setSecondaryChoice(value)
@@ -269,13 +274,6 @@ export function RoomFeedbackPage() {
         }
 
         setSecondaryChoice(value)
-
-        if (value === 'Lainnya' || overallUnderstanding === 'confused' || overallUnderstanding === 'not_understood') {
-            setStepIndex(3)
-            return
-        }
-
-        void handleSubmitFeedback(value)
     }
 
     const handleBack = () => {
@@ -422,7 +420,14 @@ export function RoomFeedbackPage() {
             return
         }
 
-        if (prompt.kind !== 'overall' && overallUnderstanding !== 'very_clear' && overallUnderstanding !== 'mostly_clear' && !selectedLessonId) {
+        if (
+            prompt.kind !== 'overall' &&
+            overallUnderstanding !== 'very_clear' &&
+            overallUnderstanding !== 'mostly_clear' &&
+            overallUnderstanding !== 'confused' &&
+            overallUnderstanding !== 'not_understood' &&
+            !selectedLessonId
+        ) {
             return
         }
 
@@ -598,7 +603,7 @@ export function RoomFeedbackPage() {
                 return
             }
 
-            if (secondaryChoice === 'Lainnya' || overallUnderstanding === 'confused' || overallUnderstanding === 'not_understood') {
+            if (secondaryChoice === 'Lainnya') {
                 setStepIndex(3)
                 return
             }
