@@ -616,8 +616,8 @@ export function RoomFeedbackPage() {
 
     return (
         <PageContainer className="min-h-screen w-full">
-            <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col ">
-                <div className="mb-6 flex flex-col rounded-[2rem] border border-slate-200/70 bg-white/80 shadow-xl shadow-slate-900/5 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between sm:p-5">
+            <div className="mx-auto flex min-h-screen w-full max-w-4xl flex-col ">
+                <div className="mb-6 flex flex-row item-center justify-between rounded-[2rem] border border-slate-200/70 bg-white/80 p-3 shadow-xl shadow-slate-900/5 backdrop-blur-sm">
                     <button
                         type="button"
                         onClick={() => navigate('/room/join')}
