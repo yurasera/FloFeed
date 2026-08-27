@@ -825,7 +825,7 @@ export function RoomFeedbackPage() {
                                 <button
                                     type="button"
                                     onClick={() => navigate('/room/join')}
-                                    className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-7 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                                    className="order-last sm:order-first inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-7 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                                 >
                                     Cancel
                                 </button>
